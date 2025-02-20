@@ -4,15 +4,14 @@
 
 @theme {
   /* Custom Colors */
-
-  --color-cta: #ff1e00;
-  --color-hovercta: #d61900;
+  --color-cta: #9b0ced;
+  --color-hovercta: #7123b0;
   --color-darkbg: #181818;
   --color-secondarydarkbg: #1e1e1e;
   --color-darkmodetext: #e4e4e4;
   --color-grey: #f5f5f5;
   --color-error: #f23f3f;
-  --color-darkmodeCTA: #ff1e00;
+  --color-darkmodeCTA: #b458ff;
 
   /* Custom Animations for the Modal */
   --animate-fadeIn: fadeIn 0.3s ease-in-out;

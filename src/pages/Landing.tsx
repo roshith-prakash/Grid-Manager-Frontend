@@ -1,14 +1,12 @@
-import { Header, PrimaryButton, SecondaryButton } from "@/components";
+import { ContextValue, useDarkMode } from "@/context/DarkModeContext";
 
 const Landing = () => {
+  const { isDarkMode, toggleDarkMode } = useDarkMode() as ContextValue;
   return (
-    <div>
-      <Header />
-      <p>Grid Manager - Fantasy F1 brought to life!</p>
-      <div>
-        <PrimaryButton text="Test" />
-        <SecondaryButton text="Test" />
-      </div>
+    <div className="min-h-screen">
+      <button className="my-5 mx-5" onClick={toggleDarkMode}>
+        Toggle {isDarkMode ? "Light" : "Dark"} Mode
+      </button>
     </div>
   );
 };

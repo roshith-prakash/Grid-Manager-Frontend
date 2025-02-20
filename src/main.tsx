@@ -5,25 +5,26 @@ import { DarkModeProvider } from "./context/DarkModeContext.tsx";
 import { Toaster } from "react-hot-toast";
 import App from "./App.tsx";
 import "./index.css";
-import { ClerkProvider } from "@clerk/clerk-react";
+import { AuthProvider } from "./context/AuthContext.tsx";
+import { UserProvider } from "./context/UserContext.tsx";
 
 const queryClient = new QueryClient();
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key");
-}
-
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    {/* Allows for DarkMode usage */}
     <DarkModeProvider>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <App />
-        </QueryClientProvider>
-      </ClerkProvider>
+      {/* Adds tanstack query */}
+      <QueryClientProvider client={queryClient}>
+        {/* Providing auth context to children */}
+        <AuthProvider>
+          {/* Providing Db user data to children */}
+          <UserProvider>
+            <Toaster />
+            <App />
+          </UserProvider>
+        </AuthProvider>
+      </QueryClientProvider>
     </DarkModeProvider>
   </StrictMode>
 );

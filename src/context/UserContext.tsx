@@ -5,7 +5,7 @@ import {
   createContext,
   ReactNode,
 } from "react";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth } from "./AuthContext";
 import { axiosInstance } from "../utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 
@@ -38,33 +38,28 @@ export function useDBUser() {
 // UserProvider Component
 export function UserProvider({ children }: { children: ReactNode }) {
   const [dbUser, setDbUser] = useState<UserType | null>(null);
-  const { user } = useUser();
+  const { currentUser } = useAuth();
 
   // Fetch current user information from database - UseQuery Method
   const { data, refetch: fetchUser } = useQuery({
-    queryKey: ["dbUser", user?.id], // Use user ID for efficiency
+    queryKey: ["dbUser", currentUser], // Use user ID for efficiency
     queryFn: async () => {
-      if (!user) return null;
-      const response = await axiosInstance.post<{ user: UserType }>(
-        "/auth/get-current-user",
-        {
-          user,
-        }
-      );
-      return response.data.user;
+      return axiosInstance.post("/auth/get-current-user", {
+        user: currentUser,
+      });
     },
     refetchInterval: 60000,
-    enabled: !!user,
+    enabled: !!currentUser,
   });
 
   // Set the state value
   useEffect(() => {
-    if (data) {
-      setDbUser(data);
+    if (data?.data?.user) {
+      setDbUser(data?.data?.user);
     } else {
       setDbUser(null);
     }
-  }, [data]);
+  }, [currentUser?.email, data]);
 
   // Value object to be passed in context
   const value: DbUserContextType = {
