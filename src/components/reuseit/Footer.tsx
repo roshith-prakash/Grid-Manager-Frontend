@@ -1,4 +1,3 @@
-// Please check import paths
 import { ContextValue, useDarkMode } from "@/context/DarkModeContext";
 
 const Footer = () => {

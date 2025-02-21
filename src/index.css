@@ -15,6 +15,7 @@
 
   /* Custom Animations for the Modal */
   --animate-fadeIn: fadeIn 0.3s ease-in-out;
+
   @keyframes fadeIn {
     0% {
       opacity: 0.3;
@@ -25,6 +26,7 @@
   }
 
   --animate-fadeOut: fadeOut 0.3s ease-in-out;
+
   @keyframes fadeOut {
     0% {
       opacity: 1;
@@ -39,7 +41,6 @@ input::placeholder {
   transition: color 0.2s;
 }
 
-/* Horizontal Scrollbar */
 .scroller::-webkit-scrollbar {
   height: 5px;
   width: 5px;

@@ -17,7 +17,7 @@ export default function Droppable({
 
   return (
     <div
-      className="bg-white m-5 p-10 rounded border-2 shadow-md flex flex-wrap justify-center"
+      className="m-5 flex flex-wrap gap-5 justify-center p-10 rounded border-2 shadow-md "
       ref={setNodeRef}
       style={style}
     >

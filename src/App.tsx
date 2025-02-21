@@ -6,6 +6,7 @@ import {
   Onboarding,
   Signout,
   Signup,
+  Test,
 } from "@/pages";
 import { useDBUser } from "./context/UserContext";
 import { Footer, Navbar } from "./components";
@@ -26,6 +27,8 @@ function App() {
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/signout" element={<Signout />} />
           <Route path="/edit-profile" element={<EditProfile />} />
+
+          <Route path="/test" element={<Test />} />
         </Routes>
         <Footer />
       </BrowserRouter>

@@ -21,7 +21,7 @@ export default function Draggable({
 
   return (
     <button
-      className="m-5 p-4 rounded border-2 bg-white"
+      className="bg-white dark:bg-darkbg p-4 rounded-xs border-1"
       ref={setNodeRef}
       style={style}
       {...listeners}
