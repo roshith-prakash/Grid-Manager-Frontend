@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { Draggable, Droppable, PrimaryButton } from "@/components";
+import { Draggable, Droppable, Input, PrimaryButton } from "@/components";
 import { useDBUser } from "@/context/UserContext";
 import { axiosInstance } from "@/utils/axiosInstance";
 import {
@@ -69,6 +69,10 @@ const Test = () => {
   const [teamDrivers, setTeamDrivers] = useState([]);
   const [teamConstructors, setTeamConstructors] = useState([]);
 
+  const [availablePurse, setAvailablePurse] = useState(100);
+
+  const [name, setName] = useState("");
+
   // Function to handle drag and drop
   const handleDragDrivers = (event) => {
     const { active, over } = event;
@@ -92,6 +96,7 @@ const Test = () => {
 
             // Add item to dropped items
             setTeamDrivers((items) => [...items, draggedItem]);
+            setAvailablePurse((purse) => purse - draggedItem?.price);
           }
         }
       } else if (over.id === "available-drivers") {
@@ -110,6 +115,8 @@ const Test = () => {
 
             // Add item back to available constructors
             setAvailableDrivers((items) => [...items, draggedItem]);
+
+            setAvailablePurse((purse) => purse + draggedItem?.price);
           }
         }
       }
@@ -155,6 +162,7 @@ const Test = () => {
 
           // Add item to dropped items
           setTeamConstructors((items) => [...items, draggedItem]);
+          setAvailablePurse((purse) => purse - draggedItem?.price);
         }
       } else if (over.id === "available-constructors") {
         // Prevent duplicate item drop in the same section
@@ -170,6 +178,7 @@ const Test = () => {
 
           // Add item back to available constructors
           setAvailableConstructors((items) => [...items, draggedItem]);
+          setAvailablePurse((purse) => purse + draggedItem?.price);
         }
       }
     } else {
@@ -182,6 +191,8 @@ const Test = () => {
         // If dropped outside, reset the item to available items
         if (!availableConstructors.find((item) => item.id === itemId)) {
           setAvailableConstructors((items) => [...items, draggedItem]);
+
+          setAvailablePurse((purse) => purse + draggedItem?.price);
         }
 
         // Remove the item from dropped items
@@ -196,13 +207,15 @@ const Test = () => {
   const handleSubmit = () => {
     if (
       teamDrivers?.length === NUMBER_OF_DRIVERS &&
-      teamConstructors?.length === NUMBER_OF_CONSTRUCTORS
+      teamConstructors?.length === NUMBER_OF_CONSTRUCTORS &&
+      availablePurse >= 0
     ) {
       axiosInstance
         .post("/team/create-team", {
           user: dbUser,
           teamDrivers: teamDrivers,
           teamConstructors: teamConstructors,
+          name: name,
         })
         .then(() => toast("Team Created!"))
         .catch(() => toast("Something went wrong!"));
@@ -211,9 +224,18 @@ const Test = () => {
     }
   };
 
+  console.log(availableDrivers, availableConstructors);
+
   return (
     <div>
       <div className="px-5 py-10 min-h-screen">
+        <h1 className="pb-20 text-center font-medium text-4xl">
+          {" "}
+          Available Purse :{" "}
+          <span className={`${availablePurse < 0 && "text-red-500"}`}>
+            {availablePurse} Cr.
+          </span>
+        </h1>
         {/* Drivers */}
         <div className="flex">
           <DndContext sensors={sensors} onDragEnd={handleDragDrivers}>
@@ -226,24 +248,38 @@ const Test = () => {
                 id="available-drivers"
                 className="p-5 border-2 m-5 flex flex-wrap gap-3 justify-center shadow-md"
               >
-                {availableDrivers.map((driver) => {
-                  return (
-                    <Draggable
-                      className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
-                      key={driver?.driverId}
-                      id={`${driver?.permanentNumber}`}
-                    >
-                      {driver?.givenName} {driver?.familyName}
-                    </Draggable>
-                  );
-                })}
+                {availableDrivers
+                  ?.sort((a, b) => b?.price - a?.price)
+                  .map((driver) => {
+                    return (
+                      <Draggable
+                        className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
+                        key={driver?.driverId}
+                        id={`${driver?.permanentNumber}`}
+                      >
+                        <p>
+                          {driver?.givenName} {driver?.familyName}
+                        </p>
+                        <p className="text-center">({driver?.code}) </p>
+                        <div className="border-t-1 mt-2 py-2">
+                          {driver?.price} Cr.
+                        </div>
+                      </Draggable>
+                    );
+                  })}
               </Droppable>
             </div>
 
             <div className="flex-1">
               <div className="flex justify-between px-6 text-2xl font-medium">
                 <h3>Team Drivers</h3>
-                <h3>
+                <h3
+                  className={`${
+                    teamDrivers?.length == NUMBER_OF_DRIVERS && "text-green-500"
+                  } ${
+                    teamDrivers?.length > NUMBER_OF_DRIVERS && "text-red-500"
+                  }`}
+                >
                   {teamDrivers?.length} / {NUMBER_OF_DRIVERS}
                 </h3>
               </div>
@@ -255,15 +291,21 @@ const Test = () => {
                 {teamDrivers.length === 0 ? (
                   <p className="py-10">Add drivers</p>
                 ) : (
-                  teamDrivers.map((driver) => (
-                    <Draggable
-                      className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
-                      key={driver?.driverId}
-                      id={`${driver?.permanentNumber}`}
-                    >
-                      {driver?.givenName} {driver?.familyName}
-                    </Draggable>
-                  ))
+                  teamDrivers
+                    ?.sort((a, b) => b?.price - a?.price)
+                    .map((driver) => (
+                      <Draggable
+                        className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
+                        key={driver?.driverId}
+                        id={`${driver?.permanentNumber}`}
+                      >
+                        {driver?.givenName} {driver?.familyName}
+                        <p className="text-center">({driver?.code}) </p>
+                        <div className="border-t-1 mt-2 py-2">
+                          {driver?.price} Cr.
+                        </div>
+                      </Draggable>
+                    ))
                 )}
               </Droppable>
             </div>
@@ -282,24 +324,39 @@ const Test = () => {
                 id="available-constructors"
                 className="p-5 border-2 m-5 flex flex-wrap gap-3 justify-center shadow-md"
               >
-                {availableConstructors.map((constructor) => {
-                  return (
-                    <Draggable
-                      className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
-                      key={constructor?.constructorId}
-                      id={`${constructor?.id}`}
-                    >
-                      {constructor?.name}
-                    </Draggable>
-                  );
-                })}
+                {availableConstructors
+                  ?.sort((a, b) => b?.price - a?.price)
+                  .map((constructor) => {
+                    return (
+                      <Draggable
+                        className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
+                        key={constructor?.constructorId}
+                        id={`${constructor?.id}`}
+                      >
+                        {constructor?.name}
+                        <div className="border-t-1 mt-2 py-2">
+                          {constructor?.price} Cr.
+                        </div>
+                      </Draggable>
+                    );
+                  })}
               </Droppable>
             </div>
 
             <div className="flex-1">
-              <div className="flex justify-between px-6 text-2xl font-medium">
+              <div
+                className={`flex justify-between px-6 text-2xl font-medium `}
+              >
                 <h3>Team Constructors</h3>
-                <h3>
+                <h3
+                  className={`${
+                    teamConstructors?.length == NUMBER_OF_CONSTRUCTORS &&
+                    "text-green-500"
+                  } ${
+                    teamConstructors?.length > NUMBER_OF_CONSTRUCTORS &&
+                    "text-red-500"
+                  }`}
+                >
                   {teamConstructors?.length} / {NUMBER_OF_CONSTRUCTORS}
                 </h3>
               </div>
@@ -311,20 +368,37 @@ const Test = () => {
                 {teamConstructors.length === 0 ? (
                   <p className="py-10">Add Constructors</p>
                 ) : (
-                  teamConstructors.map((constructor) => (
-                    <Draggable
-                      className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
-                      key={constructor?.constructorId}
-                      id={`${constructor?.id}`}
-                    >
-                      {constructor?.name}
-                    </Draggable>
-                  ))
+                  teamConstructors
+                    ?.sort((a, b) => b?.price - a?.price)
+                    .map((constructor) => (
+                      <Draggable
+                        className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
+                        key={constructor?.constructorId}
+                        id={`${constructor?.id}`}
+                      >
+                        {constructor?.name}
+                        <div className="border-t-1 mt-2 py-2">
+                          {constructor?.price} Cr.
+                        </div>
+                      </Draggable>
+                    ))
                 )}
               </Droppable>
             </div>
           </DndContext>
         </div>
+      </div>
+
+      {/* Team Name */}
+      <div className="pb-10 py-5 flex flex-col items-center justify-center">
+        <p className="font-medium">Team Name</p>
+        <Input
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+          className="max-w-xl"
+          placeholder="Team Name"
+        />
       </div>
 
       {/* Submit Button */}

@@ -31,9 +31,11 @@ const Navbar = () => {
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
+        setIsSignOutModalOpen(false);
         navigate("/");
       })
       .catch((error) => {
+        setIsSignOutModalOpen(false);
         console.log(error);
       });
   };
@@ -57,6 +59,7 @@ const Navbar = () => {
           </Link>
           {dbUser ? (
             <>
+              {/* Log Out Modal */}
               <Modal
                 isOpen={isSignOutModalOpen}
                 onClose={() => setIsSignOutModalOpen(false)}
