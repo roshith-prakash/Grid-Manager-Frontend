@@ -1,12 +1,12 @@
-import { ContextValue, useDarkMode } from "@/context/DarkModeContext";
-
 const Landing = () => {
-  const { isDarkMode, toggleDarkMode } = useDarkMode() as ContextValue;
   return (
-    <div className="min-h-screen">
-      <button className="my-5 mx-5" onClick={toggleDarkMode}>
-        Toggle {isDarkMode ? "Light" : "Dark"} Mode
-      </button>
+    <div className="min-h-[80vh] flex flex-col items-center gap-10 justify-center">
+      <h1 className="text-center font-mono  text-5xl  font-medium">
+        Welcome to Grid Manager!
+      </h1>
+      <h2 className="text-center font-mono  text-3xl  font-medium">
+        Work in Progress...
+      </h2>
     </div>
   );
 };

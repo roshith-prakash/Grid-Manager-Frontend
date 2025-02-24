@@ -8,14 +8,9 @@ import {
   Signup,
   Test,
 } from "@/pages";
-import { useDBUser } from "./context/UserContext";
-import { Footer, Navbar } from "./components";
+import { Footer, Navbar, Protector } from "./components";
 
 function App() {
-  const { dbUser } = useDBUser();
-
-  console.log(dbUser);
-
   return (
     <main className="dark:bg-darkbg dark:text-darkmodetext">
       <BrowserRouter>
@@ -28,7 +23,14 @@ function App() {
           <Route path="/signout" element={<Signout />} />
           <Route path="/edit-profile" element={<EditProfile />} />
 
-          <Route path="/test" element={<Test />} />
+          <Route
+            path="/test"
+            element={
+              <Protector>
+                <Test />
+              </Protector>
+            }
+          />
         </Routes>
         <Footer />
       </BrowserRouter>

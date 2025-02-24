@@ -5,10 +5,12 @@ export default function Draggable({
   id,
   value,
   children,
+  className,
 }: {
   id: string;
   value?: string;
   children: ReactNode;
+  className?: string;
 }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
@@ -21,7 +23,7 @@ export default function Draggable({
 
   return (
     <button
-      className="bg-white dark:bg-darkbg p-4 rounded-xs border-1"
+      className={`${className} cursor-grab`}
       ref={setNodeRef}
       style={style}
       {...listeners}

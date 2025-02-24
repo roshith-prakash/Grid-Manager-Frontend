@@ -4,9 +4,11 @@ import { ReactNode } from "react";
 export default function Droppable({
   id,
   children,
+  className,
 }: {
   id: string;
   children: ReactNode;
+  className?: string;
 }) {
   const { isOver, setNodeRef } = useDroppable({
     id,
@@ -16,11 +18,7 @@ export default function Droppable({
   };
 
   return (
-    <div
-      className="m-5 flex flex-wrap gap-5 justify-center p-10 rounded border-2 shadow-md "
-      ref={setNodeRef}
-      style={style}
-    >
+    <div className={`${className}`} ref={setNodeRef} style={style}>
       {children}
     </div>
   );

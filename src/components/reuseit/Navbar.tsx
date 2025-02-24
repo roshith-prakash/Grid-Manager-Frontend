@@ -10,12 +10,17 @@ import { auth } from "@/firebase/firebase";
 import { signOut } from "firebase/auth";
 import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
+import SignupModal from "../SignupModal";
+import LoginModal from "../LoginModal";
+import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode() as ContextValue;
   const { dbUser } = useDBUser();
   const [open, setOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = (link: string) => {
@@ -39,13 +44,7 @@ const Navbar = () => {
         className={`dark:bg-darkbg relative z-2 flex items-center justify-between bg-white px-10 py-3 font-sans shadow-xl dark:text-white dark:shadow-md dark:shadow-white/30`}
       >
         <Link to="/" aria-label="Home">
-          <img
-            src={
-              "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736843158/logodark_gs3pnp.png"
-            }
-            alt="Logo"
-            className="h-12 cursor-pointer"
-          />
+          <img src={logo} alt="Logo" className="h-12 cursor-pointer" />
         </Link>
 
         {/* LG screen links */}
@@ -58,7 +57,10 @@ const Navbar = () => {
           </Link>
           {dbUser ? (
             <>
-              <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+              <Modal
+                isOpen={isSignOutModalOpen}
+                onClose={() => setIsSignOutModalOpen(false)}
+              >
                 <div className="flex flex-col gap-y-2">
                   {/* Title */}
                   <h1 className="dark:text-darkmodetext font-bold text-2xl">
@@ -71,16 +73,21 @@ const Navbar = () => {
                   </h2>
 
                   <div className="mt-5 flex gap-x-5 justify-end">
-                    <PrimaryButton onClick={handleLogout} text="Log out" />
+                    <PrimaryButton
+                      className="text-sm"
+                      onClick={handleLogout}
+                      text="Log out"
+                    />
                     <SecondaryButton
-                      onClick={() => setIsModalOpen(false)}
+                      className="text-sm"
+                      onClick={() => setIsSignOutModalOpen(false)}
                       text="Cancel"
                     />
                   </div>
                 </div>
               </Modal>
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsSignOutModalOpen(true)}
                 className="cursor-pointer"
               >
                 Signout
@@ -88,18 +95,35 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link
-                to="/signup"
-                className="hover:text-cta dark:hover:text-darkmodeCTA transition-all"
+              <SignupModal
+                moveToLogin={() => {
+                  setIsSignUpModalOpen(false);
+                  setIsLoginModalOpen(true);
+                }}
+                isModalOpen={isSignUpModalOpen}
+                setIsModalOpen={() => setIsSignUpModalOpen(false)}
+              />
+              <button
+                onClick={() => setIsSignUpModalOpen(true)}
+                className="cursor-pointer"
               >
-                Sign up
-              </Link>
-              <Link
-                to="/login"
-                className="hover:text-cta dark:hover:text-darkmodeCTA transition-all"
+                Sign Up
+              </button>
+
+              <LoginModal
+                moveToSignup={() => {
+                  setIsLoginModalOpen(false);
+                  setIsSignUpModalOpen(true);
+                }}
+                isModalOpen={isLoginModalOpen}
+                setIsModalOpen={() => setIsLoginModalOpen(false)}
+              />
+              <button
+                onClick={() => setIsLoginModalOpen(true)}
+                className="cursor-pointer"
               >
                 Login
-              </Link>
+              </button>
             </>
           )}
         </div>

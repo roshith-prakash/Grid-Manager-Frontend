@@ -58,3 +58,8 @@ input::placeholder {
 .scroller::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.noscroller::-webkit-scrollbar {
+  height: 0px;
+  width: 0px;
+}
