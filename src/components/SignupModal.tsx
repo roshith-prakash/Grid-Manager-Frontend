@@ -39,7 +39,7 @@ const SignupModal = ({
     confirmpw: 0,
   });
 
-  // Handle Email Signup
+  // Handle Email Sign up
   const handleEmailSignup = () => {
     setError({
       email: 0,
@@ -111,7 +111,7 @@ const SignupModal = ({
       });
   };
 
-  // Handle Google Signup
+  // Handle Google Sign up
   const handleGoogleSignup = () => {
     setDisabled(true);
     signInWithPopup(auth, provider)
@@ -168,14 +168,14 @@ const SignupModal = ({
         Welcome! Please fill in the details to get started.
       </h2>
 
-      {/* Google Sign Up Button */}
+      {/* Google Sign up Button */}
       <div className="flex justify-center">
         <button
           disabled={disabled}
           onClick={handleGoogleSignup}
           className="mt-8 text-sm dark:hover:border-white cursor-pointer hover:border-darkbg border-darkbg/25 dark:border-white/25 border-1 flex  gap-x-2 py-2 justify-center items-center px-14 shadow rounded-lg font-medium active:shadow transition-all"
         >
-          <p>Sign up with Google</p>
+          {disabled ? <p>Please Wait...</p> : <p>Sign up with Google</p>}
           <FaGoogle className="text-md translate-y-0.5" />
         </button>
       </div>
@@ -189,7 +189,7 @@ const SignupModal = ({
         <div className="flex-1 h-0 border-1 border-darkbg/25 dark:border-white/25"></div>
       </div>
 
-      {/* Signup with Email form */}
+      {/* Sign up with Email form */}
       <>
         {/* Email Input field */}
         <div className="mt-4 px-2">
@@ -340,7 +340,7 @@ const SignupModal = ({
             disabled={disabled}
             disabledText="Please Wait..."
             onClick={handleEmailSignup}
-            text={"Sign Up"}
+            text={"Sign up"}
             className="w-full text-sm bg-darkbg dark:bg-darkbg/50 dark:border-white/25 dark:hover:!border-white border-darkbg hover:!bg-darkbg/85 hover:!border-darkbg/85 hover:!scale-100 rounded-xl"
           />
         </div>

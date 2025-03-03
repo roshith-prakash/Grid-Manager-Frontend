@@ -80,7 +80,7 @@ const Protector = ({ children }: { children: ReactNode }) => {
               <div>
                 <SecondaryButton
                   onClick={() => navigate("/signup")}
-                  text="Sign Up"
+                  text="Sign up"
                 />
               </div>
             </div>

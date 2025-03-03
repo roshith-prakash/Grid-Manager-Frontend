@@ -5,8 +5,10 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { axiosInstance } from "@/utils/axiosInstance";
 import toast from "react-hot-toast";
 import { isValidUsername } from "@/functions/regexFunctions";
+import { ContextValue, useDarkMode } from "@/context/DarkModeContext";
 
 const EditProfile = () => {
+  const { isDarkMode } = useDarkMode() as ContextValue;
   // Db user object
   const { dbUser, fetchUser } = useDBUser();
   // Ref for file input
@@ -15,8 +17,6 @@ const EditProfile = () => {
   const [name, setName] = useState("");
   // Profile image of user
   const [image, setImage] = useState();
-  // Bio of the user
-  const [bio, setBio] = useState("");
   // Username to be stored in DB
   const [username, setUsername] = useState("");
   // To disable button
@@ -42,7 +42,6 @@ const EditProfile = () => {
     if (dbUser) {
       setName(dbUser?.name);
       setImage(dbUser?.photoURL);
-      setBio(dbUser?.bio);
       setUsername(dbUser?.username);
     }
   }, [dbUser]);
@@ -111,7 +110,6 @@ const EditProfile = () => {
 
             // Add details in the user object
             const obj = {
-              bio: bio,
               username: username,
               name: name,
               image: typeof image == "string" ? image : null,
@@ -156,7 +154,6 @@ const EditProfile = () => {
 
       // Add details in the user object
       const obj = {
-        bio: bio,
         username: username,
         name: name,
         image: typeof image == "string" ? image : null,
@@ -188,7 +185,7 @@ const EditProfile = () => {
   return (
     <>
       <div className="min-h-[70vh] md:min-h-[65vh] lg:min-h-[60vh] bg-bgwhite flex items-center justify-center pt-12 pb-32">
-        <div className="bg-white dark:bg-secondarydarkbg w-full dark:bg-darkgrey dark:text-darkmodetext border-[1px] max-w-[95%] md:max-w-3xl md:mt-5 lg:mt-5 p-5 md:px-20 shadow-xl rounded-xl pb-10">
+        <div className="bg-white dark:bg-secondarydarkbg dark:border-white/10 dark:border-2 w-full dark:bg-darkgrey dark:text-darkmodetext border-1 max-w-[95%] md:max-w-3xl md:mt-5 lg:mt-5 p-5 md:px-20 shadow-xl rounded-xl pb-10">
           {/* Title */}
           <h1 className="text-ink dark:text-darkmodetext pt-5 font-bold text-2xl text-center">
             Edit your Account!
@@ -218,7 +215,9 @@ const EditProfile = () => {
               ) : (
                 <img
                   src={
-                    "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740649/account_glotqh.png"
+                    isDarkMode
+                      ? "https://res.cloudinary.com/do8rpl9l4/image/upload/v1740987081/accountcircle_axsjlm.png"
+                      : "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740649/account_glotqh.png"
                   }
                   className="h-24 w-24 rounded-full"
                 />

@@ -1,6 +1,6 @@
-import { useEffect, useState, MouseEvent, ReactNode } from "react";
+import { useEffect, useState, ReactNode } from "react";
 
-const Modal = ({
+const AlertModal = ({
   isOpen,
   onClose,
   children,
@@ -11,7 +11,7 @@ const Modal = ({
   children: ReactNode;
   className?: string;
 }) => {
-  // If the Modal is closing - to animate modal fading out
+  // If the AlertModal is closing - to animate modal fading out
   const [isClosing, setIsClosing] = useState(false);
   // If the modal is to be displayed
   const [isMounted, setIsMounted] = useState(false);
@@ -33,29 +33,15 @@ const Modal = ({
     }
   }, [isOpen, isMounted, onClose]);
 
-  // When the backdrop is clicked, set isClosing to animate modal fading out
-  // Unmount the modal after 300 ms
-  const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      setIsClosing(true);
-      setTimeout(() => {
-        setIsMounted(false);
-        setIsClosing(false);
-        onClose();
-      }, 300);
-    }
-  };
-
   if (!isMounted) return null;
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-darkbg/80 transition-opacity ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-darkbg/80 transition-opacity ${
         isClosing ? "opacity-0" : "opacity-100"
       }`}
-      onClick={handleBackdropClick}
     >
-      {/* When isClosing is true, fadeOut animation is added to Modal */}
+      {/* When isClosing is true, fadeOut animation is added to AlertModal */}
       <div
         className={`dark:bg-secondarydarkbg scroller ${
           isClosing ? "animate-fadeOut" : "animate-fadeIn"
@@ -67,4 +53,4 @@ const Modal = ({
   );
 };
 
-export default Modal;
+export default AlertModal;

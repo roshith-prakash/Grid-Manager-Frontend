@@ -14,7 +14,7 @@ const Signout = () => {
 
   // Set window title.
   useEffect(() => {
-    document.title = "Logout | Grid Manager";
+    document.title = "Sign out | Grid Manager";
   }, []);
 
   const handleLogout = () => {
@@ -31,21 +31,21 @@ const Signout = () => {
       <div className="min-h-[89vh] py-16 gap-10 flex flex-col justify-center items-center pb-24">
         {/* Title */}
         <h1 className="text-3xl lg:text-4xl font-medium">
-          Do you want to log out?
+          Do you want to sign out?
         </h1>
         {/* Image */}
         <img
           src={
             "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736741825/signout_xm5pl2.svg"
           }
-          className="max-w-[35%] lg:max-w-[20%] pointer-events-none"
+          className="max-w-[35%] -translate-x-2 lg:max-w-[20%] pointer-events-none"
         />
         {/* Button to log out */}
         <div>
           <SecondaryButton
             className="px-10"
             onClick={handleLogout}
-            text={"Log Out"}
+            text={"Sign Out"}
           />
         </div>
       </div>

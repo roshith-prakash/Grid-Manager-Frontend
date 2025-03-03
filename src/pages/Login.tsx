@@ -190,14 +190,14 @@ const Login = () => {
               Welcome back! Please sign in to continue.
             </h2>
 
-            {/* Google Sign Up Button */}
+            {/* Google Sign up Button */}
             <div className="flex justify-center">
               <button
                 disabled={disabled}
                 onClick={handleGoogleLogin}
                 className="mt-8 dark:hover:border-white cursor-pointer hover:border-darkbg border-darkbg/25 dark:border-white/25 border-1 flex  gap-x-2 py-2 justify-center items-center px-14 shadow rounded-lg font-medium active:shadow transition-all"
               >
-                <p>Sign in with Google</p>
+                {disabled ? <p>Please Wait...</p> : <p>Sign in with Google</p>}
                 <FaGoogle className="text-xl translate-y-0.5" />
               </button>
             </div>
@@ -317,7 +317,7 @@ const Login = () => {
                   disabled={disabled}
                   disabledText="Please Wait..."
                   onClick={handleLogin}
-                  text={"Sign Up"}
+                  text={"Sign up"}
                   className="w-full bg-darkbg dark:bg-darkbg/50 dark:border-white/25 dark:hover:!border-white border-darkbg hover:!bg-darkbg/85 hover:!border-darkbg/85 hover:!scale-100 rounded-xl"
                 />
               </div>
@@ -328,7 +328,7 @@ const Login = () => {
               <div className="flex-1 h-0 border-1 border-darkbg/25 dark:border-white/25"></div>
             </div>
 
-            {/* Link to Signup */}
+            {/* Link to Sign up */}
             <div className="text-center text-darkbg/80 dark:text-white/80 pt-2">
               Don't have an account?{" "}
               <Link

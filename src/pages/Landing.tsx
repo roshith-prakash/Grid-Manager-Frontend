@@ -1,4 +1,11 @@
+import { useEffect } from "react";
+
 const Landing = () => {
+  // Set window title.
+  useEffect(() => {
+    document.title = "Home | Grid Manager";
+  }, []);
+
   return (
     <div className="min-h-[80vh] flex flex-col items-center gap-10 justify-center">
       <h1 className="text-center font-mono  text-5xl  font-medium">

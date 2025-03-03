@@ -52,7 +52,7 @@ const Signup = () => {
     document.title = "Sign up | Grid Manager";
   }, []);
 
-  // Handle Email Signup
+  // Handle Email Sign up
   const handleEmailSignup = () => {
     setError({
       email: 0,
@@ -123,7 +123,7 @@ const Signup = () => {
       });
   };
 
-  // Handle Google Signup
+  // Handle Google Sign up
   const handleGoogleSignup = () => {
     setDisabled(true);
     signInWithPopup(auth, provider)
@@ -167,7 +167,7 @@ const Signup = () => {
       <div className="lg:min-h-[89vh] flex w-full">
         {/* Left Div */}
         <div className="min-h-[95vh] lg:h-full lg:min-h-[88vh] pb-10 bg-cover flex-1 flex justify-center items-center">
-          {/* Signup Form Div */}
+          {/* Sign up Form Div */}
           <div className="bg-white dark:border-1 dark:border-white/25 dark:bg-secondarydarkbg max-w-xl dark:bg-darkgrey dark:text-darkmodetext border-darkbg/25 border-1 px-8 lg:max-w-lg mt-5 p-5 md:px-10 shadow-lg rounded-2xl pb-10">
             {/* Title */}
             <h1 className="dark:text-darkmodetext pt-5 font-bold text-2xl text-center">
@@ -179,14 +179,14 @@ const Signup = () => {
               Welcome! Please fill in the details to get started.
             </h2>
 
-            {/* Google Sign Up Button */}
+            {/* Google Sign up Button */}
             <div className="flex justify-center">
               <button
                 disabled={disabled}
                 onClick={handleGoogleSignup}
                 className="mt-8 dark:hover:border-white cursor-pointer hover:border-darkbg border-darkbg/25 dark:border-white/25 border-1 flex  gap-x-2 py-2 justify-center items-center px-14 shadow rounded-lg font-medium active:shadow transition-all"
               >
-                <p>Sign up with Google</p>
+                {disabled ? <p>Please Wait...</p> : <p>Sign up with Google</p>}
                 <FaGoogle className="text-xl translate-y-0.5" />
               </button>
             </div>
@@ -200,7 +200,7 @@ const Signup = () => {
               <div className="flex-1 h-0 border-1 border-darkbg/25 dark:border-white/25"></div>
             </div>
 
-            {/* Signup with Email form */}
+            {/* Sign up with Email form */}
             <>
               {/* Email Input field */}
               <div className="mt-4 px-2">
@@ -355,7 +355,7 @@ const Signup = () => {
                   disabled={disabled}
                   disabledText="Please Wait..."
                   onClick={handleEmailSignup}
-                  text={"Sign Up"}
+                  text={"Sign up"}
                   className="w-full bg-darkbg dark:bg-darkbg/50 dark:border-white/25 dark:hover:!border-white border-darkbg hover:!bg-darkbg/85 hover:!border-darkbg/85 hover:!scale-100 rounded-xl"
                 />
               </div>
