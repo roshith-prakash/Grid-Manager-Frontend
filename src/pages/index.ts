@@ -8,6 +8,8 @@ import Test from "./Test";
 import Profile from "./Profile";
 import CreateLeague from "./CreateLeague";
 import User from "./User";
+import League from "./League";
+import PublicLeagues from "./PublicLeagues";
 
 export {
   Landing,
@@ -20,4 +22,6 @@ export {
   Profile,
   CreateLeague,
   User,
+  League,
+  PublicLeagues,
 };

@@ -43,7 +43,7 @@ const Login = () => {
 
   // Set window title.
   useEffect(() => {
-    document.title = "Login | Grid Manager";
+    document.title = "Sign in | Grid Manager";
   }, []);
 
   // Login using email and password
@@ -170,7 +170,7 @@ const Login = () => {
         <div className="hidden lg:flex lg:flex-1 items-center justify-center">
           <img
             src={
-              "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740835/login_wgdxys.svg"
+              "https://res.cloudinary.com/do8rpl9l4/image/upload/v1741164523/racecar2_kznips.svg"
             }
             className="max-w-[70%]"
           />

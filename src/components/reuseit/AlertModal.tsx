@@ -45,7 +45,7 @@ const AlertModal = ({
       <div
         className={`dark:bg-secondarydarkbg scroller ${
           isClosing ? "animate-fadeOut" : "animate-fadeIn"
-        } relative max-h-[90%] w-auto max-w-[95%] min-w-xs overflow-y-auto rounded-xl bg-white p-6 shadow-xl md:max-w-2xl md:min-w-sm dark:border-3 dark:border-white/25 ${className}`}
+        } relative max-h-[90%] w-auto max-w-[95%] min-w-xs overflow-y-auto rounded-xl bg-white p-6 shadow-xl  md:min-w-sm dark:border-3 dark:border-white/25 ${className}`}
       >
         {children}
       </div>

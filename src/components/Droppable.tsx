@@ -10,15 +10,15 @@ export default function Droppable({
   children: ReactNode;
   className?: string;
 }) {
-  const { isOver, setNodeRef } = useDroppable({
+  const { setNodeRef } = useDroppable({
     id,
   });
-  const style = {
-    color: isOver ? "green" : undefined,
-  };
 
   return (
-    <div className={`${className}`} ref={setNodeRef} style={style}>
+    <div
+      className={`dark:border-white/25 rounded-lg ${className}`}
+      ref={setNodeRef}
+    >
       {children}
     </div>
   );

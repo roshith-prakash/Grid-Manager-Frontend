@@ -18,6 +18,7 @@ import { RiAccountPinCircleLine } from "react-icons/ri";
 import { CgProfile, CgLogOut } from "react-icons/cg";
 import { FaUserPlus } from "react-icons/fa6";
 import { PiSignOutFill } from "react-icons/pi";
+import { SiF1 } from "react-icons/si";
 import Avatar from "./Avatar";
 import AlertModal from "./AlertModal";
 
@@ -116,32 +117,38 @@ const Navbar = () => {
           </Link>
           {dbUser ? (
             <>
+              <Link to="/leagues">Leagues</Link>
               <button
                 onClick={() => setIsSignOutModalOpen(true)}
                 className="cursor-pointer"
               >
-                Signout
+                Sign out
               </button>
             </>
           ) : (
             <>
-              <button
-                onClick={() => setIsSignUpModalOpen(true)}
-                className="cursor-pointer"
-              >
-                Sign up
-              </button>
+              {location.pathname != "/signup" && (
+                <button
+                  onClick={() => setIsSignUpModalOpen(true)}
+                  className="cursor-pointer"
+                >
+                  Sign up
+                </button>
+              )}
 
-              <button
-                onClick={() => setIsLoginModalOpen(true)}
-                className="cursor-pointer"
-              >
-                Login
-              </button>
+              {location.pathname != "/signin" && (
+                <button
+                  onClick={() => setIsLoginModalOpen(true)}
+                  className="cursor-pointer"
+                >
+                  Sign in
+                </button>
+              )}
             </>
           )}
         </div>
 
+        {/* Theme + Popover - Large Screen */}
         <div className="flex items-center gap-x-5">
           {/* Theme change button */}
           <button
@@ -204,6 +211,23 @@ const Navbar = () => {
                     </>
                   )}
 
+                  {dbUser && (
+                    <>
+                      <NavLink
+                        to="/create-league"
+                        className={({ isActive }) =>
+                          `flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey w-full transition-all ${
+                            isActive && "bg-slate-100 dark:bg-white/20"
+                          }`
+                        }
+                      >
+                        <SiF1 className="text-xl" />
+                        Create League
+                      </NavLink>
+                      <hr />
+                    </>
+                  )}
+
                   {/* Onboarding */}
                   {currentUser && !dbUser && (
                     <>
@@ -229,41 +253,33 @@ const Navbar = () => {
                       className="cursor-pointer flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey w-full transition-all"
                     >
                       <PiSignOutFill className="text-xl" />
-                      Signout
+                      Sign out
                     </button>
                   )}
 
                   {/* Sign up */}
                   {!currentUser && (
                     <>
-                      <NavLink
-                        to="/signup"
-                        className={({ isActive }) =>
-                          `flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey  w-full transition-all ${
-                            isActive && "bg-slate-100 dark:bg-white/20"
-                          }`
-                        }
+                      <button
+                        onClick={() => setIsSignUpModalOpen(true)}
+                        className={`cursor-pointer flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey  w-full transition-all `}
                       >
                         <FaUserPlus className="text-xl" />
-                        Sign Up
-                      </NavLink>
+                        Sign up
+                      </button>
                       <hr />
                     </>
                   )}
 
                   {/* Log in */}
                   {!currentUser && (
-                    <NavLink
-                      to="/login"
-                      className={({ isActive }) =>
-                        `flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey w-full transition-all ${
-                          isActive && "bg-slate-100 dark:bg-white/20"
-                        }`
-                      }
+                    <button
+                      onClick={() => setIsLoginModalOpen(true)}
+                      className={`cursor-pointer flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey  w-full transition-all `}
                     >
                       <CgLogOut className="text-xl rotate-180" />
-                      Login
-                    </NavLink>
+                      Sign in
+                    </button>
                   )}
                 </div>
               </PopoverContent>
@@ -286,6 +302,136 @@ const Navbar = () => {
             )}
           </button>
 
+          <Popover>
+            <PopoverTrigger className="flex items-center cursor-pointer">
+              {dbUser ? (
+                <Avatar
+                  border
+                  borderClassName="bg-gradient-to-br  from-[#ec8cff] to-cta"
+                  imageSrc={dbUser?.photoURL}
+                  fallBackText={dbUser?.name}
+                />
+              ) : (
+                <Avatar />
+              )}
+            </PopoverTrigger>
+            <PopoverContent className="dark:bg-darkgrey dark:border-2 w-auto mt-2 mr-4 py-0 px-1">
+              <div className="py-1 min-w-48 flex flex-col gap-y-1">
+                {/* View Profile */}
+                {dbUser && (
+                  <>
+                    <Link
+                      to="/profile"
+                      className={`flex flex-col gap-y-2 font-medium text-cta dark:text-darkmodeCTA  hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey hover:text-hovercta dark:hover:text-cta text-lg py-2 px-5 rounded  w-full transition-all`}
+                    >
+                      <p className="text-center">{dbUser?.name}</p>
+                      <p className="text-center">@{dbUser?.username}</p>
+                    </Link>
+
+                    <hr />
+                  </>
+                )}
+
+                {/* Edit Profile */}
+                {dbUser && (
+                  <>
+                    <NavLink
+                      to="/edit-profile"
+                      className={({ isActive }) =>
+                        `flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey w-full transition-all ${
+                          isActive && "bg-slate-100 dark:bg-white/20"
+                        }`
+                      }
+                    >
+                      <CgProfile className="text-xl" />
+                      Edit Profile
+                    </NavLink>
+                    <hr />
+                  </>
+                )}
+
+                {dbUser && (
+                  <>
+                    <NavLink
+                      to="/create-league"
+                      className={({ isActive }) =>
+                        `flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey w-full transition-all ${
+                          isActive && "bg-slate-100 dark:bg-white/20"
+                        }`
+                      }
+                    >
+                      <SiF1 className="text-xl" />
+                      Create League
+                    </NavLink>
+                    <hr />
+                  </>
+                )}
+
+                {/* Onboarding */}
+                {currentUser && !dbUser && (
+                  <>
+                    <NavLink
+                      to="/onboarding"
+                      className={({ isActive }) =>
+                        `flex gap-x-5 items-center font-medium bg-purple-100 dark:bg-darkgrey text-lg py-2 px-5 rounded w-full transition-all ${
+                          isActive && "bg-slate-100 dark:bg-white/20"
+                        }`
+                      }
+                    >
+                      <RiAccountPinCircleLine className="text-xl animate-pulse" />
+                      <p className="animate-pulse">Profile</p>
+                    </NavLink>
+                    <hr />
+                  </>
+                )}
+
+                {/* Log Out */}
+                {currentUser && (
+                  <NavLink
+                    to="/signout"
+                    className="cursor-pointer flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey w-full transition-all"
+                  >
+                    <PiSignOutFill className="text-xl" />
+                    Sign out
+                  </NavLink>
+                )}
+
+                {/* Sign up */}
+                {!currentUser && (
+                  <>
+                    <NavLink
+                      to="/signup"
+                      className={({ isActive }) =>
+                        `flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey  w-full transition-all ${
+                          isActive && "bg-slate-100 dark:bg-white/20"
+                        }`
+                      }
+                    >
+                      <FaUserPlus className="text-xl" />
+                      Sign up
+                    </NavLink>
+                    <hr />
+                  </>
+                )}
+
+                {/* Log in */}
+                {!currentUser && (
+                  <NavLink
+                    to="/signin"
+                    className={({ isActive }) =>
+                      `flex gap-x-5 items-center font-medium text-lg py-2 px-5 rounded hover:bg-slate-50 dark:hover:bg-white/10 dark:hover:bg-darkgrey w-full transition-all ${
+                        isActive && "bg-slate-100 dark:bg-white/20"
+                      }`
+                    }
+                  >
+                    <CgLogOut className="text-xl rotate-180" />
+                    Sign in
+                  </NavLink>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
+
           {/* Hamburger Button to open the drawer */}
           <button onClick={() => setOpen(true)} className="cursor-pointer">
             <RxHamburgerMenu className="text-xl" aria-label="Open menu" />
@@ -302,7 +448,11 @@ const Navbar = () => {
           aria-label="Drawer Menu"
         >
           <div className="mb-14 flex items-center justify-between px-10 pt-3.5 lg:px-10">
-            <button onClick={() => handleSearch("/")} aria-label="Home">
+            <button
+              className="cursor-pointer"
+              onClick={() => handleSearch("/")}
+              aria-label="Home"
+            >
               <img src={logo} alt="Logo" className="h-12 cursor-pointer" />
             </button>
             <RxCross2
@@ -328,9 +478,9 @@ const Navbar = () => {
                   onClick={() => handleSearch("/signout")}
                   className="hover:text-cta w-fit cursor-pointer transition-all"
                   tabIndex={0}
-                  aria-label="Signout"
+                  aria-label="Sign out"
                 >
-                  Signout
+                  Sign out
                 </button>
               </>
             ) : (
@@ -339,17 +489,17 @@ const Navbar = () => {
                   onClick={() => handleSearch("/signup")}
                   className="hover:text-cta w-fit cursor-pointer transition-all"
                   tabIndex={0}
-                  aria-label="Signout"
+                  aria-label="Sign up"
                 >
                   Sign up
                 </button>{" "}
                 <button
-                  onClick={() => handleSearch("/login")}
+                  onClick={() => handleSearch("/signin")}
                   className="hover:text-cta w-fit cursor-pointer transition-all"
                   tabIndex={0}
-                  aria-label="Signout"
+                  aria-label="Sign in"
                 >
-                  Login
+                  Sign in
                 </button>
               </>
             )}

@@ -1,6 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { Draggable, Droppable, Input, PrimaryButton } from "@/components";
+import {
+  Draggable,
+  Droppable,
+  Input,
+  PrimaryButton,
+  SecondaryButton,
+} from "@/components";
 import { useDBUser } from "@/context/UserContext";
 import { axiosInstance } from "@/utils/axiosInstance";
 import {
@@ -14,11 +20,19 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { FaUserAlt } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 
 const NUMBER_OF_CONSTRUCTORS = 2;
 const NUMBER_OF_DRIVERS = 3;
 
-const Test = () => {
+const Test = ({
+  leagueId,
+  onClose,
+}: {
+  leagueId: string;
+  onClose: () => void;
+}) => {
   // Setting up DND-KIT
   const mouseSensor = useSensor(MouseSensor);
   const touchSensor = useSensor(TouchSensor);
@@ -69,8 +83,10 @@ const Test = () => {
   const [teamDrivers, setTeamDrivers] = useState([]);
   const [teamConstructors, setTeamConstructors] = useState([]);
 
+  // Available Budget
   const [availablePurse, setAvailablePurse] = useState(100);
 
+  // Name of the team
   const [name, setName] = useState("");
 
   // Function to handle drag and drop
@@ -215,21 +231,34 @@ const Test = () => {
           user: dbUser,
           teamDrivers: teamDrivers,
           teamConstructors: teamConstructors,
-          name: name,
+          teamName: name,
+          leagueId: leagueId,
         })
-        .then(() => toast("Team Created!"))
-        .catch(() => toast("Something went wrong!"));
+        .then(() => {
+          toast("Team Created!");
+          onClose();
+        })
+        .catch(() => {
+          toast("Something went wrong!");
+          onClose();
+        });
     } else {
       toast("Please Add drivers & constructors before creating a Team!");
     }
   };
 
-  console.log(availableDrivers, availableConstructors);
+  console.log(availableConstructors);
 
   return (
     <div>
-      <div className="px-5 py-10 min-h-screen">
-        <h1 className="pb-20 text-center font-medium text-4xl">
+      <button
+        onClick={onClose}
+        className="absolute  right-5 text-2xl cursor-pointer"
+      >
+        <RxCross2 />
+      </button>
+      <div className="px-5  min-h-screen">
+        <h1 className="mb-20  text-center font-medium text-4xl">
           {" "}
           Available Purse :{" "}
           <span className={`${availablePurse < 0 && "text-red-500"}`}>
@@ -253,14 +282,26 @@ const Test = () => {
                   .map((driver) => {
                     return (
                       <Draggable
-                        className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
+                        className={`border-1 rounded-sm p-3 bg-white dark:bg-darkbg`}
                         key={driver?.driverId}
                         id={`${driver?.permanentNumber}`}
                       >
+                        {driver?.image ? (
+                          <img
+                            src={driver?.image}
+                            className="h-28 mx-auto"
+                            style={{
+                              backgroundColor: driver?.constructor_color,
+                            }}
+                          />
+                        ) : (
+                          <FaUserAlt className="text-8xl mx-auto" />
+                        )}
                         <p>
                           {driver?.givenName} {driver?.familyName}
                         </p>
                         <p className="text-center">({driver?.code}) </p>
+                        <p className="text-center">{driver?.constructor} </p>
                         <div className="border-t-1 mt-2 py-2">
                           {driver?.price} Cr.
                         </div>
@@ -295,12 +336,26 @@ const Test = () => {
                     ?.sort((a, b) => b?.price - a?.price)
                     .map((driver) => (
                       <Draggable
-                        className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
+                        className={`border-1 rounded-sm p-3 bg-white dark:bg-darkbg`}
                         key={driver?.driverId}
                         id={`${driver?.permanentNumber}`}
                       >
-                        {driver?.givenName} {driver?.familyName}
+                        {driver?.image ? (
+                          <img
+                            src={driver?.image}
+                            className="h-28 mx-auto"
+                            style={{
+                              backgroundColor: driver?.constructor_color,
+                            }}
+                          />
+                        ) : (
+                          <FaUserAlt className="text-8xl mx-auto" />
+                        )}
+                        <p>
+                          {driver?.givenName} {driver?.familyName}
+                        </p>
                         <p className="text-center">({driver?.code}) </p>
+                        <p className="text-center">{driver?.constructor} </p>
                         <div className="border-t-1 mt-2 py-2">
                           {driver?.price} Cr.
                         </div>
@@ -402,8 +457,14 @@ const Test = () => {
       </div>
 
       {/* Submit Button */}
-      <div className="pb-10 py-5 flex justify-center">
+      <div className="pb-10 py-5 flex items-center justify-center gap-x-10">
         <PrimaryButton onClick={handleSubmit} text="Create Team" />
+        <SecondaryButton
+          onClick={() => {
+            onClose();
+          }}
+          text="Cancel"
+        />
       </div>
     </div>
   );

@@ -63,12 +63,13 @@ const Avatar = ({
       ) : (
         <img
           src={
-            "https://res.cloudinary.com/do8rpl9l4/image/upload/v1738212915/image_1_jy29je.jpg"
+            "https://res.cloudinary.com/do8rpl9l4/image/upload/v1741101895/defaultImage_z3roby.png"
+            // "https://res.cloudinary.com/do8rpl9l4/image/upload/v1738212915/image_1_jy29je.jpg"
           }
           className={` ${
             border &&
-            `dark:border-secondarydarkbg border-2 border-white ${borderClassName} `
-          } h-10 w-10 rounded-full ${className}`}
+            ` dark:border-secondarydarkbg border-2 border-white ${borderClassName} `
+          } bg-darkbg dark:bg-white object-contain h-10 w-10 rounded-full ${className}`}
         />
       )}
     </div>

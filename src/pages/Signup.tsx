@@ -371,7 +371,7 @@ const Signup = () => {
               Already have an account?{" "}
               <Link
                 className="text-blue-600 dark:text-blue-400 font-medium"
-                to="/login"
+                to="/signin"
               >
                 Sign in
               </Link>
@@ -383,9 +383,9 @@ const Signup = () => {
         <div className="hidden lg:flex lg:flex-1  items-center justify-center">
           <img
             src={
-              "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736741891/signup_x6s5aa.svg"
+              "https://res.cloudinary.com/do8rpl9l4/image/upload/v1741164523/racecar_guyfno.svg"
             }
-            className="max-w-[70%]"
+            className="max-w-[90%]"
           />
         </div>
       </div>

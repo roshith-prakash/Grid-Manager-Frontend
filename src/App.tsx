@@ -6,10 +6,11 @@ import {
   Onboarding,
   Signout,
   Signup,
-  Test,
   Profile,
   CreateLeague,
   User,
+  League,
+  PublicLeagues,
 } from "@/pages";
 import { Footer, Navbar, Protector } from "./components";
 
@@ -21,7 +22,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/signin" element={<Login />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/signout" element={<Signout />} />
           <Route
@@ -53,10 +54,19 @@ function App() {
           />
 
           <Route
-            path="/test"
+            path="/leagues"
             element={
               <Protector>
-                <Test />
+                <PublicLeagues />
+              </Protector>
+            }
+          />
+
+          <Route
+            path="/leagues/:leagueId"
+            element={
+              <Protector>
+                <League />
               </Protector>
             }
           />

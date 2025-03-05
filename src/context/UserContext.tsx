@@ -48,7 +48,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         user: currentUser,
       });
     },
-    refetchInterval: 60000,
+    refetchInterval: 300 * 1000,
     enabled: !!currentUser,
   });
 
