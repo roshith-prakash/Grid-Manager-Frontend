@@ -23,7 +23,7 @@ const PublicLeagues = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  // Fetching searched Posts
+  // Fetching searched leagues
   const {
     data: leagues,
     isLoading: loadingLeagues,
@@ -151,7 +151,7 @@ const PublicLeagues = () => {
             </div>
           )}
 
-          {/* If no posts are found */}
+          {/* If no leagues are found */}
           {leagues && leagues?.pages?.[0]?.data?.leagues.length == 0 && (
             <div className="flex flex-col justify-center pt-10">
               <div className="flex justify-center">
@@ -163,7 +163,7 @@ const PublicLeagues = () => {
                 />
               </div>
               <p className="text-center mt-5 text-2xl font-medium">
-                Uh oh! Couldn&apos;t find any posts.
+                Uh oh! Couldn&apos;t find any leagues.
               </p>
             </div>
           )}

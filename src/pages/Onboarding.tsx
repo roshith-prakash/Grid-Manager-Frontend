@@ -112,7 +112,7 @@ const Onboarding = () => {
 
     // Check if username is already in use.
     axiosInstance
-      .post("/auth/check-username", { username: username })
+      .post("/user/check-username", { username: username })
       .then((res) => {
         // If username already exists - show an error
         if (res.data?.exists) {
@@ -143,7 +143,7 @@ const Onboarding = () => {
 
           // Add user in DB
           axiosInstance
-            .post("/auth/create-user", formData, {
+            .post("/user/create-user", formData, {
               headers: { "Content-Type": "multipart/form-data" },
             })
             .then(() => {

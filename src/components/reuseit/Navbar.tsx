@@ -475,6 +475,14 @@ const Navbar = () => {
             {dbUser ? (
               <>
                 <button
+                  onClick={() => handleSearch("/leagues")}
+                  className="hover:text-cta w-fit cursor-pointer transition-all"
+                  tabIndex={0}
+                  aria-label="Leagues"
+                >
+                  Leagues
+                </button>
+                <button
                   onClick={() => handleSearch("/signout")}
                   className="hover:text-cta w-fit cursor-pointer transition-all"
                   tabIndex={0}

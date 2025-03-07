@@ -6,6 +6,7 @@ import { axiosInstance } from "@/utils/axiosInstance";
 import toast from "react-hot-toast";
 import { isValidUsername } from "@/functions/regexFunctions";
 import { ContextValue, useDarkMode } from "@/context/DarkModeContext";
+import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
   const { isDarkMode } = useDarkMode() as ContextValue;
@@ -26,6 +27,7 @@ const EditProfile = () => {
     name: 0,
     username: 0,
   });
+  const navigate = useNavigate();
 
   // Scroll to the top of page
   useEffect(() => {
@@ -59,11 +61,13 @@ const EditProfile = () => {
 
   // Submit the data to the server to edit the user object.
   const handleSubmit = () => {
+    // Reset Errors
     setError({
       name: 0,
       username: 0,
     });
 
+    // Validate Data entered by user
     if (name == null || name == undefined || name.length <= 0) {
       setError((prev) => ({ ...prev, name: 1 }));
       return;
@@ -85,12 +89,14 @@ const EditProfile = () => {
       return;
     }
 
+    // Disable Button
     setDisabled(true);
 
+    // If username is changed, check if the username is available or taken
     if (username != dbUser?.username) {
       // Check if username is already in use.
       axiosInstance
-        .post("/auth/check-username", { username: username })
+        .post("/user/check-username", { username: username })
         .then((res) => {
           // If username already exists - show an error
           if (res.data?.exists) {
@@ -121,12 +127,13 @@ const EditProfile = () => {
 
             // Add user in DB
             axiosInstance
-              .post("/auth/update-user", formData, {
+              .post("/user/update-user", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
               })
               .then(() => {
                 setDisabled(false);
                 fetchUser();
+                navigate("/profile");
                 toast.success("Profile Updated!");
               })
               .catch(() => {
@@ -143,7 +150,9 @@ const EditProfile = () => {
           console.log(err);
           return;
         });
-    } else {
+    }
+    // If username was not changed
+    else {
       // Create formdata instance
       const formData = new FormData();
 
@@ -165,12 +174,13 @@ const EditProfile = () => {
 
       // Add user in DB
       axiosInstance
-        .post("/auth/update-user", formData, {
+        .post("/user/update-user", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then(() => {
           setDisabled(false);
           fetchUser();
+          navigate("/profile");
           toast.success("Profile Updated!");
         })
         .catch(() => {

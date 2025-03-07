@@ -62,7 +62,7 @@ const CreateLeague = () => {
           Create a League!
         </h1>
 
-        {/* Name & Username */}
+        {/* Name */}
         <div className="mt-14 flex flex-col gap-y-8 ">
           {/* Name Input field */}
           <div className="lg:flex-1 px-2">
@@ -115,10 +115,15 @@ const CreateLeague = () => {
           <div className="lg:flex-1 flex justify-center items-center px-2">
             <p className="font-medium">Make League Private?</p>
             <Checkbox
+              className="translate-y-0.5"
               checked={isPrivate}
               onChange={(e) => setIsPrivate(e.target.checked)}
             />
           </div>
+
+          <p className="text-center">
+            ( Note : Private Leagues are not displayed in the Leagues page. )
+          </p>
         </div>
 
         {/* Submit Button */}
@@ -127,7 +132,7 @@ const CreateLeague = () => {
             onClick={handleSubmit}
             disabled={disabled}
             disabledText={"Please Wait..."}
-            text={"Submit"}
+            text={"Create League!"}
             className="w-full max-w-xs"
           />
         </div>

@@ -16,64 +16,66 @@ import { Footer, Navbar, Protector } from "./components";
 
 function App() {
   return (
-    <main className="dark:bg-darkbg dark:text-darkmodetext">
+    <div className="min-h-screen flex flex-col dark:bg-darkbg dark:text-darkmodetext">
       <BrowserRouter>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/signin" element={<Login />} />
-          <Route path="/onboarding" element={<Onboarding />} />
-          <Route path="/signout" element={<Signout />} />
-          <Route
-            path="/edit-profile"
-            element={
-              <Protector>
-                <EditProfile />
-              </Protector>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <Protector>
-                <Profile />
-              </Protector>
-            }
-          />
-          {/* View a User's Profile (Non Logged in user) */}
-          <Route path="/user/:username" element={<User />} />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/signin" element={<Login />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/signout" element={<Signout />} />
+            <Route
+              path="/edit-profile"
+              element={
+                <Protector>
+                  <EditProfile />
+                </Protector>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <Protector>
+                  <Profile />
+                </Protector>
+              }
+            />
+            {/* View a User's Profile (Non Logged in user) */}
+            <Route path="/user/:username" element={<User />} />
 
-          <Route
-            path="/create-league"
-            element={
-              <Protector>
-                <CreateLeague />
-              </Protector>
-            }
-          />
+            <Route
+              path="/create-league"
+              element={
+                <Protector>
+                  <CreateLeague />
+                </Protector>
+              }
+            />
 
-          <Route
-            path="/leagues"
-            element={
-              <Protector>
-                <PublicLeagues />
-              </Protector>
-            }
-          />
+            <Route
+              path="/leagues"
+              element={
+                <Protector>
+                  <PublicLeagues />
+                </Protector>
+              }
+            />
 
-          <Route
-            path="/leagues/:leagueId"
-            element={
-              <Protector>
-                <League />
-              </Protector>
-            }
-          />
-        </Routes>
+            <Route
+              path="/leagues/:leagueId"
+              element={
+                <Protector>
+                  <League />
+                </Protector>
+              }
+            />
+          </Routes>
+        </main>
         <Footer />
       </BrowserRouter>
-    </main>
+    </div>
   );
 }
 

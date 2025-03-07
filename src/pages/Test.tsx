@@ -24,7 +24,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 
 const NUMBER_OF_CONSTRUCTORS = 2;
-const NUMBER_OF_DRIVERS = 3;
+const NUMBER_OF_DRIVERS = 5;
 
 const Test = ({
   leagueId,
@@ -166,14 +166,16 @@ const Test = ({
     if (over) {
       if (over.id === "team-constructors") {
         // Check if the item is already in the dropped items to prevent duplicates
-        if (!teamConstructors.some((item) => item.id === itemId)) {
+        if (
+          !teamConstructors.some((item) => item.constructorNumber === itemId)
+        ) {
           const draggedItem = availableConstructors.find(
-            (item) => item.id == itemId
+            (item) => item.constructorNumber == itemId
           );
 
           // Remove item from available items
           setAvailableConstructors((items) =>
-            items.filter((item) => item.id != itemId)
+            items.filter((item) => item.constructorNumber != itemId)
           );
 
           // Add item to dropped items
@@ -182,14 +184,18 @@ const Test = ({
         }
       } else if (over.id === "available-constructors") {
         // Prevent duplicate item drop in the same section
-        if (!availableConstructors.find((item) => item.id === itemId)) {
+        if (
+          !availableConstructors.find(
+            (item) => item.constructorNumber === itemId
+          )
+        ) {
           const draggedItem = teamConstructors.find(
-            (item) => item.id == itemId
+            (item) => item.constructorNumber == itemId
           );
 
           // Remove item from team
           setTeamConstructors((items) =>
-            items.filter((item) => item.id != itemId)
+            items.filter((item) => item.constructorNumber != itemId)
           );
 
           // Add item back to available constructors
@@ -233,6 +239,7 @@ const Test = ({
           teamConstructors: teamConstructors,
           teamName: name,
           leagueId: leagueId,
+          price: Number(100 - availablePurse),
         })
         .then(() => {
           toast("Team Created!");
@@ -247,8 +254,6 @@ const Test = ({
     }
   };
 
-  console.log(availableConstructors);
-
   return (
     <div>
       <button
@@ -257,18 +262,43 @@ const Test = ({
       >
         <RxCross2 />
       </button>
-      <div className="px-5  min-h-screen">
-        <h1 className="mb-20  text-center font-medium text-4xl">
-          {" "}
-          Available Purse :{" "}
-          <span className={`${availablePurse < 0 && "text-red-500"}`}>
-            {availablePurse} Cr.
-          </span>
-        </h1>
+
+      <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
+        {" "}
+        Available Purse :{" "}
+        <span className={`${availablePurse < 0 && "text-red-500"}`}>
+          {availablePurse} Cr.
+        </span>
+      </h1>
+
+      {/* Team Name */}
+      <div className="pb-10 py-5 flex flex-col items-center justify-center">
+        <p className="font-medium">Team Name</p>
+        <Input
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+          className="max-w-xl"
+          placeholder="Team Name"
+        />
+      </div>
+
+      {/* Submit Button */}
+      <div className="mb-20 py-5 flex items-center justify-center gap-x-10">
+        <PrimaryButton onClick={handleSubmit} text="Create Team" />
+        <SecondaryButton
+          onClick={() => {
+            onClose();
+          }}
+          text="Cancel"
+        />
+      </div>
+
+      <div className="md:px-5  min-h-screen">
         {/* Drivers */}
-        <div className="flex">
+        <div className="flex flex-wrap-reverse">
           <DndContext sensors={sensors} onDragEnd={handleDragDrivers}>
-            <div className="flex-1">
+            <div className="w-full lg:flex-1">
               <div className="flex justify-between px-6 text-2xl font-medium">
                 <h3>Available Drivers</h3>
               </div>
@@ -282,7 +312,7 @@ const Test = ({
                   .map((driver) => {
                     return (
                       <Draggable
-                        className={`border-1 rounded-sm p-3 bg-white dark:bg-darkbg`}
+                        className={`border-1 rounded-sm  bg-white dark:bg-darkbg`}
                         key={driver?.driverId}
                         id={`${driver?.permanentNumber}`}
                       >
@@ -297,7 +327,7 @@ const Test = ({
                         ) : (
                           <FaUserAlt className="text-8xl mx-auto" />
                         )}
-                        <p>
+                        <p className="pt-1">
                           {driver?.givenName} {driver?.familyName}
                         </p>
                         <p className="text-center">({driver?.code}) </p>
@@ -311,8 +341,8 @@ const Test = ({
               </Droppable>
             </div>
 
-            <div className="flex-1">
-              <div className="flex justify-between px-6 text-2xl font-medium">
+            <div className="w-full lg:flex-1">
+              <div className="flex flex-wrap justify-between px-6 text-2xl font-medium">
                 <h3>Team Drivers</h3>
                 <h3
                   className={`${
@@ -368,9 +398,9 @@ const Test = ({
         </div>
 
         {/* Constructors */}
-        <div className="flex">
+        <div className="flex flex-wrap-reverse mt-16">
           <DndContext sensors={sensors} onDragEnd={handleDragConstructors}>
-            <div className="flex-1">
+            <div className="w-full lg:flex-1">
               <div className="flex justify-between px-6 text-2xl font-medium">
                 <h3>Available Constructors</h3>
               </div>
@@ -386,7 +416,7 @@ const Test = ({
                       <Draggable
                         className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
                         key={constructor?.constructorId}
-                        id={`${constructor?.id}`}
+                        id={`${constructor?.constructorNumber}`}
                       >
                         {constructor?.name}
                         <div className="border-t-1 mt-2 py-2">
@@ -398,9 +428,9 @@ const Test = ({
               </Droppable>
             </div>
 
-            <div className="flex-1">
+            <div className="w-full lg:flex-1">
               <div
-                className={`flex justify-between px-6 text-2xl font-medium `}
+                className={`flex flex-wrap justify-between px-6 text-2xl font-medium `}
               >
                 <h3>Team Constructors</h3>
                 <h3
@@ -429,7 +459,7 @@ const Test = ({
                       <Draggable
                         className="border-1 rounded-sm p-3 bg-white dark:bg-darkbg"
                         key={constructor?.constructorId}
-                        id={`${constructor?.id}`}
+                        id={`${constructor?.constructorNumber}`}
                       >
                         {constructor?.name}
                         <div className="border-t-1 mt-2 py-2">
@@ -442,29 +472,6 @@ const Test = ({
             </div>
           </DndContext>
         </div>
-      </div>
-
-      {/* Team Name */}
-      <div className="pb-10 py-5 flex flex-col items-center justify-center">
-        <p className="font-medium">Team Name</p>
-        <Input
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-          className="max-w-xl"
-          placeholder="Team Name"
-        />
-      </div>
-
-      {/* Submit Button */}
-      <div className="pb-10 py-5 flex items-center justify-center gap-x-10">
-        <PrimaryButton onClick={handleSubmit} text="Create Team" />
-        <SecondaryButton
-          onClick={() => {
-            onClose();
-          }}
-          text="Cancel"
-        />
       </div>
     </div>
   );

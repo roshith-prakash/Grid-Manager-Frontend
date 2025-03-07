@@ -136,7 +136,7 @@ const Signup = () => {
 
         // Check if user exists in DB - if yes, send to home - if no, send to onboarding.
         axiosInstance
-          .post("/auth/get-current-user", { user: user })
+          .post("/user/get-current-user", { user: user })
           .then((res) => {
             if (res?.data?.user) {
               navigate("/");

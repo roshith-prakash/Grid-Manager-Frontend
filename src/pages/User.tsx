@@ -25,7 +25,7 @@ const User = () => {
   } = useQuery({
     queryKey: ["userProfile", username],
     queryFn: async () => {
-      return axiosInstance.post("/auth/get-user-info", {
+      return axiosInstance.post("/user/get-user-info", {
         username: username,
       });
     },
@@ -121,7 +121,7 @@ const User = () => {
 
             {/* Date when user joined the journal */}
             <div className="mt-5 text-greyText flex justify-center items-center gap-x-2">
-              <TfiWrite /> Joined PostEase on{" "}
+              <TfiWrite /> Became a Grid Manager on{" "}
               {dayjs(new Date(user?.data?.user?.createdAt)).format(
                 "MMM DD, YYYY"
               )}

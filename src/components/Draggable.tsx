@@ -23,7 +23,7 @@ export default function Draggable({
 
   return (
     <button
-      className={`${className} cursor-grab`}
+      className={`${className} min-w-30 cursor-grab`}
       ref={setNodeRef}
       style={style}
       {...listeners}

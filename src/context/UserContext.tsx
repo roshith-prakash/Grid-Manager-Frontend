@@ -44,7 +44,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const { data, refetch: fetchUser } = useQuery({
     queryKey: ["dbUser", currentUser], // Use user ID for efficiency
     queryFn: async () => {
-      return axiosInstance.post("/auth/get-current-user", {
+      return axiosInstance.post("/user/get-current-user", {
         user: currentUser,
       });
     },
