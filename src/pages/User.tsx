@@ -1,13 +1,17 @@
-import { useNavigate, useParams } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { SecondaryButton } from "../components";
 import { useDBUser } from "../context/UserContext";
 import dayjs from "dayjs";
 import { TfiWrite } from "react-icons/tfi";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../utils/axiosInstance";
 import Profile from "./Profile";
 import HashLoader from "react-spinners/HashLoader";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import Card from "@/components/reuseit/Card";
+import Avatar from "@/components/reuseit/Avatar";
 
 const User = () => {
   // Get Post Id from params.
@@ -16,6 +20,10 @@ const User = () => {
   const { dbUser } = useDBUser();
 
   const navigate = useNavigate();
+
+  const [tabValue, setTabValue] = useState("teams");
+  // Intersection observer to fetch new posts
+  const { ref, inView } = useInView();
 
   // Fetch user data from server.
   const {
@@ -31,6 +39,50 @@ const User = () => {
     },
   });
 
+  // Fetching user's leagues
+  const {
+    data: leagues,
+    isLoading: loadingLeagues,
+    // error: postsError,
+    fetchNextPage: fetchNextLeagues,
+    isFetchingNextPage: loadingNextLeagues,
+  } = useInfiniteQuery({
+    queryKey: ["userLeagues", user?.data?.user?.username],
+    queryFn: ({ pageParam }) => {
+      return axiosInstance.post("/team/get-user-public-leagues", {
+        username: user?.data?.user?.username,
+        page: pageParam,
+      });
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      return lastPage?.data?.nextPage;
+    },
+    enabled: !!user?.data?.user?.username,
+  });
+
+  // Fetching user's teams
+  const {
+    data: teams,
+    isLoading: loadingTeams,
+    // error: postsError,
+    fetchNextPage: fetchNextTeams,
+    isFetchingNextPage: loadingNextTeams,
+  } = useInfiniteQuery({
+    queryKey: ["userTeams", user?.data?.user?.username],
+    queryFn: ({ pageParam }) => {
+      return axiosInstance.post("/team/get-user-public-teams", {
+        username: user?.data?.user?.username,
+        page: pageParam,
+      });
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      return lastPage?.data?.nextPage;
+    },
+    enabled: !!user?.data?.user?.username,
+  });
+
   // Set window title.
   useEffect(() => {
     document.title = `${user?.data?.user?.name} | Grid Manager`;
@@ -40,6 +92,22 @@ const User = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  // Fetch next page when end div reached.
+  useEffect(() => {
+    if (tabValue == "teams") {
+      if (inView) {
+        fetchNextTeams();
+      }
+    }
+
+    if (tabValue == "leagues") {
+      if (inView) {
+        fetchNextLeagues();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, fetchNextTeams, fetchNextLeagues]);
 
   if (username == dbUser?.username) {
     return <Profile />;
@@ -126,6 +194,177 @@ const User = () => {
                 "MMM DD, YYYY"
               )}
             </div>
+          </div>
+
+          {/* Tab Buttons */}
+          <div className="flex">
+            {/* Teams Tab Button */}
+            <button
+              onClick={() => setTabValue("teams")}
+              className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4 ${
+                tabValue == "teams" && "border-cta"
+              }`}
+            >
+              Teams
+            </button>
+            {/* Leagues Tab Button */}
+            <button
+              onClick={() => setTabValue("leagues")}
+              className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4  ${
+                tabValue == "leagues" && "border-cta"
+              }`}
+            >
+              Leagues
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div>
+            {tabValue == "teams" ? (
+              <>
+                <div className="flex justify-center flex-wrap py-10 px-5 gap-10">
+                  {teams &&
+                    teams?.pages?.map((page) => {
+                      return page?.data.teams?.map((team: any) => {
+                        console.log(team);
+                        return (
+                          <>
+                            <Card key={team?.id} className="p-3 w-fit">
+                              <p>{team?.name}</p>
+                              <p>Points : {team?.score}</p>
+                              <p>{team?.League?.name}</p>
+                              <p>{team?.League?.leagueId}</p>
+
+                              <p>
+                                {" "}
+                                Last Updated at :{" "}
+                                {dayjs(new Date(team?.updatedAt)).format(
+                                  "MMM DD, YYYY"
+                                )}
+                              </p>
+                            </Card>
+                          </>
+                        );
+                      });
+                    })}
+                </div>
+
+                {(loadingTeams || loadingNextTeams) && (
+                  <div className="flex justify-center items-center py-10">
+                    <HashLoader
+                      color={"#9b0ced"}
+                      loading={loadingTeams || loadingNextTeams}
+                      size={100}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  </div>
+                )}
+
+                {/* If no leagues are found */}
+                {teams && teams?.pages?.[0]?.data?.teams.length == 0 && (
+                  <div className="flex flex-col justify-center pt-10">
+                    <div className="flex justify-center">
+                      <img
+                        src={
+                          "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740067/homeNoPosts_bxhmtk.svg"
+                        }
+                        className="max-w-[30%]"
+                      />
+                    </div>
+                    <p className="text-center mt-5 text-2xl font-medium">
+                      Uh oh! Couldn&apos;t find any teams.
+                    </p>
+                  </div>
+                )}
+
+                <div ref={ref}></div>
+              </>
+            ) : (
+              <>
+                <div className="flex justify-center flex-wrap py-10 px-5 gap-10">
+                  {leagues &&
+                    leagues?.pages?.map((page) => {
+                      return page?.data.leagues?.map((league: any) => {
+                        console.log(league);
+                        return (
+                          <>
+                            <Link
+                              className="border-2 rounded-xl bg-white/5 w-fit px-5 py-5"
+                              to={`/leagues/${league?.leagueId}`}
+                            >
+                              <p>League Name : {league?.name}</p>
+
+                              <p>League Id : {league?.leagueId}</p>
+
+                              <p>Number of Teams : {league?.numberOfTeams}</p>
+
+                              {/* Author section - link to user's page. */}
+                              <Link
+                                to={`/user/${league?.User?.username}`}
+                                className="mt-5 flex gap-x-3 items-center w-fit"
+                              >
+                                {/* User's profile picture or avatar on left */}
+                                {league?.User?.photoURL ? (
+                                  <img
+                                    src={league?.User?.photoURL}
+                                    className="h-10 w-10 rounded-full"
+                                  />
+                                ) : (
+                                  <Avatar
+                                    imageSrc={league?.User?.photoURL}
+                                    fallBackText={league?.User?.name}
+                                  />
+                                )}
+                                {/* User's name & username on the right */}
+                                <div>
+                                  <p className="break-all font-medium">
+                                    {league?.User?.name}
+                                  </p>
+                                  <p className="break-all">
+                                    @{league?.User?.username}
+                                  </p>
+                                </div>
+                              </Link>
+                            </Link>
+                          </>
+                        );
+                      });
+                    })}
+                </div>
+
+                {(loadingLeagues || loadingNextLeagues) && (
+                  <div className="flex justify-center items-center py-10">
+                    <HashLoader
+                      color={"#9b0ced"}
+                      loading={loadingLeagues || loadingNextLeagues}
+                      size={100}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  </div>
+                )}
+
+                {/* If no leagues are found */}
+                {leagues && leagues?.pages?.[0]?.data?.leagues.length == 0 && (
+                  <div className="flex flex-col justify-center pt-10">
+                    <div className="flex justify-center">
+                      <img
+                        src={
+                          "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740067/homeNoPosts_bxhmtk.svg"
+                        }
+                        className="max-w-[30%]"
+                      />
+                    </div>
+                    <p className="text-center mt-5 text-2xl font-medium">
+                      Uh oh! Couldn&apos;t find any leagues.
+                    </p>
+                  </div>
+                )}
+
+                <div ref={ref}></div>
+              </>
+            )}
           </div>
         </div>
       )}
