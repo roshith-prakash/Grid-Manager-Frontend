@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { SecondaryButton } from "../components";
+import { SecondaryButton, TeamModal } from "../components";
 import { useDBUser } from "../context/UserContext";
 import dayjs from "dayjs";
 import { TfiWrite } from "react-icons/tfi";
@@ -21,6 +21,8 @@ const User = () => {
 
   const navigate = useNavigate();
 
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+  const [teamId, setTeamId] = useState("");
   const [tabValue, setTabValue] = useState("teams");
   // Intersection observer to fetch new posts
   const { ref, inView } = useInView();
@@ -115,6 +117,12 @@ const User = () => {
 
   return (
     <>
+      <TeamModal
+        teamId={teamId}
+        isModalOpen={isTeamModalOpen}
+        setIsModalOpen={() => setIsTeamModalOpen(false)}
+      />
+
       {/* If data is being fetched*/}
       {loadingUser && (
         <div className="dark:bg-darkbg min-h-[70vh] md:min-h-[65vh] lg:min-h-[60vh] p-20 pb-40 flex justify-center items-center">
@@ -228,7 +236,12 @@ const User = () => {
                       return page?.data.teams?.map((team: any) => {
                         console.log(team);
                         return (
-                          <>
+                          <div
+                            onClick={() => {
+                              setTeamId(team?.id);
+                              setIsTeamModalOpen(true);
+                            }}
+                          >
                             <Card key={team?.id} className="p-3 w-fit">
                               <p>{team?.name}</p>
                               <p>Points : {team?.score}</p>
@@ -243,7 +256,7 @@ const User = () => {
                                 )}
                               </p>
                             </Card>
-                          </>
+                          </div>
                         );
                       });
                     })}

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck unfinished
-import { PrimaryButton, SecondaryButton } from "../components";
+import { PrimaryButton, SecondaryButton, TeamModal } from "../components";
 import { useDBUser } from "../context/UserContext";
 import { BsFillTrash3Fill, BsPen } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,6 +23,8 @@ const Profile = () => {
   const [disabled, setDisabled] = useState(false);
   const [tabValue, setTabValue] = useState("teams");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+  const [teamId, setTeamId] = useState("");
 
   // Intersection observer to fetch new posts
   const { ref, inView } = useInView();
@@ -172,6 +174,12 @@ const Profile = () => {
         </div>
       </AlertModal>
 
+      <TeamModal
+        teamId={teamId}
+        isModalOpen={isTeamModalOpen}
+        setIsModalOpen={() => setIsTeamModalOpen(false)}
+      />
+
       {/* Main */}
       <div className="lg:min-h-screen bg-bgwhite dark:bg-darkbg dark:text-darkmodetext w-full pb-20">
         {/* Background color div */}
@@ -288,7 +296,12 @@ const Profile = () => {
                     return page?.data.teams?.map((team: any) => {
                       console.log(team);
                       return (
-                        <>
+                        <div
+                          onClick={() => {
+                            setTeamId(team?.id);
+                            setIsTeamModalOpen(true);
+                          }}
+                        >
                           <Card key={team?.id} className="p-3 w-fit">
                             <p>{team?.name}</p>
                             <p>Points : {team?.score}</p>
@@ -303,7 +316,7 @@ const Profile = () => {
                               )}
                             </p>
                           </Card>
-                        </>
+                        </div>
                       );
                     });
                   })}
@@ -358,6 +371,8 @@ const Profile = () => {
                             <p>League Id : {league?.leagueId}</p>
 
                             <p>Number of Teams : {league?.numberOfTeams}</p>
+
+                            <p>Private : {String(league?.private)}</p>
 
                             {/* Author section - link to user's page. */}
                             <Link

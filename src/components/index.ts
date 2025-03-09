@@ -12,6 +12,7 @@ import ErrorStatement from "./ErrorStatement";
 import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 import Protector from "./Protector";
+import TeamModal from "./TeamModal";
 
 export {
   PrimaryButton,
@@ -27,4 +28,5 @@ export {
   LoginModal,
   Protector,
   Checkbox,
+  TeamModal,
 };
