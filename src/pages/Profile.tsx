@@ -26,14 +26,14 @@ const Profile = () => {
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [teamId, setTeamId] = useState("");
 
-  // Intersection observer to fetch new posts
+  // Intersection observer to fetch new teams / leagues
   const { ref, inView } = useInView();
 
   // Fetching user's leagues
   const {
     data: leagues,
     isLoading: loadingLeagues,
-    // error: postsError,
+    // error: leaguesError,
     fetchNextPage: fetchNextLeagues,
     isFetchingNextPage: loadingNextLeagues,
   } = useInfiniteQuery({
@@ -55,7 +55,7 @@ const Profile = () => {
   const {
     data: teams,
     isLoading: loadingTeams,
-    // error: postsError,
+    // error: teamsError,
     fetchNextPage: fetchNextTeams,
     isFetchingNextPage: loadingNextTeams,
   } = useInfiniteQuery({
@@ -140,7 +140,7 @@ const Profile = () => {
 
   return (
     <>
-      {/* Delete Post Modal */}
+      {/* Delete Account Modal */}
       <AlertModal
         isOpen={isDeleteModalOpen}
         className="max-w-xl"
@@ -155,7 +155,7 @@ const Profile = () => {
           {/* Subtitle */}
           <h2 className="dark:text-darkmodetext mt-1 text-sm text-darkbg/70">
             This action cannot be reversed. Deleting your account will remove
-            all your posts and information.
+            all your teams and leagues.
           </h2>
 
           {/* Buttons */}
@@ -163,6 +163,8 @@ const Profile = () => {
             <PrimaryButton
               className="text-sm bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600"
               onClick={deleteUser}
+              disabled={disabled}
+              disabledText="Please Wait..."
               text="Delete"
             />
             <SecondaryButton
@@ -174,10 +176,11 @@ const Profile = () => {
         </div>
       </AlertModal>
 
+      {/* View Team in Modal */}
       <TeamModal
         teamId={teamId}
         isModalOpen={isTeamModalOpen}
-        setIsModalOpen={() => setIsTeamModalOpen(false)}
+        closeModal={() => setIsTeamModalOpen(false)}
       />
 
       {/* Main */}
@@ -207,7 +210,7 @@ const Profile = () => {
           {/* Edit & delete icon on small screen */}
           <div className="lg:hidden absolute flex gap-x-4 right-6 top-5">
             <BsPen
-              className="text-xl cursor-pointer"
+              className="text-xl hover:text-cta dark:hover:text-darkmodeCTA transition-all cursor-pointer"
               onClick={() => navigate("/edit-profile")}
             />
             <button
@@ -220,13 +223,14 @@ const Profile = () => {
 
           {/* Edit & delete button on large screen */}
           <div className="hidden absolute lg:flex gap-x-4 right-6 top-5">
-            <PrimaryButton
+            <SecondaryButton
               text={
                 <div className="flex items-center gap-x-2">
                   <BsPen />
                   <p>Edit</p>
                 </div>
               }
+              className="border-transparent dark:hover:!text-cta shadow-md"
               onClick={() => navigate("/edit-profile")}
             />
             <SecondaryButton
@@ -237,9 +241,7 @@ const Profile = () => {
                 </div>
               }
               onClick={() => setIsDeleteModalOpen(true)}
-              disabled={disabled}
-              disabledText="Please wait..."
-              className="border-transparent dark:!border-2 shadow-md hover:bg-transparent text-red-600 dark:text-white hover:!text-red-600 dark:hover:text-red-600"
+              className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
             />
           </div>
 
@@ -270,7 +272,8 @@ const Profile = () => {
           <button
             onClick={() => setTabValue("teams")}
             className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4 ${
-              tabValue == "teams" && "border-cta"
+              tabValue == "teams" &&
+              "text-cta border-cta dark:text-darkmodeCTA dark:border-darkmodeCTA"
             }`}
           >
             Teams
@@ -279,7 +282,8 @@ const Profile = () => {
           <button
             onClick={() => setTabValue("leagues")}
             className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4  ${
-              tabValue == "leagues" && "border-cta"
+              tabValue == "leagues" &&
+              "text-cta border-cta dark:text-darkmodeCTA dark:border-darkmodeCTA"
             }`}
           >
             Leagues
@@ -297,6 +301,7 @@ const Profile = () => {
                       console.log(team);
                       return (
                         <div
+                          className="cursor-pointer"
                           onClick={() => {
                             setTeamId(team?.id);
                             setIsTeamModalOpen(true);

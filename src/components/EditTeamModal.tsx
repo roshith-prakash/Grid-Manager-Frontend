@@ -350,24 +350,30 @@ const EditTeamModal = ({
                         key={driver?.driverId}
                         id={`${driver?.permanentNumber}`}
                       >
-                        {driver?.image ? (
-                          <img
-                            src={driver?.image}
-                            className="h-28 mx-auto"
-                            style={{
-                              backgroundColor: driver?.constructor_color,
-                            }}
-                          />
-                        ) : (
-                          <FaUserAlt className="text-8xl mx-auto" />
-                        )}
-                        <p className="pt-1">
-                          {driver?.givenName} {driver?.familyName}
-                        </p>
-                        <p className="text-center">({driver?.code}) </p>
-                        <p className="text-center">{driver?.constructor} </p>
-                        <div className="border-t-1 mt-2 py-2">
-                          {driver?.price} Cr.
+                        <div
+                          className="pt-2"
+                          style={{
+                            backgroundColor: driver?.constructor_color,
+                          }}
+                        >
+                          {driver?.image ? (
+                            <img src={driver?.image} className="h-32 mx-auto" />
+                          ) : (
+                            <FaUserAlt className="text-8xl mx-auto" />
+                          )}
+                        </div>
+                        <div className="px-2.5">
+                          <p className="pt-1">
+                            {driver?.givenName} {driver?.familyName}
+                          </p>
+                          <p className="text-center">({driver?.code}) </p>
+                          <p className="text-center">{driver?.constructor} </p>
+                          <div className="border-t-1 mt-2 py-2">
+                            Points in season : {driver?.points}
+                          </div>
+                          <div className="border-t-1 mt-2 py-2">
+                            Price : {driver?.price} Cr.
+                          </div>
                         </div>
                       </Draggable>
                     );
@@ -400,28 +406,34 @@ const EditTeamModal = ({
                     ?.sort((a, b) => b?.price - a?.price)
                     .map((driver) => (
                       <Draggable
-                        className={`border-1 rounded-sm p-3 bg-white dark:bg-darkbg`}
+                        className={`border-1 rounded-sm  bg-white dark:bg-darkbg`}
                         key={driver?.driverId}
                         id={`${driver?.permanentNumber}`}
                       >
-                        {driver?.image ? (
-                          <img
-                            src={driver?.image}
-                            className="h-28 mx-auto"
-                            style={{
-                              backgroundColor: driver?.constructor_color,
-                            }}
-                          />
-                        ) : (
-                          <FaUserAlt className="text-8xl mx-auto" />
-                        )}
-                        <p>
-                          {driver?.givenName} {driver?.familyName}
-                        </p>
-                        <p className="text-center">({driver?.code}) </p>
-                        <p className="text-center">{driver?.constructor} </p>
-                        <div className="border-t-1 mt-2 py-2">
-                          {driver?.price} Cr.
+                        <div
+                          className="pt-2"
+                          style={{
+                            backgroundColor: driver?.constructor_color,
+                          }}
+                        >
+                          {driver?.image ? (
+                            <img src={driver?.image} className="h-32 mx-auto" />
+                          ) : (
+                            <FaUserAlt className="text-8xl mx-auto" />
+                          )}
+                        </div>
+                        <div className="px-2.5">
+                          <p className="pt-1">
+                            {driver?.givenName} {driver?.familyName}
+                          </p>
+                          <p className="text-center">({driver?.code}) </p>
+                          <p className="text-center">{driver?.constructor} </p>
+                          <div className="border-t-1 mt-2 py-2">
+                            Points in season : {driver?.points}
+                          </div>
+                          <div className="border-t-1 mt-2 py-2">
+                            Price : {driver?.price} Cr.
+                          </div>
                         </div>
                       </Draggable>
                     ))

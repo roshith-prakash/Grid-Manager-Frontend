@@ -36,7 +36,7 @@ const EditProfile = () => {
 
   // Set window title.
   useEffect(() => {
-    document.title = `Edit Profile | The Thought Journal`;
+    document.title = `Edit Profile | Grid Manager`;
   }, []);
 
   // To set default values.
@@ -239,7 +239,7 @@ const EditProfile = () => {
               onClick={() => {
                 if (fileRef?.current) fileRef.current.click();
               }}
-              className="cursor-pointer hover:border-darkbg dark:hover:border-white border-darkbg/25 dark:border-white/25 border-1 flex  gap-x-2 py-2 justify-center items-center px-14 shadow rounded-lg font-medium active:shadow transition-all disabled:text-greyText"
+              className="cursor-pointer hover:text-hovercta dark:hover:text-darkmodeCTA hover:border-hovercta dark:hover:border-darkmodeCTA border-darkbg/25 dark:border-white/25 border-1 flex  gap-x-2 py-2 justify-center items-center px-14 shadow rounded-lg font-medium active:shadow transition-all disabled:text-greyText"
             >
               Upload <IoCloudUploadOutline className="translate-y-0.5" />
             </button>

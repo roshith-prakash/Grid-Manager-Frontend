@@ -34,6 +34,8 @@ function App() {
                 </Protector>
               }
             />
+
+            {/* View your profile */}
             <Route
               path="/profile"
               element={
@@ -42,6 +44,7 @@ function App() {
                 </Protector>
               }
             />
+
             {/* View a User's Profile (Non Logged in user) */}
             <Route path="/user/:username" element={<User />} />
 

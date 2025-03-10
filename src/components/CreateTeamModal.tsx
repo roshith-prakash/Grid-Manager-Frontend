@@ -3,6 +3,7 @@
 import {
   Draggable,
   Droppable,
+  ErrorStatement,
   Input,
   PrimaryButton,
   SecondaryButton,
@@ -85,6 +86,9 @@ const CreateTeamModal = ({
 
   // Available Budget
   const [availablePurse, setAvailablePurse] = useState(100);
+  const [error, setError] = useState({
+    name: 0,
+  });
 
   // Name of the team
   const [name, setName] = useState("");
@@ -227,6 +231,18 @@ const CreateTeamModal = ({
 
   // Submit the team
   const handleSubmit = () => {
+    setError({
+      name: 0,
+    });
+
+    if (name == null || name == undefined || name.length == 0) {
+      setError((prev) => ({ ...prev, name: 1 }));
+      return;
+    } else if (name?.length > 30) {
+      setError((prev) => ({ ...prev, name: 2 }));
+      return;
+    }
+
     if (
       teamDrivers?.length === NUMBER_OF_DRIVERS &&
       teamConstructors?.length === NUMBER_OF_CONSTRUCTORS &&
@@ -256,6 +272,7 @@ const CreateTeamModal = ({
 
   return (
     <div>
+      {/* Close div button */}
       <button
         onClick={onClose}
         className="absolute  right-5 text-2xl cursor-pointer"
@@ -263,6 +280,7 @@ const CreateTeamModal = ({
         <RxCross2 />
       </button>
 
+      {/* Available purse */}
       <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
         {" "}
         Available Purse :{" "}
@@ -278,8 +296,27 @@ const CreateTeamModal = ({
           onChange={(e) => {
             setName(e.target.value);
           }}
+          onBlur={() => {
+            if (name == null || name == undefined || name.length == 0) {
+              setError((prev) => ({ ...prev, name: 1 }));
+              return;
+            } else if (name?.length > 30) {
+              setError((prev) => ({ ...prev, name: 2 }));
+              return;
+            } else {
+              setError((prev) => ({ ...prev, name: 0 }));
+            }
+          }}
           className="max-w-xl"
           placeholder="Team Name"
+        />
+        <ErrorStatement
+          isOpen={error.name == 1}
+          text={"Please enter a name for the team."}
+        />
+        <ErrorStatement
+          isOpen={error.name == 2}
+          text={"Team name cannot exceed 30 characters."}
         />
       </div>
 
@@ -316,24 +353,30 @@ const CreateTeamModal = ({
                         key={driver?.driverId}
                         id={`${driver?.permanentNumber}`}
                       >
-                        {driver?.image ? (
-                          <img
-                            src={driver?.image}
-                            className="h-28 mx-auto"
-                            style={{
-                              backgroundColor: driver?.constructor_color,
-                            }}
-                          />
-                        ) : (
-                          <FaUserAlt className="text-8xl mx-auto" />
-                        )}
-                        <p className="pt-1">
-                          {driver?.givenName} {driver?.familyName}
-                        </p>
-                        <p className="text-center">({driver?.code}) </p>
-                        <p className="text-center">{driver?.constructor} </p>
-                        <div className="border-t-1 mt-2 py-2">
-                          {driver?.price} Cr.
+                        <div
+                          className="pt-2"
+                          style={{
+                            backgroundColor: driver?.constructor_color,
+                          }}
+                        >
+                          {driver?.image ? (
+                            <img src={driver?.image} className="h-32 mx-auto" />
+                          ) : (
+                            <FaUserAlt className="text-8xl mx-auto" />
+                          )}
+                        </div>
+                        <div className="px-2.5">
+                          <p className="pt-1">
+                            {driver?.givenName} {driver?.familyName}
+                          </p>
+                          <p className="text-center">({driver?.code}) </p>
+                          <p className="text-center">{driver?.constructor} </p>
+                          <div className="border-t-1 mt-2 py-2">
+                            Points in season : {driver?.points}
+                          </div>
+                          <div className="border-t-1 mt-2 py-2">
+                            Price : {driver?.price} Cr.
+                          </div>
                         </div>
                       </Draggable>
                     );
@@ -366,28 +409,34 @@ const CreateTeamModal = ({
                     ?.sort((a, b) => b?.price - a?.price)
                     .map((driver) => (
                       <Draggable
-                        className={`border-1 rounded-sm p-3 bg-white dark:bg-darkbg`}
+                        className={`border-1 rounded-sm  bg-white dark:bg-darkbg`}
                         key={driver?.driverId}
                         id={`${driver?.permanentNumber}`}
                       >
-                        {driver?.image ? (
-                          <img
-                            src={driver?.image}
-                            className="h-28 mx-auto"
-                            style={{
-                              backgroundColor: driver?.constructor_color,
-                            }}
-                          />
-                        ) : (
-                          <FaUserAlt className="text-8xl mx-auto" />
-                        )}
-                        <p>
-                          {driver?.givenName} {driver?.familyName}
-                        </p>
-                        <p className="text-center">({driver?.code}) </p>
-                        <p className="text-center">{driver?.constructor} </p>
-                        <div className="border-t-1 mt-2 py-2">
-                          {driver?.price} Cr.
+                        <div
+                          className="pt-2"
+                          style={{
+                            backgroundColor: driver?.constructor_color,
+                          }}
+                        >
+                          {driver?.image ? (
+                            <img src={driver?.image} className="h-32 mx-auto" />
+                          ) : (
+                            <FaUserAlt className="text-8xl mx-auto" />
+                          )}
+                        </div>
+                        <div className="px-2.5">
+                          <p className="pt-1">
+                            {driver?.givenName} {driver?.familyName}
+                          </p>
+                          <p className="text-center">({driver?.code}) </p>
+                          <p className="text-center">{driver?.constructor} </p>
+                          <div className="border-t-1 mt-2 py-2">
+                            Points in season : {driver?.points}
+                          </div>
+                          <div className="border-t-1 mt-2 py-2">
+                            Price : {driver?.price} Cr.
+                          </div>
                         </div>
                       </Draggable>
                     ))
@@ -419,6 +468,9 @@ const CreateTeamModal = ({
                         id={`${constructor?.constructorNumber}`}
                       >
                         {constructor?.name}
+                        <div className="border-t-1 mt-2 py-2">
+                          Points in season : {constructor?.points}
+                        </div>
                         <div className="border-t-1 mt-2 py-2">
                           {constructor?.price} Cr.
                         </div>
@@ -462,6 +514,9 @@ const CreateTeamModal = ({
                         id={`${constructor?.constructorNumber}`}
                       >
                         {constructor?.name}
+                        <div className="border-t-1 mt-2 py-2">
+                          Points in season : {constructor?.points}
+                        </div>
                         <div className="border-t-1 mt-2 py-2">
                           {constructor?.price} Cr.
                         </div>

@@ -1,4 +1,5 @@
 import { ContextValue, useDarkMode } from "@/context/DarkModeContext";
+import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const { isDarkMode } = useDarkMode() as ContextValue;
@@ -27,13 +28,7 @@ const Footer = () => {
 
         {/* Image - hidden on smaller screens */}
         <div className="hidden flex-1 items-center justify-center lg:flex">
-          <img
-            src={
-              "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736843158/logodark_gs3pnp.png"
-            }
-            alt=""
-            className="er-events-none h-60"
-          />
+          <img src={logo} alt="" className="pointer-events-none h-60" />
         </div>
       </div>
     </footer>

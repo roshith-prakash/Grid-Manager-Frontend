@@ -15,6 +15,7 @@ export default function Draggable({
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
   });
+
   const style = transform
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
@@ -23,7 +24,7 @@ export default function Draggable({
 
   return (
     <button
-      className={`${className} min-w-30 cursor-grab`}
+      className={`${className} overflow-hidden dark:border-white/25 min-w-30 cursor-grab`}
       ref={setNodeRef}
       style={style}
       {...listeners}

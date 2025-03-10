@@ -15,7 +15,7 @@ const PublicLeagues = () => {
   // Debouncing the input of the user
   const debouncedSearch = useDebounce(search);
 
-  // Intersection observer to fetch new posts
+  // Intersection observer to fetch new leagues
   const { ref, inView } = useInView();
 
   // Scroll to the top of page
@@ -27,7 +27,7 @@ const PublicLeagues = () => {
   const {
     data: leagues,
     isLoading: loadingLeagues,
-    // error: postsError,
+    // error: leaguesError,
     fetchNextPage: fetchNextLeagues,
     isFetchingNextPage: loadingNextLeagues,
   } = useInfiniteQuery({
@@ -48,7 +48,7 @@ const PublicLeagues = () => {
       debouncedSearch.length != 0,
   });
 
-  // Fetching next set of posts or users
+  // Fetching next set of leagues
   useEffect(() => {
     if (inView) {
       fetchNextLeagues();
@@ -85,8 +85,8 @@ const PublicLeagues = () => {
           )}
 
           {leagues && leagues?.pages?.[0]?.data?.leagues.length > 0 && (
-            <div className="py-10 lg:px-5 grid grid-cols-1 md:grid-cols-2">
-              {/* Map posts if posts are found */}
+            <div className="py-10 lg:px-5 flex flex-wrap gap-8">
+              {/* Map leagues if leagues are found */}
               {leagues &&
                 leagues?.pages?.map((page) => {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,7 +95,7 @@ const PublicLeagues = () => {
                     if (league?.name) {
                       return (
                         <Link
-                          className="border-2 rounded-xl bg-white/5 w-fit px-5 py-5"
+                          className="border-2 w-80 rounded-xl bg-white/5  px-5 py-5"
                           to={`/leagues/${league?.leagueId}`}
                         >
                           <p>League Name : {league?.name}</p>

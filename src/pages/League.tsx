@@ -9,19 +9,26 @@ import { LuCirclePlus } from "react-icons/lu";
 import { RiTeamLine } from "react-icons/ri";
 import Card from "@/components/reuseit/Card";
 import HashLoader from "react-spinners/HashLoader";
-import { CreateTeamModal, EditTeamModal, SecondaryButton } from "@/components";
+import {
+  CreateTeamModal,
+  EditTeamModal,
+  PrimaryButton,
+  SecondaryButton,
+} from "@/components";
 import { useDBUser } from "@/context/UserContext";
 import { useInView } from "react-intersection-observer";
+import { BsFillTrash3Fill } from "react-icons/bs";
+import toast from "react-hot-toast";
 
 const League = () => {
   const { leagueId } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { dbUser } = useDBUser();
-
   const [teamId, setTeamId] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { dbUser } = useDBUser();
 
-  // Intersection observer to fetch new posts
+  // Intersection observer to fetch new leagues
   const { ref, inView } = useInView();
 
   // Fetch league data from server.
@@ -29,6 +36,7 @@ const League = () => {
     data: league,
     isLoading,
     error,
+    refetch: refetchLeague,
   } = useQuery({
     queryKey: ["league", leagueId],
     queryFn: async () => {
@@ -38,13 +46,14 @@ const League = () => {
     },
   });
 
-  // Fetching searched Posts
+  // Fetching teams in the league
   const {
     data: teams,
     isLoading: loadingTeams,
-    // error: postsError,
+    // error: teamsError,
     fetchNextPage: fetchNextTeams,
     isFetchingNextPage: loadingNextTeams,
+    refetch: refetchTeams,
     // refetch: refetchTeams,
   } = useInfiniteQuery({
     queryKey: ["teams", leagueId],
@@ -61,6 +70,22 @@ const League = () => {
     enabled: !!league?.data?.data?.leagueId,
   });
 
+  const deleteTeam = () => {
+    axiosInstance
+      .post("/team/delete-team", { teamId: teamId })
+      .then(() => {
+        toast.success("Team Deleted.");
+        refetchLeague();
+        refetchTeams();
+        setIsDeleteModalOpen(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsDeleteModalOpen(false);
+        toast.error("Something went wrong.");
+      });
+  };
+
   // Scroll to Top
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -75,7 +100,7 @@ const League = () => {
     }
   }, [league?.data]);
 
-  // Fetching next set of posts or users
+  // Fetching next set of teams
   useEffect(() => {
     if (inView) {
       fetchNextTeams();
@@ -86,6 +111,7 @@ const League = () => {
     <div>
       {league && (
         <>
+          {/* Create A Team */}
           <AlertModal
             className="max-w-2xl w-full !px-0 lg:px-5 noscroller"
             isOpen={isModalOpen}
@@ -97,6 +123,7 @@ const League = () => {
             />
           </AlertModal>
 
+          {/* Edit a Team */}
           <AlertModal
             className="max-w-2xl w-full !px-0 lg:px-5 noscroller"
             isOpen={isEditModalOpen}
@@ -110,6 +137,41 @@ const League = () => {
               }}
               teamId={teamId}
             />
+          </AlertModal>
+
+          {/* Delete Account Modal */}
+          <AlertModal
+            isOpen={isDeleteModalOpen}
+            className="max-w-xl"
+            onClose={() => setIsDeleteModalOpen(false)}
+          >
+            <div className="flex flex-col gap-y-2">
+              {/* Title */}
+              <h1 className="dark:text-darkmodetext font-bold text-2xl">
+                Are you sure you want to delete your team?
+              </h1>
+
+              {/* Subtitle */}
+              <h2 className="dark:text-darkmodetext mt-1 text-sm text-darkbg/70">
+                This action cannot be reversed.
+              </h2>
+
+              {/* Buttons */}
+              <div className="mt-5 flex gap-x-5 justify-end">
+                <PrimaryButton
+                  className="text-sm bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600"
+                  onClick={deleteTeam}
+                  text="Delete"
+                />
+                <SecondaryButton
+                  className="text-sm"
+                  onClick={() => {
+                    setIsDeleteModalOpen(false);
+                  }}
+                  text="Cancel"
+                />
+              </div>
+            </div>
           </AlertModal>
 
           <div className="p-6 space-y-6">
@@ -128,8 +190,9 @@ const League = () => {
               </div>
 
               <SecondaryButton
+                className="dark:hover:!text-cta"
                 text={
-                  <div className="flex gap-x-2 items-center">
+                  <div className="flex  gap-x-2 items-center">
                     <LuCirclePlus className="text-xl" />
                     <span>Add Team</span>
                   </div>
@@ -162,29 +225,52 @@ const League = () => {
                 return page?.data.teams?.map((team: any, index: number) => {
                   return (
                     <Card key={team.id} className="relative">
-                      {team.User.id == dbUser?.id && (
-                        <SecondaryButton
-                          onClick={() => {
-                            setTeamId(team?.id);
-                            setIsEditModalOpen(true);
-                          }}
-                          text={
-                            <div className="flex gap-x-2 items-center">
-                              <RiTeamLine className="text-xl" />
-                              <span>Edit Team</span>
-                            </div>
-                          }
-                          className="absolute top-5 right-5"
-                        ></SecondaryButton>
-                      )}
                       <div className="p-4 space-y-4">
-                        <h3 className="text-2xl font-bold">
-                          <span className="mr-2">
-                            #
-                            {pageIndex * page?.data.teams?.length + (index + 1)}
-                          </span>
-                          {team?.name}
-                        </h3>
+                        <div className="flex justify-between">
+                          <h3 className="text-2xl font-bold">
+                            <span className="mr-2">
+                              #
+                              {pageIndex * page?.data.teams?.length +
+                                (index + 1)}
+                            </span>
+                            {team?.name}
+                          </h3>
+
+                          {/* Edit & Delete Buttons */}
+                          {team.User.id == dbUser?.id && (
+                            <div className="flex gap-x-5">
+                              {/* Edit Button */}
+                              <SecondaryButton
+                                className="border-transparent dark:hover:!text-cta shadow-md"
+                                onClick={() => {
+                                  setTeamId(team?.id);
+                                  setIsEditModalOpen(true);
+                                }}
+                                text={
+                                  <div className="flex gap-x-2 items-center">
+                                    <RiTeamLine className="text-xl" />
+                                    <span>Edit Team</span>
+                                  </div>
+                                }
+                              ></SecondaryButton>
+                              <SecondaryButton
+                                text={
+                                  <div className="flex justify-center items-center  gap-x-2">
+                                    <BsFillTrash3Fill className=" cursor-pointer " />
+                                    Delete
+                                  </div>
+                                }
+                                onClick={() => {
+                                  setTeamId(team?.id);
+                                  setIsDeleteModalOpen(true);
+                                }}
+                                disabledText="Please wait..."
+                                className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                              />
+                            </div>
+                          )}
+                        </div>
+
                         <p className="text-lg font-medium">
                           Score : {team?.score}
                         </p>

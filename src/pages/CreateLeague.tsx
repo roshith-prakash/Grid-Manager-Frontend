@@ -58,7 +58,7 @@ const CreateLeague = () => {
     <div className="min-h-[70vh] md:min-h-[65vh] lg:min-h-[60vh] bg-bgwhite flex items-center justify-center pt-12 pb-32">
       <div className="bg-white dark:bg-secondarydarkbg dark:border-white/10 dark:border-2 w-full dark:bg-darkgrey dark:text-darkmodetext border-1 max-w-[95%] md:max-w-3xl md:mt-5 lg:mt-5 p-5 md:px-20 shadow-xl rounded-xl pb-10">
         {/* Title */}
-        <h1 className="text-ink dark:text-darkmodetext pt-5 font-bold text-2xl text-center">
+        <h1 className="text-hovercta dark:text-darkmodeCTA pt-5 font-bold text-2xl text-center">
           Create a League!
         </h1>
 

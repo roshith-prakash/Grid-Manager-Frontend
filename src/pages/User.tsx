@@ -14,17 +14,14 @@ import Card from "@/components/reuseit/Card";
 import Avatar from "@/components/reuseit/Avatar";
 
 const User = () => {
-  // Get Post Id from params.
   const { username } = useParams();
-
   const { dbUser } = useDBUser();
-
   const navigate = useNavigate();
-
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [teamId, setTeamId] = useState("");
   const [tabValue, setTabValue] = useState("teams");
-  // Intersection observer to fetch new posts
+
+  // Intersection observer to fetch new teams/leagues
   const { ref, inView } = useInView();
 
   // Fetch user data from server.
@@ -45,7 +42,7 @@ const User = () => {
   const {
     data: leagues,
     isLoading: loadingLeagues,
-    // error: postsError,
+    // error: ,
     fetchNextPage: fetchNextLeagues,
     isFetchingNextPage: loadingNextLeagues,
   } = useInfiniteQuery({
@@ -67,7 +64,7 @@ const User = () => {
   const {
     data: teams,
     isLoading: loadingTeams,
-    // error: postsError,
+    // error: teamsError,
     fetchNextPage: fetchNextTeams,
     isFetchingNextPage: loadingNextTeams,
   } = useInfiniteQuery({
@@ -120,7 +117,7 @@ const User = () => {
       <TeamModal
         teamId={teamId}
         isModalOpen={isTeamModalOpen}
-        setIsModalOpen={() => setIsTeamModalOpen(false)}
+        closeModal={() => setIsTeamModalOpen(false)}
       />
 
       {/* If data is being fetched*/}
