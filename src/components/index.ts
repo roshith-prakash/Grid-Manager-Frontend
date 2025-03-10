@@ -5,7 +5,6 @@ import PasswordInput from "./reuseit/PasswordInput";
 import Navbar from "./reuseit/Navbar";
 import Footer from "./reuseit/Footer";
 import Checkbox from "./reuseit/Checkbox";
-
 import Draggable from "./Draggable";
 import Droppable from "./Droppable";
 import ErrorStatement from "./ErrorStatement";
@@ -13,6 +12,8 @@ import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 import Protector from "./Protector";
 import TeamModal from "./TeamModal";
+import CreateTeamModal from "./CreateTeamModal";
+import EditTeamModal from "./EditTeamModal";
 
 export {
   PrimaryButton,
@@ -29,4 +30,6 @@ export {
   Protector,
   Checkbox,
   TeamModal,
+  CreateTeamModal,
+  EditTeamModal,
 };

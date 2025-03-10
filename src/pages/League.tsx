@@ -3,14 +3,13 @@ import { axiosInstance } from "@/utils/axiosInstance";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Test from "./Test";
 import AlertModal from "@/components/reuseit/AlertModal";
 import Avatar from "@/components/reuseit/Avatar";
 import { LuCirclePlus } from "react-icons/lu";
 import { RiTeamLine } from "react-icons/ri";
 import Card from "@/components/reuseit/Card";
 import HashLoader from "react-spinners/HashLoader";
-import { SecondaryButton } from "@/components";
+import { CreateTeamModal, EditTeamModal, SecondaryButton } from "@/components";
 import { useDBUser } from "@/context/UserContext";
 import { useInView } from "react-intersection-observer";
 
@@ -18,6 +17,9 @@ const League = () => {
   const { leagueId } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { dbUser } = useDBUser();
+
+  const [teamId, setTeamId] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Intersection observer to fetch new posts
   const { ref, inView } = useInView();
@@ -89,9 +91,24 @@ const League = () => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
           >
-            <Test
+            <CreateTeamModal
               leagueId={leagueId as string}
               onClose={() => setIsModalOpen(false)}
+            />
+          </AlertModal>
+
+          <AlertModal
+            className="max-w-2xl w-full !px-0 lg:px-5 noscroller"
+            isOpen={isEditModalOpen}
+            onClose={() => {
+              setIsEditModalOpen(false);
+            }}
+          >
+            <EditTeamModal
+              onClose={() => {
+                setIsEditModalOpen(false);
+              }}
+              teamId={teamId}
             />
           </AlertModal>
 
@@ -147,6 +164,10 @@ const League = () => {
                     <Card key={team.id} className="relative">
                       {team.User.id == dbUser?.id && (
                         <SecondaryButton
+                          onClick={() => {
+                            setTeamId(team?.id);
+                            setIsEditModalOpen(true);
+                          }}
                           text={
                             <div className="flex gap-x-2 items-center">
                               <RiTeamLine className="text-xl" />
@@ -167,68 +188,6 @@ const League = () => {
                         <p className="text-lg font-medium">
                           Score : {team?.score}
                         </p>
-
-                        {/* Drivers */}
-                        {/* <div>
-                        <h4 className="font-semibold">Drivers:</h4>
-                        <div className="grid grid-cols-2 gap-2">
-                          {team.teamDrivers.map((driver: any) => (
-                            <Card
-                              key={driver?.id}
-                              className="p-2 border-l-4"
-                              style={{ borderColor: driver?.constructor_color }}
-                            >
-                              <div className="flex items-center space-x-3">
-                                <img
-                                  src={driver?.image}
-                                  alt={driver?.givenName}
-                                  style={{
-                                    backgroundColor: driver?.constructor_color,
-                                  }}
-                                  className="w-12  h-12 rounded-full"
-                                />
-                                <div className="flex items-center gap-x-4">
-                                  <div>
-                                    <p className="font-semibold">
-                                      {driver?.givenName} {driver?.familyName}
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                      {driver?.constructor}
-                                    </p>
-                                  </div>
-                                  <Badge
-                                    style={{
-                                      backgroundColor: driver?.constructor_color,
-                                    }}
-                                    className="text-transparent !px-1 font-bold bg-clip-text"
-                                    text={driver?.code}
-                                  ></Badge>
-                                  <Badge
-                                    style={{
-                                      backgroundColor: driver?.constructor_color,
-                                    }}
-                                    className="text-transparent !px-1 font-bold bg-clip-text"
-                                    text={driver?.permanentNumber}
-                                  ></Badge>
-                                </div>
-                              </div>
-                            </Card>
-                          ))}
-                        </div>
-                      </div> */}
-
-                        {/* Constructors */}
-                        {/* <div>
-                        <h4 className="font-semibold">Constructors:</h4>
-                        <div className="flex space-x-2">
-                          {team.teamConstructors.map((constructor: any) => (
-                            <Badge
-                              text={constructor.name}
-                              className="px-4 bg-cta text-white font-medium py-2"
-                            ></Badge>
-                          ))}
-                        </div>
-                      </div> */}
 
                         <div className="py-4 flex items-center space-x-2">
                           <Avatar

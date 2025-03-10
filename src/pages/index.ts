@@ -4,7 +4,6 @@ import Login from "./Login";
 import Onboarding from "./Onboarding";
 import Signout from "./Signout";
 import EditProfile from "./EditProfile";
-import Test from "./Test";
 import Profile from "./Profile";
 import CreateLeague from "./CreateLeague";
 import User from "./User";
@@ -18,7 +17,6 @@ export {
   Onboarding,
   Signout,
   EditProfile,
-  Test,
   Profile,
   CreateLeague,
   User,

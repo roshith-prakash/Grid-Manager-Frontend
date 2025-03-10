@@ -7,7 +7,6 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from "@/components";
-import { useDBUser } from "@/context/UserContext";
 import { axiosInstance } from "@/utils/axiosInstance";
 import {
   DndContext,
@@ -26,11 +25,11 @@ import { RxCross2 } from "react-icons/rx";
 const NUMBER_OF_CONSTRUCTORS = 2;
 const NUMBER_OF_DRIVERS = 5;
 
-const Test = ({
-  leagueId,
+const EditTeamModal = ({
+  teamId,
   onClose,
 }: {
-  leagueId: string;
+  teamId: string;
   onClose: () => void;
 }) => {
   // Setting up DND-KIT
@@ -40,15 +39,13 @@ const Test = ({
 
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
-  // Get User
-  const { dbUser } = useDBUser();
-
   // Querying Drivers
   const { data: drivers } = useQuery({
     queryKey: ["drivers"],
     queryFn: async () => {
       return axiosInstance.get("/team/get-drivers");
     },
+    staleTime: 1000 * 60 * 15,
   });
 
   // Querying Constructors
@@ -57,23 +54,60 @@ const Test = ({
     queryFn: async () => {
       return axiosInstance.get("/team/get-constructors");
     },
+    staleTime: 1000 * 60 * 15,
   });
 
+  const { data: team } = useQuery({
+    queryKey: ["team", teamId],
+    queryFn: async () => {
+      return axiosInstance.post("/team/get-team-by-id", { teamId: teamId });
+    },
+    enabled: !!teamId,
+  });
+
+  // Set Team & available Drivers
   useEffect(() => {
-    if (drivers?.data) {
-      setAvailableDrivers(drivers?.data?.drivers);
+    if (drivers?.data && team?.data) {
+      const availDrivers = drivers?.data?.drivers;
+      const selectedDrivers: string[] = team?.data?.team?.driverIds;
+
+      setAvailableDrivers(
+        availDrivers.filter(
+          (driver) => !selectedDrivers?.includes(driver?.driverId)
+        )
+      );
+
+      setTeamDrivers(team?.data?.team?.teamDrivers);
     } else {
       setAvailableDrivers([]);
     }
-  }, [drivers]);
+  }, [drivers, team?.data]);
 
+  // Set team & available constructors
   useEffect(() => {
-    if (constructors?.data) {
-      setAvailableConstructors(constructors?.data?.constructors);
+    if (constructors?.data && team?.data) {
+      const availConstructor = constructors?.data?.constructors;
+      const selectedConstructors: string[] = team?.data?.team?.constructorIds;
+
+      setAvailableConstructors(
+        availConstructor.filter(
+          (constructor) =>
+            !selectedConstructors?.includes(constructor?.constructorId)
+        )
+      );
+
+      setTeamConstructors(team?.data?.team?.teamConstructors);
     } else {
       setAvailableConstructors([]);
     }
-  }, [constructors]);
+  }, [constructors, team?.data]);
+
+  useEffect(() => {
+    if (team?.data) {
+      setName(team?.data?.team?.name);
+      setAvailablePurse(100 - team?.data?.team?.price);
+    }
+  }, [team?.data]);
 
   // State for available drivers and constructors
   const [availableDrivers, setAvailableDrivers] = useState([]);
@@ -233,16 +267,15 @@ const Test = ({
       availablePurse >= 0
     ) {
       axiosInstance
-        .post("/team/create-team", {
-          user: dbUser,
+        .post("/team/edit-team", {
+          teamId: teamId,
           teamDrivers: teamDrivers,
           teamConstructors: teamConstructors,
           teamName: name,
-          leagueId: leagueId,
           price: Number(100 - availablePurse),
         })
         .then(() => {
-          toast("Team Created!");
+          toast.success("Team Edited!");
           onClose();
         })
         .catch(() => {
@@ -250,7 +283,7 @@ const Test = ({
           onClose();
         });
     } else {
-      toast("Please Add drivers & constructors before creating a Team!");
+      toast("Please Add drivers & constructors before editing the Team!");
     }
   };
 
@@ -275,6 +308,7 @@ const Test = ({
       <div className="pb-10 py-5 flex flex-col items-center justify-center">
         <p className="font-medium">Team Name</p>
         <Input
+          value={name}
           onChange={(e) => {
             setName(e.target.value);
           }}
@@ -285,7 +319,7 @@ const Test = ({
 
       {/* Submit Button */}
       <div className="mb-20 py-5 flex items-center justify-center gap-x-10">
-        <PrimaryButton onClick={handleSubmit} text="Create Team" />
+        <PrimaryButton onClick={handleSubmit} text="Edit Team" />
         <SecondaryButton
           onClick={() => {
             onClose();
@@ -477,4 +511,4 @@ const Test = ({
   );
 };
 
-export default Test;
+export default EditTeamModal;
