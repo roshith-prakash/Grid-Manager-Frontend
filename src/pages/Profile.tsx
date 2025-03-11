@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck unfinished
-import { PrimaryButton, SecondaryButton, TeamModal } from "../components";
+import {
+  EditTeamModal,
+  PrimaryButton,
+  SecondaryButton,
+  TeamModal,
+} from "../components";
 import { useDBUser } from "../context/UserContext";
 import { BsFillTrash3Fill, BsPen } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,8 +26,11 @@ const Profile = () => {
   const { dbUser, setDbUser } = useDBUser();
   const [disabled, setDisabled] = useState(false);
   const [tabValue, setTabValue] = useState("teams");
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteProfileModalOpen, setIsDeleteProfileModalOpen] =
+    useState(false);
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteTeamModalOpen, setIsDeleteTeamModalOpen] = useState(false);
   const [teamId, setTeamId] = useState("");
 
   // Intersection observer to fetch new teams / leagues
@@ -37,6 +43,7 @@ const Profile = () => {
     // error: leaguesError,
     fetchNextPage: fetchNextLeagues,
     isFetchingNextPage: loadingNextLeagues,
+    // refetch: refetchLeagues,
   } = useInfiniteQuery({
     queryKey: ["userLeagues", dbUser?.username],
     queryFn: ({ pageParam }) => {
@@ -50,6 +57,8 @@ const Profile = () => {
       return lastPage?.data?.nextPage;
     },
     enabled: !!dbUser?.username,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   // Fetching user's teams
@@ -59,6 +68,7 @@ const Profile = () => {
     // error: teamsError,
     fetchNextPage: fetchNextTeams,
     isFetchingNextPage: loadingNextTeams,
+    refetch: refetchTeams,
   } = useInfiniteQuery({
     queryKey: ["userTeams", dbUser?.username],
     queryFn: ({ pageParam }) => {
@@ -72,6 +82,8 @@ const Profile = () => {
       return lastPage?.data?.nextPage;
     },
     enabled: !!dbUser?.username,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   // Set window title.
@@ -98,12 +110,12 @@ const Profile = () => {
             toast.success("User Deleted.");
             setDbUser(null);
             setDisabled(false);
-            setIsDeleteModalOpen(false);
+            setIsDeleteProfileModalOpen(false);
             navigate("/");
           })
           .catch((err) => {
             setDisabled(false);
-            setIsDeleteModalOpen(false);
+            setIsDeleteProfileModalOpen(false);
             console.log(err);
             toast.error("Something went wrong.");
           });
@@ -111,7 +123,7 @@ const Profile = () => {
       .catch((error) => {
         setDisabled(false);
         console.log(error);
-        setIsDeleteModalOpen(false);
+        setIsDeleteProfileModalOpen(false);
         const errorMessage = error?.message;
         if (String(errorMessage).includes("auth/requires-recent-login")) {
           toast.error("Please login again before deleting your account.");
@@ -121,6 +133,22 @@ const Profile = () => {
       });
 
     // Deleting user from firebase
+  };
+
+  // Delete a selected team
+  const deleteTeam = () => {
+    axiosInstance
+      .post("/team/delete-team", { teamId: teamId })
+      .then(() => {
+        toast.success("Team Deleted.");
+        refetchTeams();
+        setIsDeleteTeamModalOpen(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsDeleteTeamModalOpen(false);
+        toast.error("Something went wrong.");
+      });
   };
 
   // Fetch next page when end div reached.
@@ -143,9 +171,9 @@ const Profile = () => {
     <>
       {/* Delete Account Modal */}
       <AlertModal
-        isOpen={isDeleteModalOpen}
+        isOpen={isDeleteProfileModalOpen}
         className="max-w-xl"
-        onClose={() => setIsDeleteModalOpen(false)}
+        onClose={() => setIsDeleteProfileModalOpen(false)}
       >
         <div className="flex flex-col gap-y-2">
           {/* Title */}
@@ -170,7 +198,7 @@ const Profile = () => {
             />
             <SecondaryButton
               className="text-sm"
-              onClick={() => setIsDeleteModalOpen(false)}
+              onClick={() => setIsDeleteProfileModalOpen(false)}
               text="Cancel"
             />
           </div>
@@ -183,6 +211,60 @@ const Profile = () => {
         isModalOpen={isTeamModalOpen}
         closeModal={() => setIsTeamModalOpen(false)}
       />
+
+      {/* Edit a Team */}
+      <AlertModal
+        className="max-w-2xl w-full !px-0 lg:px-5 noscroller"
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+        }}
+      >
+        <EditTeamModal
+          onClose={() => {
+            setIsEditModalOpen(false);
+          }}
+          refetchFunction={() => {
+            refetchTeams();
+          }}
+          teamId={teamId}
+        />
+      </AlertModal>
+
+      {/* Delete Team Modal */}
+      <AlertModal
+        isOpen={isDeleteTeamModalOpen}
+        className="max-w-xl"
+        onClose={() => setIsDeleteTeamModalOpen(false)}
+      >
+        <div className="flex flex-col gap-y-2">
+          {/* Title */}
+          <h1 className="dark:text-darkmodetext font-bold text-2xl">
+            Are you sure you want to delete your team?
+          </h1>
+
+          {/* Subtitle */}
+          <h2 className="dark:text-darkmodetext mt-1 text-sm text-darkbg/70">
+            This action cannot be reversed.
+          </h2>
+
+          {/* Buttons */}
+          <div className="mt-5 flex gap-x-5 justify-end">
+            <PrimaryButton
+              className="text-sm bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600"
+              onClick={deleteTeam}
+              text="Delete"
+            />
+            <SecondaryButton
+              className="text-sm"
+              onClick={() => {
+                setIsDeleteTeamModalOpen(false);
+              }}
+              text="Cancel"
+            />
+          </div>
+        </div>
+      </AlertModal>
 
       {/* Main */}
       <div className="lg:min-h-screen bg-bgwhite dark:bg-darkbg dark:text-darkmodetext w-full pb-20">
@@ -215,7 +297,7 @@ const Profile = () => {
               onClick={() => navigate("/edit-profile")}
             />
             <button
-              onClick={() => setIsDeleteModalOpen(true)}
+              onClick={() => setIsDeleteProfileModalOpen(true)}
               className="text-xl  cursor-pointer"
             >
               <BsFillTrash3Fill className=" cursor-pointer text-red-500" />
@@ -241,7 +323,7 @@ const Profile = () => {
                   Delete
                 </div>
               }
-              onClick={() => setIsDeleteModalOpen(true)}
+              onClick={() => setIsDeleteProfileModalOpen(true)}
               className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
             />
           </div>
@@ -303,12 +385,35 @@ const Profile = () => {
                       console.log(team);
                       return (
                         <div
-                          className="cursor-pointer"
+                          className="relative cursor-pointer"
                           onClick={() => {
                             setTeamId(team?.id);
                             setIsTeamModalOpen(true);
                           }}
                         >
+                          <div className="flex gap-2 absolute top-3 right-3">
+                            {" "}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setTeamId(team?.id);
+                                setIsEditModalOpen(true);
+                              }}
+                              className="text-xl  cursor-pointer"
+                            >
+                              <BsPen className="text-xl hover:text-cta dark:hover:text-darkmodeCTA transition-all cursor-pointer" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setTeamId(team?.id);
+                                setIsDeleteTeamModalOpen(true);
+                              }}
+                              className="text-xl  cursor-pointer"
+                            >
+                              <BsFillTrash3Fill className="text-red-500" />
+                            </button>
+                          </div>
                           <Card key={team?.id} className="p-3 w-fit">
                             <p>{team?.name}</p>
                             <p>Points : {team?.score}</p>

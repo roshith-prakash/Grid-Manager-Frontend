@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { axiosInstance } from "@/utils/axiosInstance";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import AlertModal from "@/components/reuseit/AlertModal";
 import Avatar from "@/components/reuseit/Avatar";
 import { LuCirclePlus } from "react-icons/lu";
@@ -11,6 +15,7 @@ import Card from "@/components/reuseit/Card";
 import HashLoader from "react-spinners/HashLoader";
 import {
   CreateTeamModal,
+  EditLeagueModal,
   EditTeamModal,
   PrimaryButton,
   SecondaryButton,
@@ -25,11 +30,15 @@ const League = () => {
   const { leagueId } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [teamId, setTeamId] = useState("");
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditTeamModalOpen, setIsEditTeamModalOpen] = useState(false);
+  const [isDeleteTeamModalOpen, setIsDeleteTeamModalOpen] = useState(false);
+  const [isEditLeagueModalOpen, setIsEditLeagueModalOpen] = useState(false);
+  const [isDeleteLeagueModalOpen, setIsDeleteLeagueModalOpen] = useState(false);
   const [tabValue, setTabValue] = useState("allTeams");
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const { dbUser } = useDBUser();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // Intersection observer to fetch new leagues
   const { ref, inView } = useInView();
@@ -107,11 +116,30 @@ const League = () => {
         refetchLeague();
         refetchTeams();
         refetchUserTeams();
-        setIsDeleteModalOpen(false);
+        setIsDeleteTeamModalOpen(false);
       })
       .catch((err) => {
         console.log(err);
-        setIsDeleteModalOpen(false);
+        setIsDeleteTeamModalOpen(false);
+        toast.error("Something went wrong.");
+      });
+  };
+
+  const deleteLeague = () => {
+    axiosInstance
+      .post("/team/delete-league", { leagueId: leagueId })
+      .then(async () => {
+        toast.success("League Deleted.");
+        await queryClient.refetchQueries({
+          queryKey: ["userLeagues", dbUser?.username],
+          refetchType: "active",
+        });
+        setIsDeleteLeagueModalOpen(false);
+        navigate("/leagues");
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsDeleteLeagueModalOpen(false);
         toast.error("Something went wrong.");
       });
   };
@@ -165,30 +193,58 @@ const League = () => {
             <CreateTeamModal
               leagueId={leagueId as string}
               onClose={() => setIsModalOpen(false)}
+              refetchFunction={() => {
+                refetchLeague();
+                refetchTeams();
+                refetchUserTeams();
+              }}
             />
           </AlertModal>
 
           {/* Edit a Team */}
           <AlertModal
             className="max-w-2xl w-full !px-0 lg:px-5 noscroller"
-            isOpen={isEditModalOpen}
+            isOpen={isEditTeamModalOpen}
             onClose={() => {
-              setIsEditModalOpen(false);
+              setIsEditTeamModalOpen(false);
             }}
           >
             <EditTeamModal
               onClose={() => {
-                setIsEditModalOpen(false);
+                setIsEditTeamModalOpen(false);
+              }}
+              refetchFunction={() => {
+                refetchTeams();
+                refetchUserTeams();
               }}
               teamId={teamId}
             />
           </AlertModal>
 
+          {/* Edit the League */}
+          <AlertModal
+            className="max-w-2xl w-full !px-0 lg:px-5 noscroller"
+            isOpen={isEditLeagueModalOpen}
+            onClose={() => {
+              setIsEditLeagueModalOpen(false);
+            }}
+          >
+            <EditLeagueModal
+              onClose={() => {
+                setIsEditLeagueModalOpen(false);
+              }}
+              refetchFunction={() => {
+                refetchLeague();
+              }}
+              league={league?.data?.data}
+            />
+          </AlertModal>
+
           {/* Delete Team Modal */}
           <AlertModal
-            isOpen={isDeleteModalOpen}
+            isOpen={isDeleteTeamModalOpen}
             className="max-w-xl"
-            onClose={() => setIsDeleteModalOpen(false)}
+            onClose={() => setIsDeleteTeamModalOpen(false)}
           >
             <div className="flex flex-col gap-y-2">
               {/* Title */}
@@ -211,7 +267,43 @@ const League = () => {
                 <SecondaryButton
                   className="text-sm"
                   onClick={() => {
-                    setIsDeleteModalOpen(false);
+                    setIsDeleteTeamModalOpen(false);
+                  }}
+                  text="Cancel"
+                />
+              </div>
+            </div>
+          </AlertModal>
+
+          {/* Delete Team Modal */}
+          <AlertModal
+            isOpen={isDeleteLeagueModalOpen}
+            className="max-w-xl"
+            onClose={() => setIsDeleteLeagueModalOpen(false)}
+          >
+            <div className="flex flex-col gap-y-2">
+              {/* Title */}
+              <h1 className="dark:text-darkmodetext font-bold text-2xl">
+                Are you sure you want to delete this league?
+              </h1>
+
+              {/* Subtitle */}
+              <h2 className="dark:text-darkmodetext mt-1 text-sm text-darkbg/70">
+                This action cannot be reversed. All teams within the league will
+                be deleted.
+              </h2>
+
+              {/* Buttons */}
+              <div className="mt-5 flex gap-x-5 justify-end">
+                <PrimaryButton
+                  className="text-sm bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600"
+                  onClick={deleteLeague}
+                  text="Delete"
+                />
+                <SecondaryButton
+                  className="text-sm"
+                  onClick={() => {
+                    setIsDeleteTeamModalOpen(false);
                   }}
                   text="Cancel"
                 />
@@ -230,6 +322,9 @@ const League = () => {
                   League ID: {league?.data?.data?.leagueId}
                 </p>
                 <p className="text-gray-500">
+                  Private League: {String(league?.data?.data?.private)}
+                </p>
+                <p className="text-gray-500">
                   Teams: {league?.data?.data?.numberOfTeams}
                 </p>
               </div>
@@ -244,7 +339,7 @@ const League = () => {
                         <span>Edit League</span>
                       </div>
                     }
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => setIsEditLeagueModalOpen(true)}
                   ></SecondaryButton>
                 )}
                 <SecondaryButton
@@ -257,6 +352,20 @@ const League = () => {
                   }
                   onClick={() => setIsModalOpen(true)}
                 ></SecondaryButton>
+                <SecondaryButton
+                  text={
+                    <div className="flex justify-center items-center  gap-x-2">
+                      <BsFillTrash3Fill className=" cursor-pointer " />
+                      Delete
+                    </div>
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsDeleteLeagueModalOpen(true);
+                  }}
+                  disabledText="Please wait..."
+                  className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                />
               </div>
             </Card>
 
@@ -341,7 +450,7 @@ const League = () => {
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             setTeamId(team?.id);
-                                            setIsEditModalOpen(true);
+                                            setIsEditTeamModalOpen(true);
                                           }}
                                           text={
                                             <div className="flex gap-x-2 items-center">
@@ -360,7 +469,7 @@ const League = () => {
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             setTeamId(team?.id);
-                                            setIsDeleteModalOpen(true);
+                                            setIsDeleteTeamModalOpen(true);
                                           }}
                                           disabledText="Please wait..."
                                           className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
@@ -450,7 +559,7 @@ const League = () => {
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             setTeamId(team?.id);
-                                            setIsEditModalOpen(true);
+                                            setIsEditTeamModalOpen(true);
                                           }}
                                           text={
                                             <div className="flex gap-x-2 items-center">
@@ -469,7 +578,7 @@ const League = () => {
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             setTeamId(team?.id);
-                                            setIsDeleteModalOpen(true);
+                                            setIsDeleteTeamModalOpen(true);
                                           }}
                                           disabledText="Please wait..."
                                           className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"

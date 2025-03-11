@@ -14,6 +14,7 @@ import Protector from "./Protector";
 import TeamModal from "./TeamModal";
 import CreateTeamModal from "./CreateTeamModal";
 import EditTeamModal from "./EditTeamModal";
+import EditLeagueModal from "./EditLeagueModal";
 
 export {
   PrimaryButton,
@@ -32,4 +33,5 @@ export {
   TeamModal,
   CreateTeamModal,
   EditTeamModal,
+  EditLeagueModal,
 };

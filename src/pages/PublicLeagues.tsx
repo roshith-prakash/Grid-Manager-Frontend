@@ -46,6 +46,8 @@ const PublicLeagues = () => {
       debouncedSearch != null &&
       debouncedSearch != undefined &&
       debouncedSearch.length != 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   // Fetching next set of leagues

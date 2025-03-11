@@ -21,7 +21,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaUserAlt } from "react-icons/fa";
@@ -30,9 +30,11 @@ import { RxCross2 } from "react-icons/rx";
 const EditTeamModal = ({
   teamId,
   onClose,
+  refetchFunction,
 }: {
   teamId: string;
   onClose: () => void;
+  refetchFunction?: () => void;
 }) => {
   // Setting up DND-KIT
   const mouseSensor = useSensor(MouseSensor);
@@ -124,6 +126,8 @@ const EditTeamModal = ({
   const [error, setError] = useState({
     name: 0,
   });
+
+  const queryClient = useQueryClient();
 
   // Name of the team
   const [name, setName] = useState("");
@@ -291,11 +295,17 @@ const EditTeamModal = ({
           teamName: name,
           price: Number(100 - availablePurse),
         })
-        .then(() => {
+        .then(async () => {
           toast.success("Team Edited!");
+          await queryClient.refetchQueries({
+            queryKey: ["team", teamId],
+            refetchType: "active",
+          });
+          refetchFunction();
           onClose();
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err);
           toast("Something went wrong!");
           onClose();
         });

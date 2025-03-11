@@ -26,6 +26,7 @@ const TeamModal = ({
         teamId: teamId,
       });
     },
+    enabled: !!teamId,
   });
 
   return (

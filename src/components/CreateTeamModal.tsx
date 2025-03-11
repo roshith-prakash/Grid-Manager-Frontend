@@ -31,9 +31,11 @@ import { RxCross2 } from "react-icons/rx";
 const CreateTeamModal = ({
   leagueId,
   onClose,
+  refetchFunction,
 }: {
   leagueId: string;
   onClose: () => void;
+  refetchFunction?: () => void;
 }) => {
   // Setting up DND-KIT
   const mouseSensor = useSensor(MouseSensor);
@@ -260,6 +262,7 @@ const CreateTeamModal = ({
         })
         .then(() => {
           toast("Team Created!");
+          refetchFunction();
           onClose();
         })
         .catch(() => {
