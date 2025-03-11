@@ -8,6 +8,10 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from "@/components";
+import {
+  NUMBER_OF_CONSTRUCTORS,
+  NUMBER_OF_DRIVERS,
+} from "@/constants/constants";
 import { useDBUser } from "@/context/UserContext";
 import { axiosInstance } from "@/utils/axiosInstance";
 import {
@@ -23,9 +27,6 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaUserAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-
-const NUMBER_OF_CONSTRUCTORS = 2;
-const NUMBER_OF_DRIVERS = 5;
 
 const CreateTeamModal = ({
   leagueId,

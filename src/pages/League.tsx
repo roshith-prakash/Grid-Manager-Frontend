@@ -2,7 +2,7 @@
 import { axiosInstance } from "@/utils/axiosInstance";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AlertModal from "@/components/reuseit/AlertModal";
 import Avatar from "@/components/reuseit/Avatar";
 import { LuCirclePlus } from "react-icons/lu";
@@ -14,10 +14,11 @@ import {
   EditTeamModal,
   PrimaryButton,
   SecondaryButton,
+  TeamModal,
 } from "@/components";
 import { useDBUser } from "@/context/UserContext";
 import { useInView } from "react-intersection-observer";
-import { BsFillTrash3Fill } from "react-icons/bs";
+import { BsFillTrash3Fill, BsPen } from "react-icons/bs";
 import toast from "react-hot-toast";
 
 const League = () => {
@@ -26,6 +27,8 @@ const League = () => {
   const [teamId, setTeamId] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [tabValue, setTabValue] = useState("allTeams");
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const { dbUser } = useDBUser();
 
   // Intersection observer to fetch new leagues
@@ -46,7 +49,7 @@ const League = () => {
     },
   });
 
-  // Fetching teams in the league
+  // Fetching all teams in the league
   const {
     data: teams,
     isLoading: loadingTeams,
@@ -56,7 +59,7 @@ const League = () => {
     refetch: refetchTeams,
     // refetch: refetchTeams,
   } = useInfiniteQuery({
-    queryKey: ["teams", leagueId],
+    queryKey: ["allTeams", leagueId],
     queryFn: ({ pageParam }) => {
       return axiosInstance.post("/team/get-teams-in-a-league", {
         leagueId: leagueId,
@@ -70,6 +73,32 @@ const League = () => {
     enabled: !!league?.data?.data?.leagueId,
   });
 
+  // Fetching all teams in the league
+  const {
+    data: userTeams,
+    isLoading: loadingUserTeams,
+    // error: teamsError,
+    fetchNextPage: fetchNextUserTeams,
+    isFetchingNextPage: loadingNextUserTeams,
+    refetch: refetchUserTeams,
+    // refetch: refetchTeams,
+  } = useInfiniteQuery({
+    queryKey: ["userTeams", dbUser?.id, leagueId],
+    queryFn: ({ pageParam }) => {
+      return axiosInstance.post("/team/get-user-league-teams", {
+        userId: dbUser?.id,
+        leagueId: leagueId,
+        page: pageParam,
+      });
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      return lastPage?.data?.nextPage;
+    },
+    enabled: !!league?.data?.data?.leagueId,
+  });
+
+  // Delete a selected team
   const deleteTeam = () => {
     axiosInstance
       .post("/team/delete-team", { teamId: teamId })
@@ -77,6 +106,7 @@ const League = () => {
         toast.success("Team Deleted.");
         refetchLeague();
         refetchTeams();
+        refetchUserTeams();
         setIsDeleteModalOpen(false);
       })
       .catch((err) => {
@@ -102,15 +132,30 @@ const League = () => {
 
   // Fetching next set of teams
   useEffect(() => {
-    if (inView) {
+    if (tabValue == "allTeams" && inView) {
       fetchNextTeams();
+    } else if (tabValue == "userTeams" && inView) {
+      fetchNextUserTeams();
     }
-  }, [inView, fetchNextTeams, teams?.pages?.length]);
+  }, [
+    tabValue,
+    inView,
+    fetchNextTeams,
+    fetchNextUserTeams,
+    teams?.pages?.length,
+  ]);
 
   return (
     <div>
       {league && (
         <>
+          {/* View Team in Modal */}
+          <TeamModal
+            teamId={teamId}
+            isModalOpen={isTeamModalOpen}
+            closeModal={() => setIsTeamModalOpen(false)}
+          />
+
           {/* Create A Team */}
           <AlertModal
             className="max-w-2xl w-full !px-0 lg:px-5 noscroller"
@@ -139,7 +184,7 @@ const League = () => {
             />
           </AlertModal>
 
-          {/* Delete Account Modal */}
+          {/* Delete Team Modal */}
           <AlertModal
             isOpen={isDeleteModalOpen}
             className="max-w-xl"
@@ -189,16 +234,30 @@ const League = () => {
                 </p>
               </div>
 
-              <SecondaryButton
-                className="dark:hover:!text-cta"
-                text={
-                  <div className="flex  gap-x-2 items-center">
-                    <LuCirclePlus className="text-xl" />
-                    <span>Add Team</span>
-                  </div>
-                }
-                onClick={() => setIsModalOpen(true)}
-              ></SecondaryButton>
+              <div className="flex items-center gap-x-5">
+                {league?.data?.data?.User.id == dbUser?.id && (
+                  <SecondaryButton
+                    className="dark:hover:!text-cta"
+                    text={
+                      <div className="flex  gap-x-2 items-center">
+                        <BsPen className="text-xl" />
+                        <span>Edit League</span>
+                      </div>
+                    }
+                    onClick={() => setIsModalOpen(true)}
+                  ></SecondaryButton>
+                )}
+                <SecondaryButton
+                  className="dark:hover:!text-cta"
+                  text={
+                    <div className="flex  gap-x-2 items-center">
+                      <LuCirclePlus className="text-xl" />
+                      <span>Add Team</span>
+                    </div>
+                  }
+                  onClick={() => setIsModalOpen(true)}
+                ></SecondaryButton>
+              </div>
             </Card>
 
             {/* User Info */}
@@ -219,97 +278,253 @@ const League = () => {
               </div>
             </Card>
 
-            {/* Teams */}
-            {teams &&
-              teams?.pages?.map((page, pageIndex) => {
-                return page?.data.teams?.map((team: any, index: number) => {
-                  return (
-                    <Card key={team.id} className="relative">
-                      <div className="p-4 space-y-4">
-                        <div className="flex justify-between">
-                          <h3 className="text-2xl font-bold">
-                            <span className="mr-2">
-                              #
-                              {pageIndex * page?.data.teams?.length +
-                                (index + 1)}
-                            </span>
-                            {team?.name}
-                          </h3>
+            {/* Tab Buttons */}
+            <div className="flex">
+              {/* Teams Tab Button */}
+              <button
+                onClick={() => setTabValue("allTeams")}
+                className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4 ${
+                  tabValue == "allTeams" &&
+                  "text-cta border-cta dark:text-white dark:border-darkmodeCTA"
+                }`}
+              >
+                All Teams
+              </button>
+              {/* Leagues Tab Button */}
+              <button
+                onClick={() => setTabValue("userTeams")}
+                className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4  ${
+                  tabValue == "userTeams" &&
+                  "text-cta border-cta dark:text-white dark:border-darkmodeCTA"
+                }`}
+              >
+                Your Teams
+              </button>
+            </div>
 
-                          {/* Edit & Delete Buttons */}
-                          {team.User.id == dbUser?.id && (
-                            <div className="flex gap-x-5">
-                              {/* Edit Button */}
-                              <SecondaryButton
-                                className="border-transparent dark:hover:!text-cta shadow-md"
+            {/* Tab Content */}
+            <div>
+              {tabValue == "allTeams" ? (
+                <>
+                  {/* All Teams */}
+                  <div className="flex flex-col gap-5">
+                    {teams &&
+                      teams?.pages?.map((page, pageIndex) => {
+                        return page?.data.teams?.map(
+                          (team: any, index: number) => {
+                            return (
+                              <Card
                                 onClick={() => {
                                   setTeamId(team?.id);
-                                  setIsEditModalOpen(true);
+                                  setIsTeamModalOpen(true);
                                 }}
-                                text={
-                                  <div className="flex gap-x-2 items-center">
-                                    <RiTeamLine className="text-xl" />
-                                    <span>Edit Team</span>
-                                  </div>
-                                }
-                              ></SecondaryButton>
-                              <SecondaryButton
-                                text={
-                                  <div className="flex justify-center items-center  gap-x-2">
-                                    <BsFillTrash3Fill className=" cursor-pointer " />
-                                    Delete
-                                  </div>
-                                }
-                                onClick={() => {
-                                  setTeamId(team?.id);
-                                  setIsDeleteModalOpen(true);
-                                }}
-                                disabledText="Please wait..."
-                                className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
-                              />
-                            </div>
-                          )}
-                        </div>
+                                key={team.id}
+                                className="relative cursor-pointer"
+                              >
+                                <div className="p-4 space-y-4">
+                                  <div className="flex justify-between">
+                                    <h3 className="text-2xl font-bold">
+                                      <span className="mr-2">
+                                        #
+                                        {pageIndex * page?.data.teams?.length +
+                                          (index + 1)}
+                                      </span>
+                                      {team?.name}
+                                    </h3>
 
-                        <p className="text-lg font-medium">
-                          Score : {team?.score}
-                        </p>
+                                    {/* Edit & Delete Buttons */}
+                                    {team.User.id == dbUser?.id && (
+                                      <div className="flex gap-x-5">
+                                        {/* Edit Button */}
+                                        <SecondaryButton
+                                          className="border-transparent dark:hover:!text-cta shadow-md"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setTeamId(team?.id);
+                                            setIsEditModalOpen(true);
+                                          }}
+                                          text={
+                                            <div className="flex gap-x-2 items-center">
+                                              <RiTeamLine className="text-xl" />
+                                              <span>Edit Team</span>
+                                            </div>
+                                          }
+                                        ></SecondaryButton>
+                                        <SecondaryButton
+                                          text={
+                                            <div className="flex justify-center items-center  gap-x-2">
+                                              <BsFillTrash3Fill className=" cursor-pointer " />
+                                              Delete
+                                            </div>
+                                          }
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setTeamId(team?.id);
+                                            setIsDeleteModalOpen(true);
+                                          }}
+                                          disabledText="Please wait..."
+                                          className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
 
-                        <div className="py-4 flex items-center space-x-2">
-                          <Avatar
-                            className="h-12 w-12"
-                            imageSrc={team.User.photoURL}
-                            fallBackText={team.User.name}
-                          ></Avatar>
-                          <div>
-                            <h3 className="text-lg font-semibold">
-                              {team.User.name}
-                            </h3>
-                            <p className="text-gray-500">
-                              @{team.User.username}
-                            </p>
-                          </div>
-                        </div>
+                                  <p className="text-lg font-medium">
+                                    Score : {team?.score}
+                                  </p>
+
+                                  <Link
+                                    to={`/user/${team.User.username}`}
+                                    className="py-4 flex items-center space-x-2"
+                                  >
+                                    <Avatar
+                                      className="h-12 w-12"
+                                      imageSrc={team.User.photoURL}
+                                      fallBackText={team.User.name}
+                                    ></Avatar>
+                                    <div>
+                                      <h3 className="text-lg font-semibold">
+                                        {team.User.name}
+                                      </h3>
+                                      <p className="text-gray-500">
+                                        @{team.User.username}
+                                      </p>
+                                    </div>
+                                  </Link>
+                                </div>
+                              </Card>
+                            );
+                          }
+                        );
+                      })}
+
+                    {/* Loader */}
+                    {(loadingTeams || loadingNextTeams) && (
+                      <div className="flex justify-center items-center py-10">
+                        <HashLoader
+                          color={"#9b0ced"}
+                          loading={loadingTeams || loadingNextTeams}
+                          size={100}
+                          aria-label="Loading Spinner"
+                          data-testid="loader"
+                        />
                       </div>
-                    </Card>
-                  );
-                });
-              })}
+                    )}
+                    <div ref={ref}></div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* User Teams */}
+                  <div className="flex flex-col gap-5">
+                    {userTeams &&
+                      userTeams?.pages?.map((page, pageIndex) => {
+                        return page?.data.teams?.map(
+                          (team: any, index: number) => {
+                            return (
+                              <Card
+                                onClick={() => {
+                                  setTeamId(team?.id);
+                                  setIsTeamModalOpen(true);
+                                }}
+                                key={team.id}
+                                className="relative cursor-pointer"
+                              >
+                                <div className="p-4 space-y-4">
+                                  <div className="flex justify-between">
+                                    <h3 className="text-2xl font-bold">
+                                      <span className="mr-2">
+                                        #
+                                        {pageIndex * page?.data.teams?.length +
+                                          (index + 1)}
+                                      </span>
+                                      {team?.name}
+                                    </h3>
 
-            {/* Team Loader */}
-            {(loadingTeams || loadingNextTeams) && (
-              <div className="flex justify-center items-center py-10">
-                <HashLoader
-                  color={"#9b0ced"}
-                  loading={loadingTeams || loadingNextTeams}
-                  size={100}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
-              </div>
-            )}
+                                    {/* Edit & Delete Buttons */}
+                                    {team.User.id == dbUser?.id && (
+                                      <div className="flex gap-x-5">
+                                        {/* Edit Button */}
+                                        <SecondaryButton
+                                          className="border-transparent dark:hover:!text-cta shadow-md"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setTeamId(team?.id);
+                                            setIsEditModalOpen(true);
+                                          }}
+                                          text={
+                                            <div className="flex gap-x-2 items-center">
+                                              <RiTeamLine className="text-xl" />
+                                              <span>Edit Team</span>
+                                            </div>
+                                          }
+                                        ></SecondaryButton>
+                                        <SecondaryButton
+                                          text={
+                                            <div className="flex justify-center items-center  gap-x-2">
+                                              <BsFillTrash3Fill className=" cursor-pointer " />
+                                              Delete
+                                            </div>
+                                          }
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setTeamId(team?.id);
+                                            setIsDeleteModalOpen(true);
+                                          }}
+                                          disabledText="Please wait..."
+                                          className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
 
-            <div ref={ref}></div>
+                                  <p className="text-lg font-medium">
+                                    Score : {team?.score}
+                                  </p>
+
+                                  <Link
+                                    to={`/profile`}
+                                    className="py-4 flex items-center space-x-2"
+                                  >
+                                    <Avatar
+                                      className="h-12 w-12"
+                                      imageSrc={team.User.photoURL}
+                                      fallBackText={team.User.name}
+                                    ></Avatar>
+                                    <div>
+                                      <h3 className="text-lg font-semibold">
+                                        {team.User.name}
+                                      </h3>
+                                      <p className="text-gray-500">
+                                        @{team.User.username}
+                                      </p>
+                                    </div>
+                                  </Link>
+                                </div>
+                              </Card>
+                            );
+                          }
+                        );
+                      })}
+
+                    {/* Loader */}
+                    {(loadingUserTeams || loadingNextUserTeams) && (
+                      <div className="flex justify-center items-center py-10">
+                        <HashLoader
+                          color={"#9b0ced"}
+                          loading={loadingUserTeams || loadingNextUserTeams}
+                          size={100}
+                          aria-label="Loading Spinner"
+                          data-testid="loader"
+                        />
+                      </div>
+                    )}
+
+                    <div ref={ref}></div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </>
       )}

@@ -3,10 +3,15 @@
 import {
   Draggable,
   Droppable,
+  ErrorStatement,
   Input,
   PrimaryButton,
   SecondaryButton,
 } from "@/components";
+import {
+  NUMBER_OF_CONSTRUCTORS,
+  NUMBER_OF_DRIVERS,
+} from "@/constants/constants";
 import { axiosInstance } from "@/utils/axiosInstance";
 import {
   DndContext,
@@ -21,9 +26,6 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaUserAlt } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-
-const NUMBER_OF_CONSTRUCTORS = 2;
-const NUMBER_OF_DRIVERS = 5;
 
 const EditTeamModal = ({
   teamId,
@@ -119,6 +121,9 @@ const EditTeamModal = ({
 
   // Available Budget
   const [availablePurse, setAvailablePurse] = useState(100);
+  const [error, setError] = useState({
+    name: 0,
+  });
 
   // Name of the team
   const [name, setName] = useState("");
@@ -261,6 +266,18 @@ const EditTeamModal = ({
 
   // Submit the team
   const handleSubmit = () => {
+    setError({
+      name: 0,
+    });
+
+    if (name == null || name == undefined || name.length == 0) {
+      setError((prev) => ({ ...prev, name: 1 }));
+      return;
+    } else if (name?.length > 30) {
+      setError((prev) => ({ ...prev, name: 2 }));
+      return;
+    }
+
     if (
       teamDrivers?.length === NUMBER_OF_DRIVERS &&
       teamConstructors?.length === NUMBER_OF_CONSTRUCTORS &&
@@ -312,8 +329,27 @@ const EditTeamModal = ({
           onChange={(e) => {
             setName(e.target.value);
           }}
+          onBlur={() => {
+            if (name == null || name == undefined || name.length == 0) {
+              setError((prev) => ({ ...prev, name: 1 }));
+              return;
+            } else if (name?.length > 30) {
+              setError((prev) => ({ ...prev, name: 2 }));
+              return;
+            } else {
+              setError((prev) => ({ ...prev, name: 0 }));
+            }
+          }}
           className="max-w-xl"
           placeholder="Team Name"
+        />
+        <ErrorStatement
+          isOpen={error.name == 1}
+          text={"Please enter a name for the team."}
+        />
+        <ErrorStatement
+          isOpen={error.name == 2}
+          text={"Team name cannot exceed 30 characters."}
         />
       </div>
 

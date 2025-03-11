@@ -102,10 +102,6 @@ const TeamModal = ({
                     id={`${constructor?.constructorNumber}`}
                   >
                     {constructor?.name}
-
-                    <div className="border-t-1 mt-2 dark:border-white/20 py-2">
-                      {constructor?.price} Cr.
-                    </div>
                   </div>
                 );
               })}

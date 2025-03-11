@@ -16,6 +16,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import Card from "@/components/reuseit/Card";
 import { useInView } from "react-intersection-observer";
 import HashLoader from "react-spinners/HashLoader";
+import Avatar from "@/components/reuseit/Avatar";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -273,7 +274,7 @@ const Profile = () => {
             onClick={() => setTabValue("teams")}
             className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4 ${
               tabValue == "teams" &&
-              "text-cta border-cta dark:text-darkmodeCTA dark:border-darkmodeCTA"
+              "text-cta border-cta dark:text-white dark:border-darkmodeCTA"
             }`}
           >
             Teams
@@ -283,7 +284,7 @@ const Profile = () => {
             onClick={() => setTabValue("leagues")}
             className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4  ${
               tabValue == "leagues" &&
-              "text-cta border-cta dark:text-darkmodeCTA dark:border-darkmodeCTA"
+              "text-cta border-cta dark:text-white dark:border-darkmodeCTA"
             }`}
           >
             Leagues
@@ -293,6 +294,7 @@ const Profile = () => {
         {/* Tab Content */}
         <div>
           {tabValue == "teams" ? (
+            // Teams
             <>
               <div className="flex justify-center flex-wrap py-10 px-5 gap-10">
                 {teams &&
@@ -359,6 +361,7 @@ const Profile = () => {
               <div ref={ref}></div>
             </>
           ) : (
+            // Leagues
             <>
               <div className="flex justify-center flex-wrap py-10 px-5 gap-10">
                 {leagues &&
