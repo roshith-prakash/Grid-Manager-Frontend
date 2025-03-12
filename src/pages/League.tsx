@@ -36,6 +36,7 @@ const League = () => {
   const [isDeleteLeagueModalOpen, setIsDeleteLeagueModalOpen] = useState(false);
   const [tabValue, setTabValue] = useState("allTeams");
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const { dbUser } = useDBUser();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -109,6 +110,7 @@ const League = () => {
 
   // Delete a selected team
   const deleteTeam = () => {
+    setDisabled(true);
     axiosInstance
       .post("/team/delete-team", { teamId: teamId })
       .then(() => {
@@ -116,16 +118,19 @@ const League = () => {
         refetchLeague();
         refetchTeams();
         refetchUserTeams();
+        setDisabled(false);
         setIsDeleteTeamModalOpen(false);
       })
       .catch((err) => {
         console.log(err);
         setIsDeleteTeamModalOpen(false);
+        setDisabled(false);
         toast.error("Something went wrong.");
       });
   };
 
   const deleteLeague = () => {
+    setDisabled(true);
     axiosInstance
       .post("/team/delete-league", { leagueId: leagueId })
       .then(async () => {
@@ -135,11 +140,13 @@ const League = () => {
           refetchType: "active",
         });
         setIsDeleteLeagueModalOpen(false);
+        setDisabled(false);
         navigate("/leagues");
       })
       .catch((err) => {
         console.log(err);
         setIsDeleteLeagueModalOpen(false);
+        setDisabled(false);
         toast.error("Something went wrong.");
       });
   };
@@ -260,6 +267,8 @@ const League = () => {
               {/* Buttons */}
               <div className="mt-5 flex gap-x-5 justify-end">
                 <PrimaryButton
+                  disabled={disabled}
+                  disabledText="Please Wait..."
                   className="text-sm bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600"
                   onClick={deleteTeam}
                   text="Delete"
@@ -296,6 +305,8 @@ const League = () => {
               {/* Buttons */}
               <div className="mt-5 flex gap-x-5 justify-end">
                 <PrimaryButton
+                  disabled={disabled}
+                  disabledText="Please Wait..."
                   className="text-sm bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600"
                   onClick={deleteLeague}
                   text="Delete"

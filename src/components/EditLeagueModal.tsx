@@ -41,6 +41,7 @@ const EditLeagueModal = ({
       setError((prev) => ({ ...prev, leagueName: 2 }));
       return;
     }
+
     setDisabled(true);
 
     axiosInstance
@@ -70,7 +71,7 @@ const EditLeagueModal = ({
   }, [league?.leagueId, league?.name, league?.private]);
 
   return (
-    <div className="relative bg-white dark:bg-secondarydarkbg dark:border-white/10 dark:border-2 w-full dark:bg-darkgrey dark:text-darkmodetext px-5">
+    <div className="relative bg-white dark:bg-secondarydarkbg  w-full dark:bg-darkgrey dark:text-darkmodetext px-5">
       <button
         onClick={onClose}
         className="absolute  right-5 text-2xl cursor-pointer"

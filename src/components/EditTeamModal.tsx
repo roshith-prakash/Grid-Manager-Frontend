@@ -6,7 +6,6 @@ import {
   ErrorStatement,
   Input,
   PrimaryButton,
-  SecondaryButton,
 } from "@/components";
 import {
   NUMBER_OF_CONSTRUCTORS,
@@ -59,6 +58,7 @@ const EditTeamModal = ({
 
   // Name of the team
   const [name, setName] = useState("");
+  const [disabled, setDisabled] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -305,12 +305,16 @@ const EditTeamModal = ({
       setError((prev) => ({ ...prev, name: 2 }));
       return;
     }
+    if (availablePurse < 0) {
+      toast.error("Purse cannot be negative!");
+      return;
+    }
 
     if (
       teamDrivers?.length === NUMBER_OF_DRIVERS &&
-      teamConstructors?.length === NUMBER_OF_CONSTRUCTORS &&
-      availablePurse >= 0
+      teamConstructors?.length === NUMBER_OF_CONSTRUCTORS
     ) {
+      setDisabled(true);
       axiosInstance
         .post("/team/edit-team", {
           teamId: teamId,
@@ -326,11 +330,13 @@ const EditTeamModal = ({
             refetchType: "active",
           });
           refetchFunction();
+          setDisabled(false);
           onClose();
         })
         .catch((err) => {
           console.log(err);
           toast("Something went wrong!");
+          setDisabled(false);
           onClose();
         });
     } else {
@@ -396,12 +402,11 @@ const EditTeamModal = ({
 
       {/* Submit Button */}
       <div className="mb-20 py-5 flex items-center justify-center gap-x-10">
-        <PrimaryButton onClick={handleSubmit} text="Edit Team" />
-        <SecondaryButton
-          onClick={() => {
-            onClose();
-          }}
-          text="Cancel"
+        <PrimaryButton
+          disabled={disabled}
+          disabledText="Please Wait..."
+          onClick={handleSubmit}
+          text="Edit Team"
         />
       </div>
 

@@ -6,7 +6,6 @@ import {
   ErrorStatement,
   Input,
   PrimaryButton,
-  SecondaryButton,
 } from "@/components";
 import {
   NUMBER_OF_CONSTRUCTORS,
@@ -95,6 +94,7 @@ const CreateTeamModal = ({
 
   // Name of the team
   const [name, setName] = useState("");
+  const [disabled, setDisabled] = useState(false);
 
   // Function to handle drag and drop
   const handleDragDrivers = (event) => {
@@ -245,12 +245,16 @@ const CreateTeamModal = ({
       setError((prev) => ({ ...prev, name: 2 }));
       return;
     }
+    if (availablePurse < 0) {
+      toast.error("Purse cannot be negative!");
+      return;
+    }
 
     if (
       teamDrivers?.length === NUMBER_OF_DRIVERS &&
-      teamConstructors?.length === NUMBER_OF_CONSTRUCTORS &&
-      availablePurse >= 0
+      teamConstructors?.length === NUMBER_OF_CONSTRUCTORS
     ) {
+      setDisabled(true);
       axiosInstance
         .post("/team/create-team", {
           user: dbUser,
@@ -263,10 +267,12 @@ const CreateTeamModal = ({
         .then(() => {
           toast("Team Created!");
           refetchFunction();
+          setDisabled(false);
           onClose();
         })
         .catch(() => {
           toast("Something went wrong!");
+          setDisabled(false);
           onClose();
         });
     } else {
@@ -300,7 +306,7 @@ const CreateTeamModal = ({
       </h2>
 
       {/* Team Name */}
-      <div className="pb-10 py-5 flex flex-col items-center justify-center">
+      <div className="pb-10 px-4 py-5 flex flex-col items-center justify-center">
         <p className="font-medium">Team Name</p>
         <Input
           onChange={(e) => {
@@ -332,16 +338,15 @@ const CreateTeamModal = ({
 
       {/* Submit Button */}
       <div className="mb-20 py-5 flex items-center justify-center gap-x-10">
-        <PrimaryButton onClick={handleSubmit} text="Create Team" />
-        <SecondaryButton
-          onClick={() => {
-            onClose();
-          }}
-          text="Cancel"
+        <PrimaryButton
+          disabled={disabled}
+          disabledText="Please Wait..."
+          onClick={handleSubmit}
+          text="Create Team"
         />
       </div>
 
-      <div className="md:px-5  min-h-screen">
+      <div className="md:px-5 min-h-screen">
         {/* Drivers */}
         <div className="flex flex-wrap-reverse">
           <DndContext sensors={sensors} onDragEnd={handleDragDrivers}>

@@ -251,6 +251,8 @@ const Profile = () => {
           {/* Buttons */}
           <div className="mt-5 flex gap-x-5 justify-end">
             <PrimaryButton
+              disabled={disabled}
+              disabledText="Please Wait..."
               className="text-sm bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600"
               onClick={deleteTeam}
               text="Delete"

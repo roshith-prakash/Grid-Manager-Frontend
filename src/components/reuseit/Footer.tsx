@@ -14,16 +14,18 @@ const Footer = () => {
     >
       {/* Floating Div */}
       <div className="dark:border-darkmodetext absolute -top-16 left-1/2 flex h-32 w-[90vw] -translate-x-1/2 items-center justify-around rounded-lg bg-[#1f1e1e] text-white lg:w-[80vw] dark:border-2">
-        <p className="text-xl font-medium">Let's Talk!</p>
-        <button className="flex cursor-pointer items-center gap-x-2 rounded-full border-2 border-white px-5 py-2 font-medium text-white transition-all hover:bg-white hover:text-black">
-          Click Me !
-        </button>
+        <p className="text-xl font-medium">
+          Grid Manager - Fantasy F1 for the fans, by the fans!
+        </p>
       </div>
 
       {/* Main Footer section */}
       <div className="flex flex-col pt-3 lg:flex-row">
         <div className="flex flex-1 flex-col items-center justify-center">
-          Add your content here
+          <p className="text-5xl font-bold">Grid Manager</p>
+          <p className="text-2xl font-medium pt-5">
+            Fantasy F1 brought to life!
+          </p>
         </div>
 
         {/* Image - hidden on smaller screens */}
