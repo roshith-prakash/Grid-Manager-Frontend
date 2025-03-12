@@ -50,11 +50,10 @@ const TeamModal = ({
               {team?.data?.team?.name}
             </h1>
 
-            <div className="py-8">
+            <div className="py-8 text-md font-medium flex flex-col gap-y-3">
               <p>League : {team?.data?.team?.League?.name}</p>
               <p>League ID : {team?.data?.team?.League?.leagueId}</p>
 
-              <p>Available purse : {100 - team?.data?.team?.price} Cr</p>
               <p>Points Scored : {team?.data?.team?.score}</p>
             </div>
 

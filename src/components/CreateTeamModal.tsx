@@ -287,11 +287,17 @@ const CreateTeamModal = ({
       {/* Available purse */}
       <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
         {" "}
+        Create A Team!
+      </h1>
+
+      {/* Available purse */}
+      <h2 className=" mb-10 pt-10 text-center font-medium text-2xl">
+        {" "}
         Available Purse :{" "}
         <span className={`${availablePurse < 0 && "text-red-500"}`}>
           {availablePurse} Cr.
         </span>
-      </h1>
+      </h2>
 
       {/* Team Name */}
       <div className="pb-10 py-5 flex flex-col items-center justify-center">

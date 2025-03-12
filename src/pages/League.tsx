@@ -275,7 +275,7 @@ const League = () => {
             </div>
           </AlertModal>
 
-          {/* Delete Team Modal */}
+          {/* Delete League Modal */}
           <AlertModal
             isOpen={isDeleteLeagueModalOpen}
             className="max-w-xl"
@@ -303,7 +303,7 @@ const League = () => {
                 <SecondaryButton
                   className="text-sm"
                   onClick={() => {
-                    setIsDeleteTeamModalOpen(false);
+                    setIsDeleteLeagueModalOpen(false);
                   }}
                   text="Cancel"
                 />
@@ -313,65 +313,117 @@ const League = () => {
 
           <div className="p-6 space-y-6">
             {/* League Info */}
-            <Card className="flex justify-between items-center py-3 px-6">
-              <div>
-                <h2 className="text-xl font-bold">
+            <Card className="py-5 px-6">
+              <div className="flex flex-wrap gap-8 justify-center md:justify-between items-center">
+                {/* Title */}
+                <h2 className="text-xl text-center md:text-left font-bold">
                   {league?.data?.data?.name}
                 </h2>
-                <p className="text-gray-500">
+
+                {/* Buttons */}
+                <div className="hidden md:flex flex-wrap flex-1 gap-y-5 justify-around md:justify-end items-center gap-x-4">
+                  {league?.data?.data?.User.id == dbUser?.id && (
+                    <SecondaryButton
+                      className="border-transparent dark:hover:!text-cta shadow-md"
+                      text={
+                        <div className="flex gap-x-2 items-center">
+                          <BsPen className="text-xl" />
+                          <span className="">Edit</span>
+                        </div>
+                      }
+                      onClick={() => setIsEditLeagueModalOpen(true)}
+                    ></SecondaryButton>
+                  )}
+                  <SecondaryButton
+                    className="border-transparent dark:hover:!text-cta shadow-md"
+                    text={
+                      <div className="flex  gap-x-2 items-center">
+                        <LuCirclePlus className="text-xl" />
+                        <span className="">Add</span>
+                      </div>
+                    }
+                    onClick={() => setIsModalOpen(true)}
+                  ></SecondaryButton>
+                  {league?.data?.data?.User.id == dbUser?.id && (
+                    <SecondaryButton
+                      text={
+                        <div className="flex justify-center items-center  gap-x-2">
+                          <BsFillTrash3Fill className="text-xl cursor-pointer " />
+                          <span className="">Delete</span>
+                        </div>
+                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsDeleteLeagueModalOpen(true);
+                      }}
+                      disabledText="Please wait..."
+                      className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* League Info */}
+              <div className="py-8 text-md font-medium flex flex-col items-center md:items-start gap-y-2">
+                <p className="text-black/75 dark:text-white/60">
                   League ID: {league?.data?.data?.leagueId}
                 </p>
-                <p className="text-gray-500">
+                <p className="text-black/75 dark:text-white/60">
                   Private League: {String(league?.data?.data?.private)}
                 </p>
-                <p className="text-gray-500">
+                <p className="text-black/75 dark:text-white/60">
                   Teams: {league?.data?.data?.numberOfTeams}
                 </p>
               </div>
 
-              <div className="flex items-center gap-x-5">
+              <div className="flex md:hidden flex-wrap flex-1 gap-y-5 justify-around md:justify-end items-center gap-x-4">
                 {league?.data?.data?.User.id == dbUser?.id && (
                   <SecondaryButton
-                    className="dark:hover:!text-cta"
+                    className="border-transparent dark:hover:!text-cta shadow-md"
                     text={
-                      <div className="flex  gap-x-2 items-center">
+                      <div className="flex gap-x-2 items-center">
                         <BsPen className="text-xl" />
-                        <span>Edit League</span>
+                        <span className="">Edit</span>
                       </div>
                     }
                     onClick={() => setIsEditLeagueModalOpen(true)}
                   ></SecondaryButton>
                 )}
                 <SecondaryButton
-                  className="dark:hover:!text-cta"
+                  className="border-transparent dark:hover:!text-cta shadow-md"
                   text={
                     <div className="flex  gap-x-2 items-center">
                       <LuCirclePlus className="text-xl" />
-                      <span>Add Team</span>
+                      <span className="">Add</span>
                     </div>
                   }
                   onClick={() => setIsModalOpen(true)}
                 ></SecondaryButton>
-                <SecondaryButton
-                  text={
-                    <div className="flex justify-center items-center  gap-x-2">
-                      <BsFillTrash3Fill className=" cursor-pointer " />
-                      Delete
-                    </div>
-                  }
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsDeleteLeagueModalOpen(true);
-                  }}
-                  disabledText="Please wait..."
-                  className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
-                />
+                {league?.data?.data?.User.id == dbUser?.id && (
+                  <SecondaryButton
+                    text={
+                      <div className="flex justify-center items-center  gap-x-2">
+                        <BsFillTrash3Fill className="text-xl cursor-pointer " />
+                        <span className="">Delete</span>
+                      </div>
+                    }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsDeleteLeagueModalOpen(true);
+                    }}
+                    disabledText="Please wait..."
+                    className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                  />
+                )}
               </div>
             </Card>
 
             {/* User Info */}
             <Card>
-              <div className="p-4 flex items-center space-x-4">
+              <Link
+                to={`/user/${league?.data?.data.User.username}`}
+                className="p-4 flex items-center space-x-4 w-fit"
+              >
                 <Avatar
                   imageSrc={league?.data?.data.User.photoURL}
                   fallBackText={league?.data?.data.User.name}
@@ -380,11 +432,11 @@ const League = () => {
                   <h3 className="text-lg font-semibold">
                     {league?.data?.data.User.name}
                   </h3>
-                  <p className="text-gray-500">
+                  <p className="text-black/75 dark:text-white/60">
                     @{league?.data?.data.User.username}
                   </p>
                 </div>
-              </div>
+              </Link>
             </Card>
 
             {/* Tab Buttons */}
@@ -416,7 +468,7 @@ const League = () => {
               {tabValue == "allTeams" ? (
                 <>
                   {/* All Teams */}
-                  <div className="flex flex-col gap-5">
+                  <div className="flex py-10  flex-col gap-5">
                     {teams &&
                       teams?.pages?.map((page, pageIndex) => {
                         return page?.data.teams?.map(
@@ -428,22 +480,23 @@ const League = () => {
                                   setIsTeamModalOpen(true);
                                 }}
                                 key={team.id}
-                                className="relative cursor-pointer"
+                                className="relative rounded-md border-2 border-darkbg/10 cursor-pointer"
                               >
                                 <div className="p-4 space-y-4">
-                                  <div className="flex justify-between">
-                                    <h3 className="text-2xl font-bold">
-                                      <span className="mr-2">
+                                  <div className="flex flex-wrap gap-y-5 gap-x-5 justify-between">
+                                    <h3 className="text-2xl text-nowrap font-bold">
+                                      <span className="mr-2 ">
                                         #
                                         {pageIndex * page?.data.teams?.length +
                                           (index + 1)}
+                                        .
                                       </span>
                                       {team?.name}
                                     </h3>
 
                                     {/* Edit & Delete Buttons */}
                                     {team.User.id == dbUser?.id && (
-                                      <div className="flex gap-x-5">
+                                      <div className="hidden md:flex flex-wrap flex-1 justify-end gap-x-5">
                                         {/* Edit Button */}
                                         <SecondaryButton
                                           className="border-transparent dark:hover:!text-cta shadow-md"
@@ -455,15 +508,15 @@ const League = () => {
                                           text={
                                             <div className="flex gap-x-2 items-center">
                                               <RiTeamLine className="text-xl" />
-                                              <span>Edit Team</span>
+                                              <span className="">Edit</span>
                                             </div>
                                           }
                                         ></SecondaryButton>
                                         <SecondaryButton
                                           text={
-                                            <div className="flex justify-center items-center  gap-x-2">
+                                            <div className="flex justify-center items-center gap-x-2">
                                               <BsFillTrash3Fill className=" cursor-pointer " />
-                                              Delete
+                                              <span className="">Delete</span>
                                             </div>
                                           }
                                           onClick={(e) => {
@@ -479,12 +532,12 @@ const League = () => {
                                   </div>
 
                                   <p className="text-lg font-medium">
-                                    Score : {team?.score}
+                                    Points : {team?.score}
                                   </p>
 
                                   <Link
                                     to={`/user/${team.User.username}`}
-                                    className="py-4 flex items-center space-x-2"
+                                    className="py-4 flex items-center space-x-2 w-fit"
                                   >
                                     <Avatar
                                       className="h-12 w-12"
@@ -495,11 +548,45 @@ const League = () => {
                                       <h3 className="text-lg font-semibold">
                                         {team.User.name}
                                       </h3>
-                                      <p className="text-gray-500">
+                                      <p className="text-black/75 dark:text-white/60">
                                         @{team.User.username}
                                       </p>
                                     </div>
                                   </Link>
+
+                                  {/* Buttons for small screen */}
+                                  <div className="flex md:hidden justify-end gap-x-5">
+                                    {/* Edit Button */}
+                                    <SecondaryButton
+                                      className="border-transparent flex-1 dark:hover:!text-cta shadow-md"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setTeamId(team?.id);
+                                        setIsEditTeamModalOpen(true);
+                                      }}
+                                      text={
+                                        <div className="flex w-full justify-center gap-x-2 items-center">
+                                          <RiTeamLine className="text-xl" />
+                                          <span className="">Edit</span>
+                                        </div>
+                                      }
+                                    ></SecondaryButton>
+                                    <SecondaryButton
+                                      text={
+                                        <div className="flex w-full justify-center gap-x-2 items-center">
+                                          <BsFillTrash3Fill className=" cursor-pointer " />
+                                          <span className="">Delete</span>
+                                        </div>
+                                      }
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setTeamId(team?.id);
+                                        setIsDeleteTeamModalOpen(true);
+                                      }}
+                                      disabledText="Please wait..."
+                                      className="border-transparent flex-1 dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                                    />
+                                  </div>
                                 </div>
                               </Card>
                             );
@@ -525,95 +612,127 @@ const League = () => {
               ) : (
                 <>
                   {/* User Teams */}
-                  <div className="flex flex-col gap-5">
+                  <div className="flex py-10  flex-col gap-5">
                     {userTeams &&
-                      userTeams?.pages?.map((page, pageIndex) => {
-                        return page?.data.teams?.map(
-                          (team: any, index: number) => {
-                            return (
-                              <Card
-                                onClick={() => {
-                                  setTeamId(team?.id);
-                                  setIsTeamModalOpen(true);
-                                }}
-                                key={team.id}
-                                className="relative cursor-pointer"
-                              >
-                                <div className="p-4 space-y-4">
-                                  <div className="flex justify-between">
-                                    <h3 className="text-2xl font-bold">
-                                      <span className="mr-2">
-                                        #
-                                        {pageIndex * page?.data.teams?.length +
-                                          (index + 1)}
-                                      </span>
-                                      {team?.name}
-                                    </h3>
+                      userTeams?.pages?.map((page) => {
+                        return page?.data.teams?.map((team: any) => {
+                          return (
+                            <Card
+                              onClick={() => {
+                                setTeamId(team?.id);
+                                setIsTeamModalOpen(true);
+                              }}
+                              key={team.id}
+                              className="relative cursor-pointer"
+                            >
+                              <div className="p-4 space-y-4">
+                                <div className="flex justify-between">
+                                  <h3 className="text-2xl font-bold">
+                                    {team?.name}
+                                  </h3>
 
-                                    {/* Edit & Delete Buttons */}
-                                    {team.User.id == dbUser?.id && (
-                                      <div className="flex gap-x-5">
-                                        {/* Edit Button */}
-                                        <SecondaryButton
-                                          className="border-transparent dark:hover:!text-cta shadow-md"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setTeamId(team?.id);
-                                            setIsEditTeamModalOpen(true);
-                                          }}
-                                          text={
-                                            <div className="flex gap-x-2 items-center">
-                                              <RiTeamLine className="text-xl" />
-                                              <span>Edit Team</span>
-                                            </div>
-                                          }
-                                        ></SecondaryButton>
-                                        <SecondaryButton
-                                          text={
-                                            <div className="flex justify-center items-center  gap-x-2">
-                                              <BsFillTrash3Fill className=" cursor-pointer " />
+                                  {/* Edit & Delete Buttons */}
+                                  {team.User.id == dbUser?.id && (
+                                    <div className="hidden md:flex gap-x-5">
+                                      {/* Edit Button */}
+                                      <SecondaryButton
+                                        className="border-transparent dark:hover:!text-cta shadow-md"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setTeamId(team?.id);
+                                          setIsEditTeamModalOpen(true);
+                                        }}
+                                        text={
+                                          <div className="flex gap-x-2 items-center">
+                                            <RiTeamLine className="text-xl" />
+                                            <span className="hidden md:inline-block">
+                                              Edit
+                                            </span>
+                                          </div>
+                                        }
+                                      ></SecondaryButton>
+                                      <SecondaryButton
+                                        text={
+                                          <div className="flex justify-center items-center  gap-x-2">
+                                            <BsFillTrash3Fill className=" cursor-pointer " />
+                                            <span className="hidden md:inline-block">
+                                              {" "}
                                               Delete
-                                            </div>
-                                          }
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setTeamId(team?.id);
-                                            setIsDeleteTeamModalOpen(true);
-                                          }}
-                                          disabledText="Please wait..."
-                                          className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
-                                        />
-                                      </div>
-                                    )}
-                                  </div>
-
-                                  <p className="text-lg font-medium">
-                                    Score : {team?.score}
-                                  </p>
-
-                                  <Link
-                                    to={`/profile`}
-                                    className="py-4 flex items-center space-x-2"
-                                  >
-                                    <Avatar
-                                      className="h-12 w-12"
-                                      imageSrc={team.User.photoURL}
-                                      fallBackText={team.User.name}
-                                    ></Avatar>
-                                    <div>
-                                      <h3 className="text-lg font-semibold">
-                                        {team.User.name}
-                                      </h3>
-                                      <p className="text-gray-500">
-                                        @{team.User.username}
-                                      </p>
+                                            </span>
+                                          </div>
+                                        }
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setTeamId(team?.id);
+                                          setIsDeleteTeamModalOpen(true);
+                                        }}
+                                        disabledText="Please wait..."
+                                        className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                                      />
                                     </div>
-                                  </Link>
+                                  )}
                                 </div>
-                              </Card>
-                            );
-                          }
-                        );
+
+                                <p className="text-lg font-medium">
+                                  Points : {team?.score}
+                                </p>
+
+                                <Link
+                                  to={`/profile`}
+                                  className="py-4 flex items-center space-x-2 w-fit"
+                                >
+                                  <Avatar
+                                    className="h-12 w-12"
+                                    imageSrc={team.User.photoURL}
+                                    fallBackText={team.User.name}
+                                  ></Avatar>
+                                  <div>
+                                    <h3 className="text-lg font-semibold">
+                                      {team.User.name}
+                                    </h3>
+                                    <p className="text-black/75 dark:text-white/60">
+                                      @{team.User.username}
+                                    </p>
+                                  </div>
+                                </Link>
+
+                                {/* Buttons for small screen */}
+                                <div className="flex md:hidden justify-end gap-x-5">
+                                  {/* Edit Button */}
+                                  <SecondaryButton
+                                    className="border-transparent flex-1 dark:hover:!text-cta shadow-md"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setTeamId(team?.id);
+                                      setIsEditTeamModalOpen(true);
+                                    }}
+                                    text={
+                                      <div className="flex w-full justify-center gap-x-2 items-center">
+                                        <RiTeamLine className="text-xl" />
+                                        <span className="">Edit</span>
+                                      </div>
+                                    }
+                                  ></SecondaryButton>
+                                  <SecondaryButton
+                                    text={
+                                      <div className="flex w-full justify-center gap-x-2 items-center">
+                                        <BsFillTrash3Fill className=" cursor-pointer " />
+                                        <span className="">Delete</span>
+                                      </div>
+                                    }
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setTeamId(team?.id);
+                                      setIsDeleteTeamModalOpen(true);
+                                    }}
+                                    disabledText="Please wait..."
+                                    className="border-transparent flex-1 dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                                  />
+                                </div>
+                              </div>
+                            </Card>
+                          );
+                        });
                       })}
 
                     {/* Loader */}

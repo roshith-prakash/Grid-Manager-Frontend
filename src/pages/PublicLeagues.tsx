@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import useDebounce from "../utils/useDebounce";
-import { Input } from "../components";
+import { Input, SecondaryButton } from "../components";
 import { IoIosSearch } from "react-icons/io";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../utils/axiosInstance";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import HashLoader from "react-spinners/HashLoader";
 import Avatar from "@/components/reuseit/Avatar";
+import { LuCirclePlus } from "react-icons/lu";
 
 const PublicLeagues = () => {
   // State for user input - passed to debouncer
   const [search, setSearch] = useState("");
   // Debouncing the input of the user
   const debouncedSearch = useDebounce(search);
+  const navigate = useNavigate();
 
   // Intersection observer to fetch new leagues
   const { ref, inView } = useInView();
@@ -46,6 +48,7 @@ const PublicLeagues = () => {
       debouncedSearch != null &&
       debouncedSearch != undefined &&
       debouncedSearch.length != 0,
+    staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
@@ -61,10 +64,23 @@ const PublicLeagues = () => {
     <>
       <div className="min-h-[70vh] dark:bg-darkbg dark:text-darkmodetext md:min-h-[65vh] lg:min-h-[60vh] px-8 lg:px-10 py-10">
         <div>
-          {/* Gradient Title */}
-          <h1 className="text-hovercta dark:text-darkmodeCTA text-4xl font-semibold">
-            Find a League!
-          </h1>
+          <div className="flex justify-between items-center">
+            {/* Gradient Title */}
+            <h1 className="text-hovercta dark:text-darkmodeCTA text-4xl font-semibold">
+              Find a League!
+            </h1>
+
+            <SecondaryButton
+              className="border-transparent dark:hover:!text-cta shadow-md"
+              text={
+                <div className="flex  gap-x-2 items-center">
+                  <LuCirclePlus className="text-xl" />
+                  <span className="">Add</span>
+                </div>
+              }
+              onClick={() => navigate("/create-league")}
+            ></SecondaryButton>
+          </div>
 
           {/* Input box */}
           <div className="flex justify-center">

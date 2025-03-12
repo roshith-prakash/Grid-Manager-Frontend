@@ -13,7 +13,7 @@ const Card = ({
 }) => {
   return (
     <div
-      className={`dark:bg-secondarydarkbg  overflow-hidden rounded-xl border-[1px] border-white bg-white shadow-2xl  ${className}`}
+      className={`dark:bg-secondarydarkbg border-1 overflow-hidden rounded-xl bg-white shadow-lg  ${className}`}
       style={style}
       onClick={onClick}
     >

@@ -43,6 +43,25 @@ const EditTeamModal = ({
 
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
+  // State for available drivers and constructors
+  const [availableDrivers, setAvailableDrivers] = useState([]);
+  const [availableConstructors, setAvailableConstructors] = useState([]);
+
+  // State for team drivers and constructors
+  const [teamDrivers, setTeamDrivers] = useState([]);
+  const [teamConstructors, setTeamConstructors] = useState([]);
+
+  // Available Budget
+  const [availablePurse, setAvailablePurse] = useState(100);
+  const [error, setError] = useState({
+    name: 0,
+  });
+
+  // Name of the team
+  const [name, setName] = useState("");
+
+  const queryClient = useQueryClient();
+
   // Querying Drivers
   const { data: drivers } = useQuery({
     queryKey: ["drivers"],
@@ -81,7 +100,19 @@ const EditTeamModal = ({
         )
       );
 
-      setTeamDrivers(team?.data?.team?.teamDrivers);
+      const remainingDrivers = availDrivers.filter((driver) =>
+        selectedDrivers?.includes(driver?.driverId)
+      );
+
+      const selectedteam = team?.data?.team?.teamDrivers?.map((item) => {
+        const foundObject = remainingDrivers.find(
+          (remainingitem) => remainingitem.driverId == item?.driverId
+        );
+
+        return { ...item, points: foundObject?.points };
+      });
+
+      setTeamDrivers(selectedteam);
     } else {
       setAvailableDrivers([]);
     }
@@ -100,7 +131,19 @@ const EditTeamModal = ({
         )
       );
 
-      setTeamConstructors(team?.data?.team?.teamConstructors);
+      const remainingDrivers = availConstructor.filter((constructor) =>
+        selectedConstructors?.includes(constructor?.constructorId)
+      );
+
+      const selectedteam = team?.data?.team?.teamConstructors?.map((item) => {
+        const foundObject = remainingDrivers.find(
+          (remainingitem) => remainingitem.constructorId == item?.constructorId
+        );
+
+        return { ...item, points: foundObject?.points };
+      });
+
+      setTeamConstructors(selectedteam);
     } else {
       setAvailableConstructors([]);
     }
@@ -112,25 +155,6 @@ const EditTeamModal = ({
       setAvailablePurse(100 - team?.data?.team?.price);
     }
   }, [team?.data]);
-
-  // State for available drivers and constructors
-  const [availableDrivers, setAvailableDrivers] = useState([]);
-  const [availableConstructors, setAvailableConstructors] = useState([]);
-
-  // State for team drivers and constructors
-  const [teamDrivers, setTeamDrivers] = useState([]);
-  const [teamConstructors, setTeamConstructors] = useState([]);
-
-  // Available Budget
-  const [availablePurse, setAvailablePurse] = useState(100);
-  const [error, setError] = useState({
-    name: 0,
-  });
-
-  const queryClient = useQueryClient();
-
-  // Name of the team
-  const [name, setName] = useState("");
 
   // Function to handle drag and drop
   const handleDragDrivers = (event) => {
@@ -323,13 +347,20 @@ const EditTeamModal = ({
         <RxCross2 />
       </button>
 
+      {/* Available purse */}
       <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
+        {" "}
+        Edit {team?.data?.team?.name}!
+      </h1>
+
+      {/* Available purse */}
+      <h2 className=" mb-10 pt-10 text-center font-medium text-2xl">
         {" "}
         Available Purse :{" "}
         <span className={`${availablePurse < 0 && "text-red-500"}`}>
           {availablePurse} Cr.
         </span>
-      </h1>
+      </h2>
 
       {/* Team Name */}
       <div className="pb-10 py-5 flex flex-col items-center justify-center">
@@ -512,6 +543,9 @@ const EditTeamModal = ({
                       >
                         {constructor?.name}
                         <div className="border-t-1 mt-2 py-2">
+                          Points in season : {constructor?.points}
+                        </div>
+                        <div className="border-t-1 mt-2 py-2">
                           {constructor?.price} Cr.
                         </div>
                       </Draggable>
@@ -554,6 +588,9 @@ const EditTeamModal = ({
                         id={`${constructor?.constructorNumber}`}
                       >
                         {constructor?.name}
+                        <div className="border-t-1 mt-2 py-2">
+                          Points in season : {constructor?.points}
+                        </div>
                         <div className="border-t-1 mt-2 py-2">
                           {constructor?.price} Cr.
                         </div>
