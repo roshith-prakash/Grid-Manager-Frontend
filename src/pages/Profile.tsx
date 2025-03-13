@@ -198,6 +198,8 @@ const Profile = () => {
             />
             <SecondaryButton
               className="text-sm"
+              disabled={disabled}
+              disabledText="Please Wait..."
               onClick={() => setIsDeleteProfileModalOpen(false)}
               text="Cancel"
             />
@@ -258,6 +260,8 @@ const Profile = () => {
               text="Delete"
             />
             <SecondaryButton
+              disabled={disabled}
+              disabledText="Please Wait..."
               className="text-sm"
               onClick={() => {
                 setIsDeleteTeamModalOpen(false);

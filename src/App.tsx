@@ -16,7 +16,7 @@ import { Footer, Navbar, Protector } from "./components";
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col dark:bg-darkbg dark:text-darkmodetext">
+    <div className="min-h-screen font-f1 flex flex-col dark:bg-darkbg dark:text-darkmodetext">
       <BrowserRouter>
         <Navbar />
         <main className="flex-1">

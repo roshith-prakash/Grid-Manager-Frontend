@@ -14,7 +14,7 @@ const Footer = () => {
     >
       {/* Floating Div */}
       <div className="dark:border-darkmodetext absolute -top-16 left-1/2 flex h-32 w-[90vw] -translate-x-1/2 items-center justify-around rounded-lg bg-[#1f1e1e] text-white lg:w-[80vw] dark:border-2">
-        <p className="text-xl font-medium">
+        <p className="text-xl px-5 text-center font-medium">
           Grid Manager - Fantasy F1 for the fans, by the fans!
         </p>
       </div>
@@ -23,14 +23,18 @@ const Footer = () => {
       <div className="flex flex-col pt-3 lg:flex-row">
         <div className="flex flex-1 flex-col items-center justify-center">
           <p className="text-5xl font-bold">Grid Manager</p>
-          <p className="text-2xl font-medium pt-5">
-            Fantasy F1 brought to life!
+          <p className="text-2xl font-medium text-center pt-5">
+            Experience the thrill of Fantasy F1 like never before!
           </p>
         </div>
 
         {/* Image - hidden on smaller screens */}
         <div className="hidden flex-1 items-center justify-center lg:flex">
-          <img src={logo} alt="" className="pointer-events-none h-60" />
+          <img
+            src={logo}
+            alt="Grid Manager"
+            className="pointer-events-none h-60"
+          />
         </div>
       </div>
     </footer>

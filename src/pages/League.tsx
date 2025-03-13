@@ -274,6 +274,8 @@ const League = () => {
                   text="Delete"
                 />
                 <SecondaryButton
+                  disabled={disabled}
+                  disabledText="Please Wait..."
                   className="text-sm"
                   onClick={() => {
                     setIsDeleteTeamModalOpen(false);
@@ -312,6 +314,8 @@ const League = () => {
                   text="Delete"
                 />
                 <SecondaryButton
+                  disabled={disabled}
+                  disabledText="Please Wait..."
                   className="text-sm"
                   onClick={() => {
                     setIsDeleteLeagueModalOpen(false);
@@ -367,6 +371,7 @@ const League = () => {
                         e.stopPropagation();
                         setIsDeleteLeagueModalOpen(true);
                       }}
+                      disabled={disabled}
                       disabledText="Please wait..."
                       className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
                     />
@@ -422,6 +427,7 @@ const League = () => {
                       e.stopPropagation();
                       setIsDeleteLeagueModalOpen(true);
                     }}
+                    disabled={disabled}
                     disabledText="Please wait..."
                     className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
                   />
@@ -535,6 +541,7 @@ const League = () => {
                                             setTeamId(team?.id);
                                             setIsDeleteTeamModalOpen(true);
                                           }}
+                                          disabled={disabled}
                                           disabledText="Please wait..."
                                           className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
                                         />

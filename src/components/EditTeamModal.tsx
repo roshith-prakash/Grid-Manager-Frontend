@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import {
@@ -6,6 +7,7 @@ import {
   ErrorStatement,
   Input,
   PrimaryButton,
+  SecondaryButton,
 } from "@/components";
 import {
   NUMBER_OF_CONSTRUCTORS,
@@ -21,9 +23,13 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaUserAlt } from "react-icons/fa";
+import {
+  IoIosAddCircleOutline,
+  IoIosRemoveCircleOutline,
+} from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 
 const EditTeamModal = ({
@@ -59,6 +65,8 @@ const EditTeamModal = ({
   // Name of the team
   const [name, setName] = useState("");
   const [disabled, setDisabled] = useState(false);
+
+  const ref = useRef();
 
   const queryClient = useQueryClient();
 
@@ -292,6 +300,84 @@ const EditTeamModal = ({
     }
   };
 
+  // To add driver in Small Screens
+  const addDriver = (driver: any) => {
+    const selectedDriver = availableDrivers.find(
+      (item) => item.permanentNumber == driver?.permanentNumber
+    );
+
+    // Ensure selectedDriver exists
+    if (selectedDriver) {
+      // Remove item from available items
+      setAvailableDrivers((items) =>
+        items.filter((item) => item.permanentNumber != driver?.permanentNumber)
+      );
+
+      // Add item to dropped items
+      setTeamDrivers((items) => [...items, selectedDriver]);
+      setAvailablePurse((purse) => purse - selectedDriver?.price);
+    }
+  };
+
+  // To add driver in Small Screens
+  const removeDriver = (driver: any) => {
+    const selectedDriver = teamDrivers.find(
+      (item) => item.permanentNumber == driver?.permanentNumber
+    );
+
+    // Ensure selectedDriver exists
+    if (selectedDriver) {
+      // Remove item from team
+      setTeamDrivers((items) =>
+        items.filter((item) => item.permanentNumber != driver?.permanentNumber)
+      );
+
+      // Add item back to available constructors
+      setAvailableDrivers((items) => [...items, selectedDriver]);
+
+      setAvailablePurse((purse) => purse + selectedDriver?.price);
+    }
+  };
+
+  // To add driver in Small Screens
+  const addConstructor = (constructor: any) => {
+    const selectedConstructor = availableConstructors.find(
+      (item) => item.constructorId == constructor?.constructorId
+    );
+
+    // Ensure selectedConstructor exists
+    if (selectedConstructor) {
+      // Remove item from available items
+      setAvailableConstructors((items) =>
+        items.filter((item) => item.constructorId != constructor?.constructorId)
+      );
+
+      // Add item to dropped items
+      setTeamConstructors((items) => [...items, selectedConstructor]);
+      setAvailablePurse((purse) => purse - selectedConstructor?.price);
+    }
+  };
+
+  // To add driver in Small Screens
+  const removeConstructor = (constructor: any) => {
+    const selectedConstructor = teamConstructors.find(
+      (item) => item.constructorId == constructor?.constructorId
+    );
+
+    // Ensure selectedConstructor exists
+    if (selectedConstructor) {
+      // Remove item from team
+      setTeamConstructors((items) =>
+        items.filter((item) => item.constructorId != constructor?.constructorId)
+      );
+
+      // Add item back to available constructors
+      setAvailableConstructors((items) => [...items, selectedConstructor]);
+
+      setAvailablePurse((purse) => purse + selectedConstructor?.price);
+    }
+  };
+
   // Submit the team
   const handleSubmit = () => {
     setError({
@@ -346,6 +432,9 @@ const EditTeamModal = ({
 
   return (
     <div>
+      <div ref={ref}></div>
+
+      {/* Close div button */}
       <button
         onClick={onClose}
         className="absolute  right-5 text-2xl cursor-pointer"
@@ -356,7 +445,7 @@ const EditTeamModal = ({
       {/* Available purse */}
       <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
         {" "}
-        Edit {team?.data?.team?.name}!
+        Edit {team?.data?.team?.name}
       </h1>
 
       {/* Available purse */}
@@ -369,7 +458,7 @@ const EditTeamModal = ({
       </h2>
 
       {/* Team Name */}
-      <div className="pb-10 py-5 flex flex-col items-center justify-center">
+      <div className="pb-10 px-4 py-5 flex flex-col items-center justify-center">
         <p className="font-medium">Team Name</p>
         <Input
           value={name}
@@ -406,11 +495,12 @@ const EditTeamModal = ({
           disabled={disabled}
           disabledText="Please Wait..."
           onClick={handleSubmit}
-          text="Edit Team"
+          text="Create Team"
         />
       </div>
 
-      <div className="md:px-5  min-h-screen">
+      {/* Drag and Drop - On Medium & large Screens */}
+      <div className="hidden md:flex flex-col md:px-5 min-h-screen">
         {/* Drivers */}
         <div className="flex flex-wrap-reverse">
           <DndContext sensors={sensors} onDragEnd={handleDragDrivers}>
@@ -606,6 +696,227 @@ const EditTeamModal = ({
             </div>
           </DndContext>
         </div>
+      </div>
+
+      {/* Add via Button- On Small Screens */}
+      <div className="flex md:hidden flex-col gap-y-10">
+        {/* Team Drivers */}
+        <div className="flex flex-col gap-y-5">
+          <div className="flex justify-between px-6 text-2xl font-medium">
+            <h3>Team Drivers</h3>
+          </div>
+
+          <div className="border-2 rounded border-white/25 flex flex-col gap-y-5 mx-5 px-2 py-5">
+            {teamDrivers?.length > 0 ? (
+              teamDrivers
+                ?.sort((a, b) => b?.price - a?.price)
+                .map((driver: any) => {
+                  return (
+                    <>
+                      <div className="flex border-2 overflow-hidden rounded border-white/15">
+                        {/* Image */}
+                        <div
+                          style={{
+                            backgroundColor: driver?.constructor_color,
+                          }}
+                          className="flex items-end"
+                        >
+                          {driver?.image ? (
+                            <img src={driver?.image} className=" mx-auto" />
+                          ) : (
+                            <FaUserAlt className="text-8xl mx-auto" />
+                          )}
+                        </div>
+
+                        {/* Driver Data */}
+                        <div className="px-2.5 text-sm flex-1">
+                          <p className="pt-1">
+                            {driver?.givenName} {driver?.familyName} (
+                            {driver?.code})
+                          </p>
+                          <p className="text-left"> </p>
+                          <p className="text-left">{driver?.constructor} </p>
+                          <div className="">
+                            Points in season : {driver?.points}
+                          </div>
+                          <div className="">Price : {driver?.price} Cr.</div>
+
+                          <div className="py-2 flex justify-center">
+                            <SecondaryButton
+                              onClick={() => removeDriver(driver)}
+                              className="!py-1.5 !px-3"
+                              text={
+                                <div className="flex gap-x-2 text-xs items-center">
+                                  <IoIosRemoveCircleOutline className="text-lg" />
+                                  <span>Remove</span>
+                                </div>
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })
+            ) : (
+              <p className="text-center">Add Drivers!</p>
+            )}
+          </div>
+        </div>
+
+        {/* Available Drivers */}
+        <div className="flex flex-col gap-y-5">
+          <div className="flex justify-between px-6 text-2xl font-medium">
+            <h3>Available Drivers</h3>
+          </div>
+
+          <div className="border-2 rounded border-white/25 flex flex-col gap-y-5 mx-5 px-2 py-5">
+            {availableDrivers
+              ?.sort((a, b) => b?.price - a?.price)
+              .map((driver: any) => {
+                return (
+                  <>
+                    <div className="flex border-2 overflow-hidden rounded border-white/15">
+                      {/* Image */}
+                      <div
+                        style={{
+                          backgroundColor: driver?.constructor_color,
+                        }}
+                        className="flex items-end"
+                      >
+                        {driver?.image ? (
+                          <img src={driver?.image} />
+                        ) : (
+                          <FaUserAlt className="text-8xl mx-auto" />
+                        )}
+                      </div>
+
+                      {/* Driver Data */}
+                      <div className="px-2.5 text-sm flex-1">
+                        <p className="pt-1">
+                          {driver?.givenName} {driver?.familyName} (
+                          {driver?.code})
+                        </p>
+                        <p className="text-left"> </p>
+                        <p className="text-left">{driver?.constructor} </p>
+                        <div className="">
+                          Points in season : {driver?.points}
+                        </div>
+                        <div className="">Price : {driver?.price} Cr.</div>
+
+                        <div className="py-3 flex justify-center">
+                          <SecondaryButton
+                            onClick={() => addDriver(driver)}
+                            className="!py-1.5 !px-3"
+                            text={
+                              <div className="flex gap-x-1 text-xs items-center">
+                                <IoIosAddCircleOutline className="text-lg" />
+                                <span>Add</span>
+                              </div>
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })}
+          </div>
+        </div>
+
+        {/* Team Constructors */}
+        <div className="flex flex-col gap-y-5">
+          <div className="flex justify-between px-6 text-2xl font-medium">
+            <h3>Team Constructors</h3>
+          </div>
+
+          <div className="border-2 rounded border-white/25 flex flex-col gap-y-5 mx-5 px-2 py-5">
+            {teamConstructors?.length > 0 ? (
+              teamConstructors
+                ?.sort((a, b) => b?.price - a?.price)
+                .map((constructor: any) => {
+                  return (
+                    <>
+                      <div className="flex flex-col py-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15">
+                        <p className="text-lg font-semibold">
+                          {constructor?.name}
+                        </p>
+                        <div className="">
+                          Points in season : {constructor?.points}
+                        </div>
+                        <div className="">Price :{constructor?.price} Cr.</div>
+
+                        <div className="py-3 flex justify-center">
+                          <SecondaryButton
+                            onClick={() => removeConstructor(constructor)}
+                            className="!py-1.5 !px-3"
+                            text={
+                              <div className="flex gap-x-1 text-xs items-center">
+                                <IoIosRemoveCircleOutline className="text-lg" />
+                                <span>Remove</span>
+                              </div>
+                            }
+                          />
+                        </div>
+                      </div>
+                    </>
+                  );
+                })
+            ) : (
+              <p className="text-center">Add Constructors!</p>
+            )}
+          </div>
+        </div>
+
+        {/* Available Constructors */}
+        <div className="flex flex-col gap-y-5">
+          <div className="flex justify-between px-6 text-2xl font-medium">
+            <h3>Available Constructors</h3>
+          </div>
+
+          <div className="border-2 rounded border-white/25 flex flex-col gap-y-5 mx-5 px-2 py-5">
+            {availableConstructors
+              ?.sort((a, b) => b?.price - a?.price)
+              .map((constructor: any) => {
+                return (
+                  <>
+                    <div className="flex flex-col py-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15">
+                      <p className="text-lg font-semibold">
+                        {constructor?.name}
+                      </p>
+                      <div className="">
+                        Points in season : {constructor?.points}
+                      </div>
+                      <div className="">Price :{constructor?.price} Cr.</div>
+
+                      <div className="py-3 flex justify-center">
+                        <SecondaryButton
+                          onClick={() => addConstructor(constructor)}
+                          className="!py-1.5 !px-3"
+                          text={
+                            <div className="flex gap-x-1 text-xs items-center">
+                              <IoIosAddCircleOutline className="text-lg" />
+                              <span>Add</span>
+                            </div>
+                          }
+                        />
+                      </div>
+                    </div>
+                  </>
+                );
+              })}
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll to Top */}
+      <div className="pt-10 pb-5 flex justify-center">
+        <SecondaryButton
+          onClick={() => {
+            ref?.current?.scrollIntoView({ behavior: "smooth" });
+          }}
+          text="Scroll to Top"
+        />
       </div>
     </div>
   );
