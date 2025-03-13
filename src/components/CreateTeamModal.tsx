@@ -58,6 +58,7 @@ const CreateTeamModal = ({
     queryFn: async () => {
       return axiosInstance.get("/team/get-drivers");
     },
+    staleTime: Infinity,
   });
 
   // Querying Constructors
@@ -66,6 +67,7 @@ const CreateTeamModal = ({
     queryFn: async () => {
       return axiosInstance.get("/team/get-constructors");
     },
+    staleTime: Infinity,
   });
 
   useEffect(() => {
@@ -242,79 +244,111 @@ const CreateTeamModal = ({
 
   // To add driver in Small Screens
   const addDriver = (driver: any) => {
-    const selectedDriver = availableDrivers.find(
-      (item) => item.permanentNumber == driver?.permanentNumber
-    );
-
-    // Ensure selectedDriver exists
-    if (selectedDriver) {
-      // Remove item from available items
-      setAvailableDrivers((items) =>
-        items.filter((item) => item.permanentNumber != driver?.permanentNumber)
+    if (
+      !teamDrivers.some(
+        (item) => item.permanentNumber == driver?.permanentNumber
+      )
+    ) {
+      const selectedDriver = availableDrivers.find(
+        (item) => item.permanentNumber == driver?.permanentNumber
       );
 
-      // Add item to dropped items
-      setTeamDrivers((items) => [...items, selectedDriver]);
-      setAvailablePurse((purse) => purse - selectedDriver?.price);
+      // Ensure selectedDriver exists
+      if (selectedDriver) {
+        // Remove item from available items
+        setAvailableDrivers((items) =>
+          items.filter(
+            (item) => item.permanentNumber != driver?.permanentNumber
+          )
+        );
+
+        // Add item to dropped items
+        setTeamDrivers((items) => [...items, selectedDriver]);
+        setAvailablePurse((purse) => purse - selectedDriver?.price);
+      }
     }
   };
 
   // To add driver in Small Screens
   const removeDriver = (driver: any) => {
-    const selectedDriver = teamDrivers.find(
-      (item) => item.permanentNumber == driver?.permanentNumber
-    );
-
-    // Ensure selectedDriver exists
-    if (selectedDriver) {
-      // Remove item from team
-      setTeamDrivers((items) =>
-        items.filter((item) => item.permanentNumber != driver?.permanentNumber)
+    if (
+      !availableDrivers.some(
+        (item) => item.permanentNumber == driver?.permanentNumber
+      )
+    ) {
+      const selectedDriver = teamDrivers.find(
+        (item) => item.permanentNumber == driver?.permanentNumber
       );
 
-      // Add item back to available constructors
-      setAvailableDrivers((items) => [...items, selectedDriver]);
+      // Ensure selectedDriver exists
+      if (selectedDriver) {
+        // Remove item from team
+        setTeamDrivers((items) =>
+          items.filter(
+            (item) => item.permanentNumber != driver?.permanentNumber
+          )
+        );
 
-      setAvailablePurse((purse) => purse + selectedDriver?.price);
+        // Add item back to available constructors
+        setAvailableDrivers((items) => [...items, selectedDriver]);
+
+        setAvailablePurse((purse) => purse + selectedDriver?.price);
+      }
     }
   };
 
   // To add driver in Small Screens
   const addConstructor = (constructor: any) => {
-    const selectedConstructor = availableConstructors.find(
-      (item) => item.constructorId == constructor?.constructorId
-    );
-
-    // Ensure selectedConstructor exists
-    if (selectedConstructor) {
-      // Remove item from available items
-      setAvailableConstructors((items) =>
-        items.filter((item) => item.constructorId != constructor?.constructorId)
+    if (
+      !teamConstructors.some(
+        (item) => item.constructorId == constructor?.constructorId
+      )
+    ) {
+      const selectedConstructor = availableConstructors.find(
+        (item) => item.constructorId == constructor?.constructorId
       );
 
-      // Add item to dropped items
-      setTeamConstructors((items) => [...items, selectedConstructor]);
-      setAvailablePurse((purse) => purse - selectedConstructor?.price);
+      // Ensure selectedConstructor exists
+      if (selectedConstructor) {
+        // Remove item from available items
+        setAvailableConstructors((items) =>
+          items.filter(
+            (item) => item.constructorId != constructor?.constructorId
+          )
+        );
+
+        // Add item to dropped items
+        setTeamConstructors((items) => [...items, selectedConstructor]);
+        setAvailablePurse((purse) => purse - selectedConstructor?.price);
+      }
     }
   };
 
   // To add driver in Small Screens
   const removeConstructor = (constructor: any) => {
-    const selectedConstructor = teamConstructors.find(
-      (item) => item.constructorId == constructor?.constructorId
-    );
-
-    // Ensure selectedConstructor exists
-    if (selectedConstructor) {
-      // Remove item from team
-      setTeamConstructors((items) =>
-        items.filter((item) => item.constructorId != constructor?.constructorId)
+    if (
+      !availableConstructors.some(
+        (item) => item.constructorId == constructor?.constructorId
+      )
+    ) {
+      const selectedConstructor = teamConstructors.find(
+        (item) => item.constructorId == constructor?.constructorId
       );
 
-      // Add item back to available constructors
-      setAvailableConstructors((items) => [...items, selectedConstructor]);
+      // Ensure selectedConstructor exists
+      if (selectedConstructor) {
+        // Remove item from team
+        setTeamConstructors((items) =>
+          items.filter(
+            (item) => item.constructorId != constructor?.constructorId
+          )
+        );
 
-      setAvailablePurse((purse) => purse + selectedConstructor?.price);
+        // Add item back to available constructors
+        setAvailableConstructors((items) => [...items, selectedConstructor]);
+
+        setAvailablePurse((purse) => purse + selectedConstructor?.price);
+      }
     }
   };
 
@@ -362,7 +396,7 @@ const CreateTeamModal = ({
           onClose();
         });
     } else {
-      toast("Please Add drivers & constructors before creating a Team!");
+      toast("Please add 5 drivers & 2 constructors before creating a Team!");
     }
   };
 
@@ -690,6 +724,9 @@ const CreateTeamModal = ({
         <div className="flex flex-col gap-y-5">
           <div className="flex justify-between px-6 text-2xl font-medium">
             <h3>Team Drivers</h3>
+            <span>
+              {teamDrivers?.length} / {NUMBER_OF_DRIVERS}
+            </span>
           </div>
 
           <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
@@ -840,6 +877,9 @@ const CreateTeamModal = ({
         <div className="flex flex-col gap-y-5">
           <div className="flex justify-between px-6 text-2xl font-medium">
             <h3>Team Constructors</h3>
+            <span>
+              {teamConstructors?.length} / {NUMBER_OF_CONSTRUCTORS}
+            </span>
           </div>
 
           <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
