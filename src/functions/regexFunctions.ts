@@ -17,8 +17,9 @@ export const isValidPassword = (password: string) => {
 
 // Ensures a username contains only:
 // - Lowercase letters (a-z)
+// - Uppercase letter (A-Z)
 // - Digits (0-9)
 // - Underscores (_)
 export const isValidUsername = (username: string) => {
-  return /^[a-z0-9_]+$/.test(username);
+  return /^[a-zA-Z0-9_]+$/.test(username);
 };

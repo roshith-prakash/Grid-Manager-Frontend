@@ -93,10 +93,10 @@ const EditProfile = () => {
     setDisabled(true);
 
     // If username is changed, check if the username is available or taken
-    if (username != dbUser?.username) {
+    if (username?.toLowerCase() != dbUser?.username) {
       // Check if username is already in use.
       axiosInstance
-        .post("/user/check-username", { username: username })
+        .post("/user/check-username", { username: username?.toLowerCase() })
         .then((res) => {
           // If username already exists - show an error
           if (res.data?.exists) {
@@ -116,7 +116,7 @@ const EditProfile = () => {
 
             // Add details in the user object
             const obj = {
-              username: username,
+              username: username?.toLowerCase(),
               name: name,
               image: typeof image == "string" ? image : null,
             };
@@ -348,9 +348,7 @@ const EditProfile = () => {
 
               <ErrorStatement
                 isOpen={error.username == 4}
-                text={
-                  "Username can contain lowercase alphabets, numbers and underscore."
-                }
+                text={"Username can contain alphabets, numbers and underscore."}
               />
             </div>
           </div>
