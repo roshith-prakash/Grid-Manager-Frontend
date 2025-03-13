@@ -9,7 +9,7 @@ const Footer = () => {
       className={`${
         isDarkMode
           ? "bg-secondarydarkbg border-darkmodetext border-t-2"
-          : "from-cta to-hovercta bg-gradient-to-b"
+          : "from-darkmodeCTA to-[#000] bg-gradient-to-b"
       } font-inter min-h-50vh px-010 relative mt-20 pt-36 pb-20 text-white`}
     >
       {/* Floating Div */}

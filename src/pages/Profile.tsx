@@ -388,26 +388,24 @@ const Profile = () => {
                 {teams &&
                   teams?.pages?.map((page) => {
                     return page?.data.teams?.map((team: any) => {
-                      console.log(team);
                       return (
                         <div
-                          className="relative cursor-pointer"
+                          className="relative cursor-pointer bg-white dark:bg-secondarydarkbg p-4 rounded-lg shadow-md pt-6 transition-all hover:shadow-lg"
                           onClick={() => {
                             setTeamId(team?.id);
                             setIsTeamModalOpen(true);
                           }}
                         >
                           <div className="flex gap-2 absolute top-3 right-3">
-                            {" "}
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setTeamId(team?.id);
                                 setIsEditModalOpen(true);
                               }}
-                              className="text-xl  cursor-pointer"
+                              className="text-xl hover:text-cta dark:hover:text-darkmodeCTA transition-all cursor-pointer"
                             >
-                              <BsPen className="text-xl hover:text-cta dark:hover:text-darkmodeCTA transition-all cursor-pointer" />
+                              <BsPen className="text-xl" />
                             </button>
                             <button
                               onClick={(e) => {
@@ -415,20 +413,31 @@ const Profile = () => {
                                 setTeamId(team?.id);
                                 setIsDeleteTeamModalOpen(true);
                               }}
-                              className="text-xl  cursor-pointer"
+                              className="text-xl hover:text-red-600 transition-all cursor-pointer"
                             >
                               <BsFillTrash3Fill className="text-red-500" />
                             </button>
                           </div>
-                          <Card key={team?.id} className="p-3 w-fit">
-                            <p>{team?.name}</p>
-                            <p>Points : {team?.score}</p>
-                            <p>{team?.League?.name}</p>
-                            <p>{team?.League?.leagueId}</p>
 
-                            <p>
-                              {" "}
-                              Last Updated at :{" "}
+                          <Card
+                            key={team?.id}
+                            className="p-4 border-none shadow-none w-fit text-center"
+                          >
+                            <p className="text-lg font-semibold text-darkbg dark:text-white">
+                              {team?.name}
+                            </p>
+                            <p className="text-md text-gray-600 dark:text-white/70">
+                              Points:{" "}
+                              <span className="font-medium">{team?.score}</span>
+                            </p>
+                            <p className="text-md text-gray-600 dark:text-white/70">
+                              {team?.League?.name}
+                            </p>
+                            <p className="text-md text-gray-600 dark:text-white/70">
+                              League ID: {team?.League?.leagueId}
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-white/50 mt-2">
+                              Last Updated:{" "}
                               {dayjs(new Date(team?.updatedAt)).format(
                                 "MMM DD, YYYY"
                               )}
@@ -452,7 +461,7 @@ const Profile = () => {
                 </div>
               )}
 
-              {/* If no leagues are found */}
+              {/* If no teams are found */}
               {teams && teams?.pages?.[0]?.data?.teams.length == 0 && (
                 <div className="flex flex-col justify-center pt-10">
                   <div className="flex justify-center">
@@ -482,27 +491,34 @@ const Profile = () => {
                       return (
                         <>
                           <Link
-                            className="border-2 rounded-xl bg-white/5 w-fit px-5 py-5"
+                            className="border-2 max-w-72 rounded-xl flex flex-col bg-white/5 w-fit px-5 py-5 transition-all hover:shadow-md hover:bg-white/10"
                             to={`/leagues/${league?.leagueId}`}
                           >
-                            <p>League Name : {league?.name}</p>
-
-                            <p>League Id : {league?.leagueId}</p>
-
-                            <p>Number of Teams : {league?.numberOfTeams}</p>
-
-                            <p>Private : {String(league?.private)}</p>
+                            <div className="flex-1">
+                              <p className="text-lg font-semibold">
+                                League Name: {league?.name}
+                              </p>
+                              <p className="text-md dark:text-white/80 text-darkbg/70">
+                                League ID: {league?.leagueId}
+                              </p>
+                              <p className="text-md dark:text-white/80 text-darkbg/70">
+                                Number of Teams: {league?.numberOfTeams}
+                              </p>
+                              <p className="text-md dark:text-white/80 text-darkbg/70">
+                                Private: {String(league?.private)}
+                              </p>
+                            </div>
 
                             {/* Author section - link to user's page. */}
                             <Link
                               to={`/user/${league?.User?.username}`}
-                              className="mt-5 flex gap-x-3 items-center w-fit"
+                              className="mt-5 flex gap-x-3 items-center w-fit hover:underline"
                             >
                               {/* User's profile picture or avatar on left */}
                               {league?.User?.photoURL ? (
                                 <img
                                   src={league?.User?.photoURL}
-                                  className="h-10 w-10 rounded-full"
+                                  className="h-10 w-10 rounded-full border border-gray-500"
                                 />
                               ) : (
                                 <Avatar
@@ -512,10 +528,10 @@ const Profile = () => {
                               )}
                               {/* User's name & username on the right */}
                               <div>
-                                <p className="break-all font-medium">
+                                <p className="text-md font-semibold break-all">
                                   {league?.User?.name}
                                 </p>
-                                <p className="break-all">
+                                <p className="text-sm text-darkbg/50 dark:text-white/50 break-all">
                                   @{league?.User?.username}
                                 </p>
                               </div>

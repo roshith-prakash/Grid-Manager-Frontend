@@ -103,7 +103,7 @@ const PublicLeagues = () => {
           )}
 
           {leagues && leagues?.pages?.[0]?.data?.leagues.length > 0 && (
-            <div className="py-10 lg:px-5 flex flex-wrap gap-8">
+            <div className="py-10 lg:px-5 flex justify-center flex-wrap gap-8">
               {/* Map leagues if leagues are found */}
               {leagues &&
                 leagues?.pages?.map((page) => {
@@ -113,25 +113,31 @@ const PublicLeagues = () => {
                     if (league?.name) {
                       return (
                         <Link
-                          className="border-2 w-80 rounded-xl bg-white/5  px-5 py-5"
+                          className="border-2 max-w-72 rounded-xl flex flex-col bg-white/5 w-fit px-5 py-5 transition-all hover:shadow-md hover:bg-white/10"
                           to={`/leagues/${league?.leagueId}`}
                         >
-                          <p>League Name : {league?.name}</p>
-
-                          <p>League Id : {league?.leagueId}</p>
-
-                          <p>Number of Teams : {league?.numberOfTeams}</p>
+                          <div className="flex-1">
+                            <p className="text-lg font-semibold">
+                              League Name: {league?.name}
+                            </p>
+                            <p className="text-md dark:text-white/80 text-darkbg/70">
+                              League ID: {league?.leagueId}
+                            </p>
+                            <p className="text-md dark:text-white/80 text-darkbg/70">
+                              Number of Teams: {league?.numberOfTeams}
+                            </p>
+                          </div>
 
                           {/* Author section - link to user's page. */}
                           <Link
                             to={`/user/${league?.User?.username}`}
-                            className="mt-5 flex gap-x-3 items-center w-fit"
+                            className="mt-5 flex gap-x-3 items-center w-fit hover:underline"
                           >
                             {/* User's profile picture or avatar on left */}
                             {league?.User?.photoURL ? (
                               <img
                                 src={league?.User?.photoURL}
-                                className="h-10 w-10 rounded-full"
+                                className="h-10 w-10 rounded-full border border-gray-500"
                               />
                             ) : (
                               <Avatar
@@ -141,10 +147,10 @@ const PublicLeagues = () => {
                             )}
                             {/* User's name & username on the right */}
                             <div>
-                              <p className="break-all font-medium">
+                              <p className="text-md font-semibold break-all">
                                 {league?.User?.name}
                               </p>
-                              <p className="break-all">
+                              <p className="text-sm text-darkbg/50 dark:text-white/50 break-all">
                                 @{league?.User?.username}
                               </p>
                             </div>

@@ -168,7 +168,7 @@ const Navbar = () => {
                 {dbUser ? (
                   <Avatar
                     border
-                    borderClassName="bg-gradient-to-br  from-[#ec8cff] to-cta"
+                    borderClassName="bg-gradient-to-br from-darkmodeCTA via-cta to-hovercta"
                     imageSrc={dbUser?.photoURL}
                     fallBackText={dbUser?.name}
                   />

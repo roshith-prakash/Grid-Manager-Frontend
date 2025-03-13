@@ -56,7 +56,7 @@ const Avatar = ({
           className={`${
             border &&
             `dark:border-secondarydarkbg ${borderClassName} border-2 border-white`
-          } from-cta to-hovercta flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-lg font-semibold text-white ${className}`}
+          }  from-darkmodeCTA via-cta to-hovercta flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-lg font-semibold text-white ${className}`}
         >
           {extractFirstLetters(fallBackText)}
         </p>

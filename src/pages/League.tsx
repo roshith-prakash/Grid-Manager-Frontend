@@ -497,12 +497,12 @@ const League = () => {
                                   setIsTeamModalOpen(true);
                                 }}
                                 key={team.id}
-                                className="relative rounded-md border-2 border-darkbg/10 cursor-pointer"
+                                className="relative rounded-md border-2 cursor-pointer transition-all"
                               >
-                                <div className="p-4 space-y-4">
-                                  <div className="flex flex-wrap gap-y-5 gap-x-5 justify-between">
-                                    <h3 className="text-2xl text-nowrap font-bold">
-                                      <span className="mr-2 ">
+                                <div className="p-5 space-y-4">
+                                  <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
+                                    <h3 className="text-xl font-bold  truncate w-48">
+                                      <span className="mr-2">
                                         #
                                         {pageIndex * page?.data.teams?.length +
                                           (index + 1)}
@@ -512,11 +512,10 @@ const League = () => {
                                     </h3>
 
                                     {/* Edit & Delete Buttons */}
-                                    {team.User.id == dbUser?.id && (
-                                      <div className="hidden md:flex flex-wrap flex-1 justify-end gap-x-5">
-                                        {/* Edit Button */}
+                                    {team.User.id === dbUser?.id && (
+                                      <div className="hidden md:flex flex-wrap flex-1 justify-end gap-x-4">
                                         <SecondaryButton
-                                          className="border-transparent dark:hover:!text-cta shadow-md"
+                                          className="border-transparent shadow-md hover:text-cta"
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             setTeamId(team?.id);
@@ -524,16 +523,16 @@ const League = () => {
                                           }}
                                           text={
                                             <div className="flex gap-x-2 items-center">
-                                              <RiTeamLine className="text-xl" />
-                                              <span className="">Edit</span>
+                                              <RiTeamLine className="text-lg" />
+                                              <span>Edit</span>
                                             </div>
                                           }
-                                        ></SecondaryButton>
+                                        />
                                         <SecondaryButton
                                           text={
-                                            <div className="flex justify-center items-center gap-x-2">
-                                              <BsFillTrash3Fill className=" cursor-pointer " />
-                                              <span className="">Delete</span>
+                                            <div className="flex items-center gap-x-2">
+                                              <BsFillTrash3Fill className="text-lg" />
+                                              <span>Delete</span>
                                             </div>
                                           }
                                           onClick={(e) => {
@@ -543,57 +542,56 @@ const League = () => {
                                           }}
                                           disabled={disabled}
                                           disabledText="Please wait..."
-                                          className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                                          className="border-transparent text-red-500 hover:bg-red-600 hover:text-white shadow-md"
                                         />
                                       </div>
                                     )}
                                   </div>
 
-                                  <p className="text-lg font-medium">
-                                    Points : {team?.score}
+                                  <p className="text-md font-medium">
+                                    Points: {team?.score}
                                   </p>
 
                                   <Link
                                     to={`/user/${team.User.username}`}
-                                    className="py-4 flex items-center space-x-2 w-fit"
+                                    className="py-3 flex items-center space-x-3 w-fit hover:underline"
                                   >
                                     <Avatar
                                       className="h-12 w-12"
                                       imageSrc={team.User.photoURL}
                                       fallBackText={team.User.name}
-                                    ></Avatar>
+                                    />
                                     <div>
-                                      <h3 className="text-lg font-semibold">
+                                      <h3 className="text-md font-semibold ">
                                         {team.User.name}
                                       </h3>
-                                      <p className="text-black/75 dark:text-white/60">
+                                      <p className="text-sm text-darkbg/50 dark:text-white/50">
                                         @{team.User.username}
                                       </p>
                                     </div>
                                   </Link>
 
-                                  {/* Buttons for small screen */}
-                                  <div className="flex md:hidden justify-end gap-x-5">
-                                    {/* Edit Button */}
+                                  {/* Buttons for small screens */}
+                                  <div className="flex md:hidden justify-end gap-x-4">
                                     <SecondaryButton
-                                      className="border-transparent flex-1 dark:hover:!text-cta shadow-md"
+                                      className="border-transparent flex-1 text-white shadow-md hover:text-cta"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         setTeamId(team?.id);
                                         setIsEditTeamModalOpen(true);
                                       }}
                                       text={
-                                        <div className="flex w-full justify-center gap-x-2 items-center">
-                                          <RiTeamLine className="text-xl" />
-                                          <span className="">Edit</span>
+                                        <div className="flex justify-center gap-x-2 items-center">
+                                          <RiTeamLine className="text-lg" />
+                                          <span>Edit</span>
                                         </div>
                                       }
-                                    ></SecondaryButton>
+                                    />
                                     <SecondaryButton
                                       text={
-                                        <div className="flex w-full justify-center gap-x-2 items-center">
-                                          <BsFillTrash3Fill className=" cursor-pointer " />
-                                          <span className="">Delete</span>
+                                        <div className="flex justify-center gap-x-2 items-center">
+                                          <BsFillTrash3Fill className="text-lg" />
+                                          <span>Delete</span>
                                         </div>
                                       }
                                       onClick={(e) => {
@@ -602,7 +600,7 @@ const League = () => {
                                         setIsDeleteTeamModalOpen(true);
                                       }}
                                       disabledText="Please wait..."
-                                      className="border-transparent flex-1 dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                                      className="border-transparent flex-1 text-red-500 hover:bg-red-600 hover:text-white shadow-md"
                                     />
                                   </div>
                                 </div>
@@ -641,20 +639,19 @@ const League = () => {
                                 setIsTeamModalOpen(true);
                               }}
                               key={team.id}
-                              className="relative cursor-pointer"
+                              className="relative rounded-md border-2 cursor-pointer transition-all"
                             >
-                              <div className="p-4 space-y-4">
-                                <div className="flex justify-between">
-                                  <h3 className="text-2xl font-bold">
+                              <div className="p-5 space-y-4">
+                                <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
+                                  <h3 className="text-xl font-bold  truncate w-48">
                                     {team?.name}
                                   </h3>
 
                                   {/* Edit & Delete Buttons */}
-                                  {team.User.id == dbUser?.id && (
-                                    <div className="hidden md:flex gap-x-5">
-                                      {/* Edit Button */}
+                                  {team.User.id === dbUser?.id && (
+                                    <div className="hidden md:flex flex-wrap flex-1 justify-end gap-x-4">
                                       <SecondaryButton
-                                        className="border-transparent dark:hover:!text-cta shadow-md"
+                                        className="border-transparent shadow-md hover:text-cta"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           setTeamId(team?.id);
@@ -662,21 +659,16 @@ const League = () => {
                                         }}
                                         text={
                                           <div className="flex gap-x-2 items-center">
-                                            <RiTeamLine className="text-xl" />
-                                            <span className="hidden md:inline-block">
-                                              Edit
-                                            </span>
+                                            <RiTeamLine className="text-lg" />
+                                            <span>Edit</span>
                                           </div>
                                         }
-                                      ></SecondaryButton>
+                                      />
                                       <SecondaryButton
                                         text={
-                                          <div className="flex justify-center items-center  gap-x-2">
-                                            <BsFillTrash3Fill className=" cursor-pointer " />
-                                            <span className="hidden md:inline-block">
-                                              {" "}
-                                              Delete
-                                            </span>
+                                          <div className="flex items-center gap-x-2">
+                                            <BsFillTrash3Fill className="text-lg" />
+                                            <span>Delete</span>
                                           </div>
                                         }
                                         onClick={(e) => {
@@ -684,58 +676,58 @@ const League = () => {
                                           setTeamId(team?.id);
                                           setIsDeleteTeamModalOpen(true);
                                         }}
+                                        disabled={disabled}
                                         disabledText="Please wait..."
-                                        className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                                        className="border-transparent text-red-500 hover:bg-red-600 hover:text-white shadow-md"
                                       />
                                     </div>
                                   )}
                                 </div>
 
-                                <p className="text-lg font-medium">
-                                  Points : {team?.score}
+                                <p className="text-md font-medium">
+                                  Points: {team?.score}
                                 </p>
 
                                 <Link
-                                  to={`/profile`}
-                                  className="py-4 flex items-center space-x-2 w-fit"
+                                  to={`/user/${team.User.username}`}
+                                  className="py-3 flex items-center space-x-3 w-fit hover:underline"
                                 >
                                   <Avatar
                                     className="h-12 w-12"
                                     imageSrc={team.User.photoURL}
                                     fallBackText={team.User.name}
-                                  ></Avatar>
+                                  />
                                   <div>
-                                    <h3 className="text-lg font-semibold">
+                                    <h3 className="text-md font-semibold ">
                                       {team.User.name}
                                     </h3>
-                                    <p className="text-black/75 dark:text-white/60">
+                                    <p className="text-sm text-darkbg/50 dark:text-white/50">
                                       @{team.User.username}
                                     </p>
                                   </div>
                                 </Link>
 
-                                {/* Buttons for small screen */}
-                                <div className="flex md:hidden justify-end gap-x-5">
-                                  {/* Edit Button */}
+                                {/* Buttons for small screens */}
+                                <div className="flex md:hidden justify-end gap-x-4">
                                   <SecondaryButton
-                                    className="border-transparent flex-1 dark:hover:!text-cta shadow-md"
+                                    className="border-transparent flex-1 text-white shadow-md hover:text-cta"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       setTeamId(team?.id);
                                       setIsEditTeamModalOpen(true);
                                     }}
                                     text={
-                                      <div className="flex w-full justify-center gap-x-2 items-center">
-                                        <RiTeamLine className="text-xl" />
-                                        <span className="">Edit</span>
+                                      <div className="flex justify-center gap-x-2 items-center">
+                                        <RiTeamLine className="text-lg" />
+                                        <span>Edit</span>
                                       </div>
                                     }
-                                  ></SecondaryButton>
+                                  />
                                   <SecondaryButton
                                     text={
-                                      <div className="flex w-full justify-center gap-x-2 items-center">
-                                        <BsFillTrash3Fill className=" cursor-pointer " />
-                                        <span className="">Delete</span>
+                                      <div className="flex justify-center gap-x-2 items-center">
+                                        <BsFillTrash3Fill className="text-lg" />
+                                        <span>Delete</span>
                                       </div>
                                     }
                                     onClick={(e) => {
@@ -744,7 +736,7 @@ const League = () => {
                                       setIsDeleteTeamModalOpen(true);
                                     }}
                                     disabledText="Please wait..."
-                                    className="border-transparent flex-1 dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
+                                    className="border-transparent flex-1 text-red-500 hover:bg-red-600 hover:text-white shadow-md"
                                   />
                                 </div>
                               </div>
