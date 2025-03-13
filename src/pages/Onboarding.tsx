@@ -207,7 +207,7 @@ const Onboarding = () => {
           <div>
             {/* Title for page */}
             <p className="text-3xl lg:text-4xl px-5 text-center mt-14">
-              Oops! Your email isn&apos;t verified.
+              Verify Email by clicking link in your mailbox!
             </p>
             <div className="mt-10 flex flex-col gap-10 justify-center items-center">
               {/* Image */}
@@ -231,7 +231,7 @@ const Onboarding = () => {
                   text={
                     <div className="flex flex-col px-8">
                       <p>Already verified?</p>
-                      <p> Reload the page</p>
+                      <p>Reload the page</p>
                     </div>
                   }
                 />
@@ -427,7 +427,9 @@ const Onboarding = () => {
 
               <ErrorStatement
                 isOpen={error.username == 4}
-                text={"Username can contain alphabets, numbers and underscore."}
+                text={
+                  "Username can contain lowercase alphabets, numbers and underscore."
+                }
               />
             </div>
           </div>

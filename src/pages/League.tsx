@@ -578,38 +578,40 @@ const League = () => {
                                   </Link>
 
                                   {/* Buttons for small screens */}
-                                  <div className="flex md:hidden justify-end gap-x-4">
-                                    <SecondaryButton
-                                      disabled={hasWeekendStarted}
-                                      className="border-transparent flex-1 text-white shadow-md hover:text-cta"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setTeamId(team?.id);
-                                        setIsEditTeamModalOpen(true);
-                                      }}
-                                      text={
-                                        <div className="flex justify-center gap-x-2 items-center">
-                                          <RiTeamLine className="text-lg" />
-                                          <span>Edit</span>
-                                        </div>
-                                      }
-                                    />
-                                    <SecondaryButton
-                                      text={
-                                        <div className="flex justify-center gap-x-2 items-center">
-                                          <BsFillTrash3Fill className="text-lg" />
-                                          <span>Delete</span>
-                                        </div>
-                                      }
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setTeamId(team?.id);
-                                        setIsDeleteTeamModalOpen(true);
-                                      }}
-                                      disabledText="Please wait..."
-                                      className="border-transparent flex-1 text-red-500 hover:bg-red-600 hover:text-white shadow-md"
-                                    />
-                                  </div>
+                                  {team.User.id === dbUser?.id && (
+                                    <div className="flex md:hidden justify-end gap-x-4">
+                                      <SecondaryButton
+                                        disabled={hasWeekendStarted}
+                                        className="border-transparent flex-1  shadow-md hover:text-cta"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setTeamId(team?.id);
+                                          setIsEditTeamModalOpen(true);
+                                        }}
+                                        text={
+                                          <div className="flex justify-center gap-x-2 items-center">
+                                            <RiTeamLine className="text-lg" />
+                                            <span>Edit</span>
+                                          </div>
+                                        }
+                                      />
+                                      <SecondaryButton
+                                        text={
+                                          <div className="flex justify-center gap-x-2 items-center">
+                                            <BsFillTrash3Fill className="text-lg" />
+                                            <span>Delete</span>
+                                          </div>
+                                        }
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setTeamId(team?.id);
+                                          setIsDeleteTeamModalOpen(true);
+                                        }}
+                                        disabledText="Please wait..."
+                                        className="border-transparent flex-1 text-red-500 hover:bg-red-600 hover:text-white shadow-md"
+                                      />
+                                    </div>
+                                  )}
                                 </div>
                               </Card>
                             );
@@ -715,37 +717,39 @@ const League = () => {
                                 </Link>
 
                                 {/* Buttons for small screens */}
-                                <div className="flex md:hidden justify-end gap-x-4">
-                                  <SecondaryButton
-                                    className="border-transparent flex-1 text-white shadow-md hover:text-cta"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setTeamId(team?.id);
-                                      setIsEditTeamModalOpen(true);
-                                    }}
-                                    text={
-                                      <div className="flex justify-center gap-x-2 items-center">
-                                        <RiTeamLine className="text-lg" />
-                                        <span>Edit</span>
-                                      </div>
-                                    }
-                                  />
-                                  <SecondaryButton
-                                    text={
-                                      <div className="flex justify-center gap-x-2 items-center">
-                                        <BsFillTrash3Fill className="text-lg" />
-                                        <span>Delete</span>
-                                      </div>
-                                    }
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setTeamId(team?.id);
-                                      setIsDeleteTeamModalOpen(true);
-                                    }}
-                                    disabledText="Please wait..."
-                                    className="border-transparent flex-1 text-red-500 hover:bg-red-600 hover:text-white shadow-md"
-                                  />
-                                </div>
+                                {team.User.id === dbUser?.id && (
+                                  <div className="flex md:hidden justify-end gap-x-4">
+                                    <SecondaryButton
+                                      className="border-transparent flex-1  shadow-md hover:text-cta"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setTeamId(team?.id);
+                                        setIsEditTeamModalOpen(true);
+                                      }}
+                                      text={
+                                        <div className="flex justify-center gap-x-2 items-center">
+                                          <RiTeamLine className="text-lg" />
+                                          <span>Edit</span>
+                                        </div>
+                                      }
+                                    />
+                                    <SecondaryButton
+                                      text={
+                                        <div className="flex justify-center gap-x-2 items-center">
+                                          <BsFillTrash3Fill className="text-lg" />
+                                          <span>Delete</span>
+                                        </div>
+                                      }
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setTeamId(team?.id);
+                                        setIsDeleteTeamModalOpen(true);
+                                      }}
+                                      disabledText="Please wait..."
+                                      className="border-transparent flex-1 text-red-500 hover:bg-red-600 hover:text-white shadow-md"
+                                    />
+                                  </div>
+                                )}
                               </div>
                             </Card>
                           );

@@ -348,7 +348,9 @@ const EditProfile = () => {
 
               <ErrorStatement
                 isOpen={error.username == 4}
-                text={"Username can contain alphabets, numbers and underscore."}
+                text={
+                  "Username can contain lowercase alphabets, numbers and underscore."
+                }
               />
             </div>
           </div>
