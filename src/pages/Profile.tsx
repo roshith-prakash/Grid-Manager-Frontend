@@ -141,7 +141,7 @@ const Profile = () => {
   // Delete a selected team
   const deleteTeam = () => {
     axiosInstance
-      .post("/team/delete-team", { teamId: teamId })
+      .post("/team/delete-team", { teamId: teamId, userId: dbUser?.id })
       .then(() => {
         toast.success("Team Deleted.");
         refetchTeams();

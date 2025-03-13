@@ -115,7 +115,7 @@ const League = () => {
   const deleteTeam = () => {
     setDisabled(true);
     axiosInstance
-      .post("/team/delete-team", { teamId: teamId })
+      .post("/team/delete-team", { teamId: teamId, userId: dbUser?.id })
       .then(() => {
         toast.success("Team Deleted.");
         refetchLeague();
