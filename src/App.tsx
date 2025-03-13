@@ -13,8 +13,18 @@ import {
   PublicLeagues,
 } from "@/pages";
 import { Footer, Navbar, Protector } from "./components";
+import { useHasWeekendStarted } from "./functions/hasWeekendStarted";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 function App() {
+  const hasWeekendStarted = useHasWeekendStarted();
+
+  useEffect(() => {
+    if (hasWeekendStarted) {
+      toast("Race Weekend has started - teams cannot be edited.");
+    }
+  }, [hasWeekendStarted]);
   return (
     <div className="min-h-screen font-f1 flex flex-col dark:bg-darkbg dark:text-darkmodetext">
       <BrowserRouter>

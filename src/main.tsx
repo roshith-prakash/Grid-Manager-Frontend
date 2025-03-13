@@ -7,6 +7,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import { UserProvider } from "./context/UserContext.tsx";
+import { NextRaceProvider } from "./context/NextRaceContext.tsx";
 
 const queryClient = new QueryClient();
 
@@ -20,8 +21,10 @@ createRoot(document.getElementById("root")!).render(
         <AuthProvider>
           {/* Providing Db user data to children */}
           <UserProvider>
-            <Toaster />
-            <App />
+            <NextRaceProvider>
+              <Toaster />
+              <App />
+            </NextRaceProvider>
           </UserProvider>
         </AuthProvider>
       </QueryClientProvider>
