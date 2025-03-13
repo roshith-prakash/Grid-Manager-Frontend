@@ -407,7 +407,7 @@ const Profile = () => {
                                 setTeamId(team?.id);
                                 setIsEditModalOpen(true);
                               }}
-                              className="text-xl hover:text-cta dark:hover:text-darkmodeCTA transition-all cursor-pointer"
+                              className="text-xl disabled:text-gray-400 hover:text-cta dark:hover:text-darkmodeCTA transition-all cursor-pointer"
                             >
                               <BsPen className="text-xl" />
                             </button>

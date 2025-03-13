@@ -22,9 +22,10 @@ function App() {
 
   useEffect(() => {
     if (hasWeekendStarted) {
-      toast("Race Weekend has started - teams cannot be edited.");
+      toast("Race Weekend has started - Teams cannot be added or edited.");
     }
   }, [hasWeekendStarted]);
+
   return (
     <div className="min-h-screen font-f1 flex flex-col dark:bg-darkbg dark:text-darkmodetext">
       <BrowserRouter>

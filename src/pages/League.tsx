@@ -720,6 +720,7 @@ const League = () => {
                                 {team.User.id === dbUser?.id && (
                                   <div className="flex md:hidden justify-end gap-x-4">
                                     <SecondaryButton
+                                      disabled={hasWeekendStarted}
                                       className="border-transparent flex-1  shadow-md hover:text-cta"
                                       onClick={(e) => {
                                         e.stopPropagation();

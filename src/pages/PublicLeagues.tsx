@@ -83,7 +83,7 @@ const PublicLeagues = () => {
           </div>
 
           {/* Input box */}
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center">
             <div className="relative my-10 mt-14 w-full md:w-[80%] lg:w-[70%] flex justify-center">
               <IoIosSearch className="absolute left-2 top-6 text-greyText text-xl" />
               <Input
@@ -93,6 +93,7 @@ const PublicLeagues = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
+            <p>( Note : Private Leagues will not be displayed. )</p>
           </div>
 
           {/* Showing the input entered by the user */}
