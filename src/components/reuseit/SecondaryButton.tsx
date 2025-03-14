@@ -17,7 +17,7 @@ const SecondaryButton = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`border-cta text-cta hover:bg-cta dark:hover:text-darkbg w-fit min-w-14 rounded-full border-2 px-5 py-2 transition-all  hover:text-white disabled:border-gray-600 disabled:text-gray-600 disabled:hover:scale-100 disabled:hover:bg-transparent dark:border-white dark:text-white dark:hover:bg-white dark:disabled:border-gray-400 dark:disabled:text-gray-400 ${
+      className={`border-cta text-cta hover:bg-cta dark:hover:text-darkbg w-fit min-w-14 rounded-full border-2 px-5 py-2 transition-all  hover:text-white disabled:border-gray-600 disabled:text-gray-600 disabled:hover:text-gray-600 disabled:hover:scale-100 disabled:hover:bg-transparent dark:border-white dark:text-white dark:hover:bg-white dark:disabled:border-gray-400 dark:disabled:text-gray-400 ${
         !disabled && "cursor-pointer"
       } ${className}`}
     >

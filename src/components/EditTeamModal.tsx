@@ -477,7 +477,7 @@ const EditTeamModal = ({
       {/* Available purse */}
       <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
         {" "}
-        Create A Team!
+        Edit {team?.data?.team?.name}!
       </h1>
 
       {/* Available purse */}

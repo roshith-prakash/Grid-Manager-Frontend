@@ -100,15 +100,16 @@ const Navbar = () => {
         setIsModalOpen={() => setIsLoginModalOpen(false)}
       />
       <nav
-        className={`dark:bg-darkbg relative z-2 flex items-center justify-between bg-white px-10 py-3 font-sans dark:text-white border-b-1 border-darkbg/25 dark:border-white/25`}
+        className={`dark:bg-darkbg relative z-2 flex items-center justify-between bg-white px-10 py-3 font-f1 dark:text-white border-b-1 border-darkbg/25 dark:border-white/25`}
       >
-        {/* Logo */}
-        <Link to="/" aria-label="Home">
-          <img src={logo} alt="Logo" className="h-12 cursor-pointer" />
+        {/* Grid Manager */}
+        <Link to="/" aria-label="Home" className="flex gap-x-2 items-center">
+          <img src={logo} alt="Grid Manager" className="h-12 cursor-pointer" />
+          <span className="font-semibold text-2xl">Grid Manager</span>
         </Link>
 
         {/* LG screen links */}
-        <div className="hidden items-center translate-x-8 gap-x-8 font-medium lg:flex">
+        <div className="hidden items-center -translate-x-14 gap-x-8 font-medium lg:flex">
           <Link
             to="/"
             className="hover:text-cta dark:hover:text-darkmodeCTA transition-all"
@@ -449,11 +450,16 @@ const Navbar = () => {
         >
           <div className="mb-14 flex items-center justify-between px-10 pt-3.5 lg:px-10">
             <button
-              className="cursor-pointer"
+              className="cursor-pointer flex gap-x-2 items-center"
               onClick={() => handleSearch("/")}
               aria-label="Home"
             >
-              <img src={logo} alt="Logo" className="h-12 cursor-pointer" />
+              <img
+                src={logo}
+                alt="Grid Manager"
+                className="h-12 cursor-pointer"
+              />
+              <span className="font-semibold text-2xl">Grid Manager</span>
             </button>
             <RxCross2
               onClick={() => setOpen(false)}
