@@ -105,7 +105,9 @@ const Navbar = () => {
         {/* Grid Manager */}
         <Link to="/" aria-label="Home" className="flex gap-x-2 items-center">
           <img src={logo} alt="Grid Manager" className="h-12 cursor-pointer" />
-          <span className="font-semibold text-2xl">Grid Manager</span>
+          <span className="hidden md:block font-semibold text-2xl">
+            Grid Manager
+          </span>
         </Link>
 
         {/* LG screen links */}
