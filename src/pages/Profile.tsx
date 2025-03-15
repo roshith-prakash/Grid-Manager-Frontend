@@ -401,7 +401,7 @@ const Profile = () => {
                         >
                           <div className="flex gap-2 absolute top-3 right-3">
                             <button
-                              disabled={hasWeekendStarted}
+                              //disabled={hasWeekendStarted}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setTeamId(team?.id);
