@@ -32,6 +32,7 @@ import {
   IoIosRemoveCircleOutline,
 } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
+import Accordion from "./reuseit/Accordion";
 
 const CreateTeamModal = ({
   leagueId,
@@ -474,6 +475,7 @@ const CreateTeamModal = ({
         {/* Drivers */}
         <div className="flex flex-wrap-reverse">
           <DndContext sensors={sensors} onDragEnd={handleDragDrivers}>
+            {/* Available Drivers */}
             <div className="w-full lg:flex-1">
               <div className="flex justify-between px-6 text-2xl font-medium">
                 <h3>Available Drivers</h3>
@@ -540,6 +542,7 @@ const CreateTeamModal = ({
               </Droppable>
             </div>
 
+            {/* Team Drivers */}
             <div className="w-full lg:flex-1">
               <div className="flex flex-wrap justify-between px-6 text-2xl font-medium">
                 <h3>Team Drivers</h3>
@@ -622,6 +625,7 @@ const CreateTeamModal = ({
         {/* Constructors */}
         <div className="flex flex-wrap-reverse mt-16">
           <DndContext sensors={sensors} onDragEnd={handleDragConstructors}>
+            {/* Available Constructors */}
             <div className="w-full lg:flex-1">
               <div className="flex justify-between px-6 text-2xl font-medium">
                 <h3>Available Constructors</h3>
@@ -636,20 +640,29 @@ const CreateTeamModal = ({
                   .map((constructor) => {
                     return (
                       <Draggable
-                        className="border rounded-sm p-3 bg-white dark:bg-secondarydarkbg shadow-md w-full max-w-64 text-center"
+                        className="border rounded-sm pb-5 flex flex-col gap-y-2 bg-white dark:bg-secondarydarkbg shadow-md w-full max-w-64 text-center"
                         key={constructor?.constructorId}
                         id={`${constructor?.constructorNumber}`}
                       >
-                        <h3 className="text-lg font-semibold">
+                        {" "}
+                        <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
+                          <img
+                            src={constructor?.logo}
+                            className="h-36 object-contain"
+                          />
+                          <img src={constructor?.carImage} />
+                        </div>
+                        <div className="flex justify-center px-5"></div>
+                        <p className=" text-xl font-semibold">
                           {constructor?.name}
-                        </h3>
-                        <div className="border-t mt-2 py-2 text-sm">
+                        </p>
+                        <div>
                           Points in season:{" "}
                           <span className="font-semibold">
                             {constructor?.points}
                           </span>
                         </div>
-                        <div className="border-t mt-2 py-2 text-sm">
+                        <div>
                           Price:{" "}
                           <span className="font-semibold">
                             {constructor?.price} Cr.
@@ -690,20 +703,29 @@ const CreateTeamModal = ({
                     ?.sort((a, b) => b?.price - a?.price)
                     .map((constructor) => (
                       <Draggable
-                        className="border rounded-sm p-3 bg-white dark:bg-secondarydarkbg shadow-md w-full max-w-64 text-center"
+                        className="border rounded-sm pb-5 flex flex-col gap-y-2 bg-white dark:bg-secondarydarkbg shadow-md w-full max-w-64 text-center"
                         key={constructor?.constructorId}
                         id={`${constructor?.constructorNumber}`}
                       >
-                        <h3 className="text-lg font-semibold">
+                        {" "}
+                        <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
+                          <img
+                            src={constructor?.logo}
+                            className="h-36 object-contain"
+                          />
+                          <img src={constructor?.carImage} />
+                        </div>
+                        <div className="flex justify-center px-5"></div>
+                        <p className=" text-xl font-semibold">
                           {constructor?.name}
-                        </h3>
-                        <div className="border-t mt-2 py-2 text-sm">
+                        </p>
+                        <div>
                           Points in season:{" "}
                           <span className="font-semibold">
                             {constructor?.points}
                           </span>
                         </div>
-                        <div className="border-t mt-2 py-2 text-sm">
+                        <div>
                           Price:{" "}
                           <span className="font-semibold">
                             {constructor?.price} Cr.
@@ -802,75 +824,79 @@ const CreateTeamModal = ({
 
         {/* Available Drivers */}
         <div className="flex flex-col gap-y-5">
-          <div className="flex justify-between px-6 text-2xl font-medium">
-            <h3>Available Drivers</h3>
-          </div>
-
-          <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
-            {availableDrivers
-              ?.sort((a, b) => b?.price - a?.price)
-              .map((driver: any) => {
-                return (
-                  <>
-                    <div className="flex flex-col w-full max-w-64 rounded-lg overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
-                      {/* Driver Image Section */}
-                      <div
-                        className="h-full w-full flex items-center justify-center"
-                        style={{ backgroundColor: driver?.constructor_color }}
-                      >
-                        {driver?.image ? (
-                          <img
-                            src={driver.image}
-                            alt={driver.familyName}
-                            className=" h-40 object-cover"
-                          />
-                        ) : (
-                          <FaUserAlt className="text-gray-400 text-4xl" />
-                        )}
-                      </div>
-
-                      {/* Driver Info Section */}
-                      <div className="py-4 px-4 ">
-                        <div className="px-4">
-                          <h3 className="text-lg font-semibold">
-                            {driver?.givenName} {driver?.familyName} (
-                            {driver?.code})
-                          </h3>
-                          <p className="text-sm text-darkbg/70 dark:text-white/50">
-                            {driver?.constructor}
-                          </p>
-                          <p className="text-md">
-                            Points:{" "}
-                            <span className="font-semibold">
-                              {driver?.points}
-                            </span>
-                          </p>
-                          <p className="text-md">
-                            Price:{" "}
-                            <span className="font-semibold">
-                              {driver?.price} Cr.
-                            </span>
-                          </p>
+          <Accordion
+            text={
+              <div className="flex justify-between px-6 text-2xl font-medium">
+                <h3>Available Drivers</h3>
+              </div>
+            }
+          >
+            <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
+              {availableDrivers
+                ?.sort((a, b) => b?.price - a?.price)
+                .map((driver: any) => {
+                  return (
+                    <>
+                      <div className="flex flex-col w-full max-w-64 rounded-lg overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
+                        {/* Driver Image Section */}
+                        <div
+                          className="h-full w-full flex items-center justify-center"
+                          style={{ backgroundColor: driver?.constructor_color }}
+                        >
+                          {driver?.image ? (
+                            <img
+                              src={driver.image}
+                              alt={driver.familyName}
+                              className=" h-40 object-cover"
+                            />
+                          ) : (
+                            <FaUserAlt className="text-gray-400 text-4xl" />
+                          )}
                         </div>
 
-                        <div className="mt-5">
-                          <SecondaryButton
-                            onClick={() => addDriver(driver)}
-                            className="!py-1.5 !px-3 flex justify-center items-center gap-2 mx-auto !w-[90%]"
-                            text={
-                              <>
-                                <IoIosAddCircleOutline className="text-lg" />
-                                <span>Add</span>
-                              </>
-                            }
-                          />
+                        {/* Driver Info Section */}
+                        <div className="py-4 px-4 ">
+                          <div className="px-4">
+                            <h3 className="text-lg font-semibold">
+                              {driver?.givenName} {driver?.familyName} (
+                              {driver?.code})
+                            </h3>
+                            <p className="text-sm text-darkbg/70 dark:text-white/50">
+                              {driver?.constructor}
+                            </p>
+                            <p className="text-md">
+                              Points:{" "}
+                              <span className="font-semibold">
+                                {driver?.points}
+                              </span>
+                            </p>
+                            <p className="text-md">
+                              Price:{" "}
+                              <span className="font-semibold">
+                                {driver?.price} Cr.
+                              </span>
+                            </p>
+                          </div>
+
+                          <div className="mt-5">
+                            <SecondaryButton
+                              onClick={() => addDriver(driver)}
+                              className="!py-1.5 !px-3 flex justify-center items-center gap-2 mx-auto !w-[90%]"
+                              text={
+                                <>
+                                  <IoIosAddCircleOutline className="text-lg" />
+                                  <span>Add</span>
+                                </>
+                              }
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </>
-                );
-              })}
-          </div>
+                    </>
+                  );
+                })}
+            </div>
+          </Accordion>
         </div>
 
         {/* Team Constructors */}
@@ -889,8 +915,16 @@ const CreateTeamModal = ({
                 .map((constructor: any) => {
                   return (
                     <>
-                      <div className="flex max-w-64 w-full flex-col py-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
-                        <p className="text-lg font-semibold">
+                      <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
+                        <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
+                          <img
+                            src={constructor?.logo}
+                            className="h-36 object-contain"
+                          />
+                          <img src={constructor?.carImage} />
+                        </div>
+
+                        <p className="pt-2 text-lg font-semibold">
                           {constructor?.name}
                         </p>
                         <div>
@@ -930,54 +964,66 @@ const CreateTeamModal = ({
 
         {/* Available Constructors */}
         <div className="flex flex-col gap-y-5">
-          <div className="flex justify-between px-6 text-2xl font-medium">
-            <h3>Available Constructors</h3>
-          </div>
+          <Accordion
+            text={
+              <div className="flex justify-between px-6 text-2xl font-medium">
+                <h3>Available Constructors</h3>
+              </div>
+            }
+          >
+            <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
+              {availableConstructors?.length > 0 ? (
+                availableConstructors
+                  ?.sort((a, b) => b?.price - a?.price)
+                  .map((constructor: any) => {
+                    return (
+                      <>
+                        <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
+                          <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
+                            <img
+                              src={constructor?.logo}
+                              className="h-36 object-contain"
+                            />
+                            <img src={constructor?.carImage} />
+                          </div>
 
-          <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
-            {availableConstructors?.length > 0 ? (
-              availableConstructors
-                ?.sort((a, b) => b?.price - a?.price)
-                .map((constructor: any) => {
-                  return (
-                    <>
-                      <div className="flex max-w-64 w-full flex-col py-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
-                        <p className="text-lg font-semibold">
-                          {constructor?.name}
-                        </p>
-                        <div>
-                          Points in season:{" "}
-                          <span className="font-semibold">
-                            {constructor?.points}
-                          </span>
-                        </div>
-                        <div>
-                          Price:{" "}
-                          <span className="font-semibold">
-                            {constructor?.price} Cr.
-                          </span>
-                        </div>
+                          <p className="pt-2 text-lg font-semibold">
+                            {constructor?.name}
+                          </p>
+                          <div>
+                            Points in season:{" "}
+                            <span className="font-semibold">
+                              {constructor?.points}
+                            </span>
+                          </div>
+                          <div>
+                            Price:{" "}
+                            <span className="font-semibold">
+                              {constructor?.price} Cr.
+                            </span>
+                          </div>
 
-                        <div className="py-3 px-4 flex justify-center">
-                          <SecondaryButton
-                            onClick={() => addConstructor(constructor)}
-                            className="!py-1.5 !w-[90%] !px-3 flex justify-center items-center gap-2"
-                            text={
-                              <>
-                                <IoIosAddCircleOutline className="text-lg" />
-                                <span>Add</span>
-                              </>
-                            }
-                          />
+                          <div className="py-3 px-4 flex justify-center">
+                            <SecondaryButton
+                              onClick={() => addConstructor(constructor)}
+                              className="!py-1.5 !w-[90%] !px-3 flex justify-center items-center gap-2"
+                              text={
+                                <>
+                                  <IoIosAddCircleOutline className="text-lg" />
+                                  <span>Add</span>
+                                </>
+                              }
+                            />
+                          </div>
                         </div>
-                      </div>
-                    </>
-                  );
-                })
-            ) : (
-              <p className="text-center">Add Constructors!</p>
-            )}
-          </div>
+                      </>
+                    );
+                  })
+              ) : (
+                <p className="text-center">Add Constructors!</p>
+              )}
+            </div>
+          </Accordion>
         </div>
       </div>
 
