@@ -30,7 +30,7 @@ const User = () => {
     isLoading: loadingUser,
     // error: userError,
   } = useQuery({
-    queryKey: ["userProfile", username],
+    queryKey: ["userProfile", username, dbUser?.id],
     queryFn: async () => {
       return axiosInstance.post("/user/get-user-info", {
         username: username,
@@ -51,6 +51,7 @@ const User = () => {
       return axiosInstance.post("/team/get-user-public-leagues", {
         username: user?.data?.user?.username,
         page: pageParam,
+        currentUserId: dbUser?.id,
       });
     },
     initialPageParam: 0,
@@ -68,11 +69,12 @@ const User = () => {
     fetchNextPage: fetchNextTeams,
     isFetchingNextPage: loadingNextTeams,
   } = useInfiniteQuery({
-    queryKey: ["userTeams", user?.data?.user?.username],
+    queryKey: ["userTeams", user?.data?.user?.username, dbUser?.id],
     queryFn: ({ pageParam }) => {
       return axiosInstance.post("/team/get-user-public-teams", {
         username: user?.data?.user?.username,
         page: pageParam,
+        currentUserId: dbUser?.id,
       });
     },
     initialPageParam: 0,

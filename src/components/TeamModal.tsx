@@ -79,7 +79,7 @@ const TeamModal = ({
               {team.data.team.teamDrivers?.map((driver: any) => (
                 <div
                   key={driver.code}
-                  className="flex flex-col w-56 rounded overflow-hidden border border-darkbg/50 shadow-lg"
+                  className="flex flex-col w-56 rounded overflow-hidden border-2 dark:border-white/25 border-darkbg/50 shadow-lg"
                 >
                   <div
                     className="pt-2 flex items-end justify-center"
@@ -116,9 +116,9 @@ const TeamModal = ({
               {team.data.team.teamConstructors?.map((constructor: any) => (
                 <div
                   key={constructor.name}
-                  className="flex flex-col w-64 text-center border-2 overflow-hidden rounded shadow-lg"
+                  className="flex dark:border-white/25 flex-col w-64 text-center border-2 overflow-hidden rounded shadow-lg"
                 >
-                  <div className="flex flex-col items-center pb-5 px-5 border-b">
+                  <div className="flex bg-white flex-col items-center pb-5 px-5 border-b">
                     <img
                       src={
                         constructor?.logo ||

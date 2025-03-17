@@ -25,6 +25,7 @@ import { useDBUser } from "@/context/UserContext";
 import { useInView } from "react-intersection-observer";
 import { BsFillTrash3Fill, BsPen } from "react-icons/bs";
 import toast from "react-hot-toast";
+import { IoMdShare } from "react-icons/io";
 // import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 
 const League = () => {
@@ -183,6 +184,8 @@ const League = () => {
     teams?.pages?.length,
   ]);
 
+  console.log(teams?.pages);
+
   return (
     <div>
       {league && (
@@ -340,12 +343,25 @@ const League = () => {
 
                 {/* Buttons */}
                 <div className="hidden md:flex flex-wrap flex-1 gap-y-5 justify-around md:justify-end items-center gap-x-4">
+                  <SecondaryButton
+                    className="border-transparent dark:hover:!text-cta shadow-md"
+                    text={
+                      <div className="flex gap-x-2 items-center">
+                        <IoMdShare className="text-xl" />
+                        <span className="">Share</span>
+                      </div>
+                    }
+                    onClick={() => {
+                      toast.success("Link to League Copied!");
+                      navigator?.clipboard?.writeText(window.location.href);
+                    }}
+                  ></SecondaryButton>
                   {league?.data?.data?.User.id == dbUser?.id && (
                     <SecondaryButton
                       className="border-transparent dark:hover:!text-cta shadow-md"
                       text={
                         <div className="flex gap-x-2 items-center">
-                          <BsPen className="text-xl" />
+                          <IoMdShare className="text-xl" />
                           <span className="">Edit</span>
                         </div>
                       }
@@ -397,6 +413,19 @@ const League = () => {
               </div>
 
               <div className="flex md:hidden flex-wrap flex-1 gap-y-5 justify-around md:justify-end items-center gap-x-4">
+                <SecondaryButton
+                  className="border-transparent dark:hover:!text-cta shadow-md"
+                  text={
+                    <div className="flex gap-x-2 items-center">
+                      <IoMdShare className="text-xl" />
+                      <span className="">Share</span>
+                    </div>
+                  }
+                  onClick={() => {
+                    toast.success("Link to League Copied!");
+                    navigator?.clipboard?.writeText(window.location.href);
+                  }}
+                ></SecondaryButton>
                 {league?.data?.data?.User.id == dbUser?.id && (
                   <SecondaryButton
                     className="border-transparent dark:hover:!text-cta shadow-md"
@@ -509,7 +538,8 @@ const League = () => {
                                     <h3 className="text-xl font-bold ">
                                       <span className="mr-2">
                                         #
-                                        {pageIndex * page?.data.teams?.length +
+                                        {pageIndex *
+                                          teams?.pages[0]?.data?.teams?.length +
                                           (index + 1)}
                                         .
                                       </span>

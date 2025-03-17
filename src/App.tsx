@@ -77,8 +77,15 @@ function App() {
               }
             />
 
-            {/* View a User's Profile (Non Logged in user) */}
-            <Route path="/user/:username" element={<User />} />
+            {/* View a User's Profile (Non Current user) */}
+            <Route
+              path="/user/:username"
+              element={
+                <Protector>
+                  <User />
+                </Protector>
+              }
+            />
 
             <Route
               path="/create-league"
