@@ -287,14 +287,14 @@ const Profile = () => {
             {dbUser?.photoURL ? (
               <img
                 src={dbUser?.photoURL}
-                className="bg-secondarydarkbg  rounded-full h-32 w-32 border-8 border-secondarydarkbg dark:border-darkgrey pointer-events-none"
+                className="bg-white  rounded-full h-32 w-32 border-8 border-secondarydarkbg dark:border-darkgrey pointer-events-none"
               />
             ) : (
               <img
                 src={
                   "https://res.cloudinary.com/do8rpl9l4/image/upload/v1740987081/accountcircle_axsjlm.png"
                 }
-                className="bg-secondarydarkbg  rounded-full h-32 w-32 border-8 border-secondarydarkbg dark:border-darkgrey pointer-events-none"
+                className="bg-secondarydarkbg rounded-full h-32 w-32 border-8 border-secondarydarkbg dark:border-darkgrey pointer-events-none"
               />
             )}
           </div>

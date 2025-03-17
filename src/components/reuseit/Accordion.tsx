@@ -11,7 +11,7 @@ const Accordion = ({
   className?: string;
 }) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <div

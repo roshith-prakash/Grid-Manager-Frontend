@@ -478,7 +478,7 @@ const EditTeamModal = ({
       {/* Available purse */}
       <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
         {" "}
-        Create A Team!
+        Edit <span className="italic">{team?.data?.team?.name}</span>
       </h1>
 
       {/* Available purse */}
@@ -552,7 +552,7 @@ const EditTeamModal = ({
                   .map((driver) => {
                     return (
                       <Draggable
-                        className="flex flex-col items-start w-full max-w-48 rounded-lg overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg"
+                        className="flex flex-col items-start w-full max-w-48 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg"
                         key={driver?.driverId}
                         id={`${driver?.permanentNumber}`}
                       >
@@ -630,7 +630,7 @@ const EditTeamModal = ({
                     ?.sort((a, b) => b?.price - a?.price)
                     .map((driver) => (
                       <Draggable
-                        className="flex flex-col items-start w-full max-w-48 rounded-lg overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg"
+                        className="flex flex-col items-start w-full max-w-48 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg"
                         key={driver?.driverId}
                         id={`${driver?.permanentNumber}`}
                       >
@@ -709,10 +709,20 @@ const EditTeamModal = ({
                         {" "}
                         <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
                           <img
-                            src={constructor?.logo}
+                            src={
+                              constructor?.logo
+                                ? constructor?.logo
+                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                            }
                             className="h-36 object-contain"
                           />
-                          <img src={constructor?.carImage} />
+                          <img
+                            src={
+                              constructor?.carImage
+                                ? constructor?.carImage
+                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                            }
+                          />
                         </div>
                         <div className="flex justify-center px-5"></div>
                         <p className=" text-xl font-semibold">
@@ -736,6 +746,7 @@ const EditTeamModal = ({
               </Droppable>
             </div>
 
+            {/* Team Constructors */}
             <div className="w-full lg:flex-1">
               <div
                 className={`flex flex-wrap justify-between px-6 text-2xl font-medium `}
@@ -772,10 +783,20 @@ const EditTeamModal = ({
                         {" "}
                         <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
                           <img
-                            src={constructor?.logo}
+                            src={
+                              constructor?.logo
+                                ? constructor?.logo
+                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                            }
                             className="h-36 object-contain"
                           />
-                          <img src={constructor?.carImage} />
+                          <img
+                            src={
+                              constructor?.carImage
+                                ? constructor?.carImage
+                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                            }
+                          />
                         </div>
                         <div className="flex justify-center px-5"></div>
                         <p className=" text-xl font-semibold">
@@ -820,7 +841,7 @@ const EditTeamModal = ({
                 .map((driver: any) => {
                   return (
                     <>
-                      <div className="flex flex-col w-full max-w-64 rounded-lg overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
+                      <div className="flex flex-col w-full max-w-64 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
                         {/* Driver Image Section */}
                         <div
                           className="h-full w-full flex items-center justify-center"
@@ -899,7 +920,7 @@ const EditTeamModal = ({
                 .map((driver: any) => {
                   return (
                     <>
-                      <div className="flex flex-col w-full max-w-64 rounded-lg overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
+                      <div className="flex flex-col w-full max-w-64 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
                         {/* Driver Image Section */}
                         <div
                           className="h-full w-full flex items-center justify-center"
@@ -980,10 +1001,20 @@ const EditTeamModal = ({
                       <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
                         <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
                           <img
-                            src={constructor?.logo}
+                            src={
+                              constructor?.logo
+                                ? constructor?.logo
+                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                            }
                             className="h-36 object-contain"
                           />
-                          <img src={constructor?.carImage} />
+                          <img
+                            src={
+                              constructor?.carImage
+                                ? constructor?.carImage
+                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                            }
+                          />
                         </div>
 
                         <p className="pt-2 text-lg font-semibold">
@@ -1043,10 +1074,20 @@ const EditTeamModal = ({
                         <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
                           <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
                             <img
-                              src={constructor?.logo}
+                              src={
+                                constructor?.logo
+                                  ? constructor?.logo
+                                  : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                              }
                               className="h-36 object-contain"
                             />
-                            <img src={constructor?.carImage} />
+                            <img
+                              src={
+                                constructor?.carImage
+                                  ? constructor?.carImage
+                                  : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                              }
+                            />
                           </div>
 
                           <p className="pt-2 text-lg font-semibold">

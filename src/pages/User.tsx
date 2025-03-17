@@ -150,9 +150,7 @@ const User = () => {
                       ? user?.data?.user?.photoURL
                       : "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740649/account_glotqh.png"
                   }
-                  className={`bg-secondarydarkbg rounded-full h-32 w-32 border-8 border-secondarydarkbg dark:border-darkgrey ${
-                    user?.data?.user?.photoURL && "cursor-pointer"
-                  } `}
+                  className={`bg-white rounded-full h-32 w-32 border-8 border-secondarydarkbg dark:border-darkgrey `}
                 />
               ) : (
                 <img

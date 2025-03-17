@@ -31,7 +31,7 @@ const TeamModal = ({
 
   return (
     <Modal
-      className="w-full px-5 noscroller"
+      className="w-full !max-w-4xl px-5 noscroller"
       isOpen={isModalOpen}
       onClose={closeModal}
     >
@@ -57,61 +57,88 @@ const TeamModal = ({
             <RxCross2 />
           </button>
 
-          <div>
-            <h1 className="text-center text-2xl font-medium">
+          <div className="max-w-4xl mx-auto p-6">
+            {/* Team name */}
+            <h1 className="text-center text-3xl italic font-semibold mb-6">
               {team.data.team.name}
             </h1>
 
-            <div className="py-8 text-md font-medium flex flex-col gap-y-3">
+            {/* League data */}
+            <div className="text-lg font-medium pt-4 space-y-2 text-center">
               <p>League: {team.data.team.League?.name}</p>
               <p>League ID: {team.data.team.League?.leagueId}</p>
               <p>Points Scored: {team.data.team.score}</p>
             </div>
 
-            <p className="text-xl text-center font-medium">Team Drivers</p>
+            <p className="text-3xl font-semibold text-center mt-16 my-8">
+              Team Drivers
+            </p>
 
-            <div className="flex flex-wrap gap-x-2 gap-y-8 md:gap-10 justify-center pt-10">
+            {/* Drivers */}
+            <div className="flex flex-wrap gap-6 justify-center pt-6">
               {team.data.team.teamDrivers?.map((driver: any) => (
                 <div
-                  className="border-2 max-w-40 w-full text-center rounded-sm dark:border-white/25 bg-white dark:bg-darkbg"
-                  key={driver.driverId}
+                  key={driver.code}
+                  className="flex flex-col w-56 rounded overflow-hidden border border-darkbg/50 shadow-lg"
                 >
                   <div
-                    className="pt-2"
-                    style={{ backgroundColor: driver.constructor_color }}
+                    className="pt-2 flex items-end justify-center"
+                    style={{ backgroundColor: driver?.constructor_color }}
                   >
-                    {driver.image ? (
+                    {driver?.image ? (
                       <img
                         src={driver.image}
-                        className="h-32 mx-auto"
                         alt={driver.familyName}
+                        className="h-40 object-cover"
                       />
                     ) : (
-                      <FaUserAlt className="text-8xl mx-auto" />
+                      <FaUserAlt className="text-gray-400 text-4xl" />
                     )}
                   </div>
-                  <div className="px-2.5 py-3 flex flex-col gap-y-2">
-                    <p className="pt-1">
-                      {driver.givenName} {driver.familyName}
-                    </p>
-                    <p className="text-center">({driver.code})</p>
-                    <p className="text-center">{driver.constructor}</p>
+
+                  <div className="py-4 px-4 text-center">
+                    <h3 className="text-lg font-semibold">
+                      {driver?.givenName} {driver?.familyName}
+                    </h3>
+                    <p>({driver?.code})</p>
+                    <p className="text-sm">{driver?.constructor}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <p className="mt-10 text-xl text-center font-medium">
+            <p className="text-3xl font-semibold text-center mt-16 my-8">
               Team Constructors
             </p>
 
-            <div className="flex pb-10 flex-wrap gap-10 justify-center pt-10">
+            {/* Constructors */}
+            <div className="flex flex-wrap gap-6 justify-center pt-6">
               {team.data.team.teamConstructors?.map((constructor: any) => (
                 <div
-                  className="border-2 max-w-40 w-full dark:border-white/25 text-center rounded-sm p-3 bg-white dark:bg-darkbg"
-                  key={constructor.constructorId}
+                  key={constructor.name}
+                  className="flex flex-col w-64 text-center border-2 overflow-hidden rounded shadow-lg"
                 >
-                  {constructor.name}
+                  <div className="flex flex-col items-center pb-5 px-5 border-b">
+                    <img
+                      src={
+                        constructor?.logo ||
+                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                      }
+                      className="h-36 object-contain"
+                      alt={constructor?.name}
+                    />
+                    <img
+                      src={
+                        constructor?.carImage ||
+                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                      }
+                      alt="Car"
+                    />
+                  </div>
+
+                  <p className="py-4 text-lg font-semibold">
+                    {constructor?.name}
+                  </p>
                 </div>
               ))}
             </div>
