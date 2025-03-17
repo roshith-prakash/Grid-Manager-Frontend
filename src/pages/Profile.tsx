@@ -500,7 +500,7 @@ const Profile = () => {
                           >
                             <div className="flex-1">
                               <p className="text-lg font-semibold">
-                                League Name: {league?.name}
+                                League: {league?.name}
                               </p>
                               <p className="text-md dark:text-white/80 text-darkbg/70">
                                 League ID: {league?.leagueId}
