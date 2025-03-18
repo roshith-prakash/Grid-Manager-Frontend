@@ -9,6 +9,7 @@ import CreateLeague from "./CreateLeague";
 import User from "./User";
 import League from "./League";
 import PublicLeagues from "./PublicLeagues";
+import Leaderboard from "./Leaderboard";
 
 export {
   Landing,
@@ -22,4 +23,5 @@ export {
   User,
   League,
   PublicLeagues,
+  Leaderboard,
 };

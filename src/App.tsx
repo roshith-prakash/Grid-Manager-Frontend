@@ -11,6 +11,7 @@ import {
   User,
   League,
   PublicLeagues,
+  Leaderboard,
 } from "@/pages";
 import { Footer, Navbar, Protector } from "./components";
 import { useQuery } from "@tanstack/react-query";
@@ -71,6 +72,7 @@ function App() {
             <Route path="/signin" element={<Login />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/signout" element={<Signout />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
 
             {/* Protected routes - Logged In User required. */}
 

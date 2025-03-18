@@ -805,7 +805,7 @@ const CreateTeamModal = ({
                       <div className="flex flex-col w-full max-w-64 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
                         {/* Driver Image Section */}
                         <div
-                          className="h-full w-full flex items-center justify-center"
+                          className="h-full w-full flex items-end justify-center"
                           style={{ backgroundColor: driver?.constructor_color }}
                         >
                           {driver?.image ? (
@@ -884,14 +884,14 @@ const CreateTeamModal = ({
                       <div className="flex flex-col w-full max-w-64 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
                         {/* Driver Image Section */}
                         <div
-                          className="h-full w-full flex items-center justify-center"
+                          className="h-full w-full flex items-end justify-center"
                           style={{ backgroundColor: driver?.constructor_color }}
                         >
                           {driver?.image ? (
                             <img
                               src={driver.image}
                               alt={driver.familyName}
-                              className=" h-40 object-cover"
+                              className="h-40 object-cover"
                             />
                           ) : (
                             <FaUserAlt className="text-gray-400 text-4xl" />
@@ -901,7 +901,7 @@ const CreateTeamModal = ({
                         {/* Driver Info Section */}
                         <div className="py-4 px-4 ">
                           <div className="px-4">
-                            <h3 className="text-lg font-semibold">
+                            <h3 className="text-lg text-ellipsis text-nowrap font-semibold">
                               {driver?.givenName} {driver?.familyName} (
                               {driver?.code})
                             </h3>
