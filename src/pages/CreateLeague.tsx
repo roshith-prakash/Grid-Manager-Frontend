@@ -44,7 +44,6 @@ const CreateLeague = () => {
       })
       .then((res) => {
         setDisabled(false);
-        console.log(res?.data);
         navigate(`/leagues/${res?.data?.data?.leagueId}`);
       })
       .catch((err) => {

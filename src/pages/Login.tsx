@@ -86,7 +86,6 @@ const Login = () => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
 
         // Check if user exists in DB - if yes, send to home - if no, send to onboarding.
         axiosInstance

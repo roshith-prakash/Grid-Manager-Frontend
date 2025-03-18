@@ -13,6 +13,8 @@ import {
   PublicLeagues,
 } from "@/pages";
 import { Footer, Navbar, Protector } from "./components";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "./utils/axiosInstance";
 // import { useHasWeekendStarted } from "./functions/hasWeekendStarted";
 // import { useEffect } from "react";
 // import toast from "react-hot-toast";
@@ -47,6 +49,17 @@ function App() {
   //   }
   // }, [hasWeekendStarted]);
 
+  // Check if new session data is added & update score.
+  const { data, error } = useQuery({
+    queryKey: ["update-score"],
+    queryFn: async () => {
+      return axiosInstance.get("/update-scores");
+    },
+    staleTime: 60 * 1000 * 60 * 1,
+  });
+
+  console.log(data, error);
+
   return (
     <div className="min-h-screen font-f1 flex flex-col dark:bg-darkbg dark:text-darkmodetext">
       <BrowserRouter>
@@ -58,6 +71,9 @@ function App() {
             <Route path="/signin" element={<Login />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/signout" element={<Signout />} />
+
+            {/* Protected routes - Logged In User required. */}
+
             <Route
               path="/edit-profile"
               element={

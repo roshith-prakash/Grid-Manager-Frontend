@@ -41,6 +41,15 @@ const Landing = () => {
           <Countdown
             targetDate={`${nextRace?.FirstPractice?.date}T${nextRace?.FirstPractice?.time}`}
           />
+
+          <a
+            href={`https://gridbox.vercel.app/schedule`}
+            target="_blank"
+            rel="noreferrer"
+            className="pt-5 text-xl cursor-pointer hover:underline"
+          >
+            Check out the schedule!
+          </a>
         </div>
       )}
     </div>

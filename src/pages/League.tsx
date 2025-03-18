@@ -184,8 +184,6 @@ const League = () => {
     teams?.pages?.length,
   ]);
 
-  console.log(teams?.pages);
-
   return (
     <div>
       {league && (

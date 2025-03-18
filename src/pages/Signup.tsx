@@ -96,7 +96,6 @@ const Signup = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user);
 
         // Send verification email
         sendEmailVerification(user).then(() => {

@@ -61,7 +61,6 @@ const Onboarding = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFileChange = (e: any) => {
     if (fileRef?.current) {
-      console.log(e.target.files[0]);
       setImage(e.target.files[0]);
       // @ts-expect-error Null must be set so that the fileRef is usable again
       fileRef.current.value = null;

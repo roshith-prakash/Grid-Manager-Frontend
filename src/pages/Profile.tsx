@@ -491,7 +491,6 @@ const Profile = () => {
                 {leagues &&
                   leagues?.pages?.map((page) => {
                     return page?.data.leagues?.map((league: any) => {
-                      console.log(league);
                       return (
                         <>
                           <Link

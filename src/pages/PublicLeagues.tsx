@@ -110,7 +110,6 @@ const PublicLeagues = () => {
                 leagues?.pages?.map((page) => {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   return page?.data.leagues?.map((league: any) => {
-                    console.log(league);
                     if (league?.name) {
                       return (
                         <Link

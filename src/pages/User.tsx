@@ -231,7 +231,6 @@ const User = () => {
                   {teams &&
                     teams?.pages?.map((page) => {
                       return page?.data.teams?.map((team: any) => {
-                        console.log(team);
                         return (
                           <div
                             className="relative cursor-pointer bg-white dark:bg-secondarydarkbg p-4 rounded-lg shadow-md  transition-all hover:shadow-lg"
@@ -309,7 +308,6 @@ const User = () => {
                   {leagues &&
                     leagues?.pages?.map((page) => {
                       return page?.data.leagues?.map((league: any) => {
-                        console.log(league);
                         return (
                           <>
                             <Link

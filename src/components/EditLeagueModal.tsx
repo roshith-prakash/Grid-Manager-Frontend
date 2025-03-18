@@ -50,11 +50,10 @@ const EditLeagueModal = ({
         leagueName: leagueName,
         isPrivate: isPrivate,
       })
-      .then((res) => {
+      .then(() => {
         setDisabled(false);
         refetchFunction();
         onClose();
-        console.log(res?.data);
       })
       .catch((err) => {
         console.log(err);

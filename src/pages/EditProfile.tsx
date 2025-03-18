@@ -52,7 +52,6 @@ const EditProfile = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFileChange = (e: any) => {
     if (fileRef?.current) {
-      console.log(e.target.files[0]);
       setImage(e.target.files[0]);
       // @ts-expect-error must assign null
       fileRef.current.value = null;

@@ -55,8 +55,6 @@ export function NextRaceProvider({ children }: { children: ReactNode }) {
     }
   }, [data]);
 
-  console.log("Next Race : ", data?.data?.nextRace);
-
   // Value object to be passed in context
   const value: NextRaceContextType = {
     nextRace,
