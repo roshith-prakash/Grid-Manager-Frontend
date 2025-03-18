@@ -121,6 +121,7 @@ const Navbar = () => {
           {dbUser ? (
             <>
               <Link to="/leagues">Leagues</Link>
+              <Link to="/leaderboard">Leaderboard</Link>
               <button
                 onClick={() => setIsSignOutModalOpen(true)}
                 className="cursor-pointer"
@@ -489,6 +490,14 @@ const Navbar = () => {
                   aria-label="Leagues"
                 >
                   Leagues
+                </button>
+                <button
+                  onClick={() => handleSearch("/leaderboard")}
+                  className="hover:text-cta w-fit cursor-pointer transition-all"
+                  tabIndex={0}
+                  aria-label="Leaderboard"
+                >
+                  Leaderboard
                 </button>
                 <button
                   onClick={() => handleSearch("/signout")}
