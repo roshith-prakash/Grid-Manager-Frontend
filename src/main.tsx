@@ -21,6 +21,7 @@ createRoot(document.getElementById("root")!).render(
         <AuthProvider>
           {/* Providing Db user data to children */}
           <UserProvider>
+            {/* Provides next race data to all components */}
             <NextRaceProvider>
               <Toaster />
               <App />

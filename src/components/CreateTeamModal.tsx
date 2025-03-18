@@ -33,6 +33,7 @@ import {
 } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import Accordion from "./reuseit/Accordion";
+import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 
 const CreateTeamModal = ({
   leagueId,
@@ -362,12 +363,15 @@ const CreateTeamModal = ({
     if (name == null || name == undefined || name.length == 0) {
       setError((prev) => ({ ...prev, name: 1 }));
       return;
+    } else if (!isValidTeamOrLeagueName(name)) {
+      setError((prev) => ({ ...prev, name: 3 }));
+      return;
     } else if (name?.length > 30) {
       setError((prev) => ({ ...prev, name: 2 }));
       return;
     }
     if (availablePurse < 0) {
-      toast.error("Purse cannot be negative!");
+      toast.error("Purse exceeded!");
       return;
     }
 
@@ -413,7 +417,7 @@ const CreateTeamModal = ({
         <RxCross2 />
       </button>
 
-      {/* Available purse */}
+      {/* Title */}
       <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
         {" "}
         Create A Team!
@@ -435,10 +439,23 @@ const CreateTeamModal = ({
           value={name}
           onChange={(e) => {
             setName(e.target.value);
+            if (
+              e.target.value != null &&
+              e.target.value != undefined &&
+              e.target.value.length > 0 &&
+              isValidTeamOrLeagueName(e.target.value) &&
+              e.target.value.length < 30
+            ) {
+              setError((prev) => ({ ...prev, name: 0 }));
+              return;
+            }
           }}
           onBlur={() => {
             if (name == null || name == undefined || name.length == 0) {
               setError((prev) => ({ ...prev, name: 1 }));
+              return;
+            } else if (!isValidTeamOrLeagueName(name)) {
+              setError((prev) => ({ ...prev, name: 3 }));
               return;
             } else if (name?.length > 30) {
               setError((prev) => ({ ...prev, name: 2 }));
@@ -457,6 +474,12 @@ const CreateTeamModal = ({
         <ErrorStatement
           isOpen={error.name == 2}
           text={"Team name cannot exceed 30 characters."}
+        />
+        <ErrorStatement
+          isOpen={error.name == 3}
+          text={
+            "Team name must be at least 3 characters long and include at least one letter. It may also contain numbers and spaces."
+          }
         />
       </div>
 

@@ -6,6 +6,7 @@ import ErrorStatement from "./ErrorStatement";
 import Checkbox from "./reuseit/Checkbox";
 import PrimaryButton from "./reuseit/PrimaryButton";
 import { RxCross2 } from "react-icons/rx";
+import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 
 const EditLeagueModal = ({
   league,
@@ -36,6 +37,9 @@ const EditLeagueModal = ({
       leagueName.length <= 0
     ) {
       setError((prev) => ({ ...prev, leagueName: 1 }));
+      return;
+    } else if (!isValidTeamOrLeagueName(leagueName)) {
+      setError((prev) => ({ ...prev, leagueName: 3 }));
       return;
     } else if (leagueName.length > 30) {
       setError((prev) => ({ ...prev, leagueName: 2 }));
@@ -86,17 +90,17 @@ const EditLeagueModal = ({
       {/* Name */}
       <div className="mt-14 flex flex-col gap-y-8 ">
         {/* Name Input field */}
-        <div className="lg:flex-1 px-2">
+        <div className="lg:flex-1 flex flex-col items-center px-2">
           <p className="font-medium">League Name</p>
           <Input
             value={leagueName}
-            className="focus:border-darkbg dark:focus:border-white transition-all"
             onChange={(e) => {
               setLeagueName(e.target.value);
               if (
                 e.target.value != null &&
                 e.target.value != undefined &&
                 e.target.value.length > 0 &&
+                isValidTeamOrLeagueName(e.target.value) &&
                 e.target.value.length < 30
               ) {
                 setError((prev) => ({ ...prev, leagueName: 0 }));
@@ -107,18 +111,22 @@ const EditLeagueModal = ({
               if (
                 leagueName == null ||
                 leagueName == undefined ||
-                leagueName.length <= 0
+                leagueName.length == 0
               ) {
                 setError((prev) => ({ ...prev, leagueName: 1 }));
                 return;
-              } else if (leagueName.length > 30) {
+              } else if (!isValidTeamOrLeagueName(leagueName)) {
+                setError((prev) => ({ ...prev, leagueName: 3 }));
+                return;
+              } else if (leagueName?.length > 30) {
                 setError((prev) => ({ ...prev, leagueName: 2 }));
                 return;
               } else {
                 setError((prev) => ({ ...prev, leagueName: 0 }));
               }
             }}
-            placeholder={"Enter your name"}
+            className="max-w-xl"
+            placeholder="Team Name"
           />
 
           <ErrorStatement
@@ -129,6 +137,13 @@ const EditLeagueModal = ({
           <ErrorStatement
             isOpen={error.leagueName == 2}
             text={"League name cannot exceed 30 characters."}
+          />
+
+          <ErrorStatement
+            isOpen={error.leagueName == 3}
+            text={
+              "League name must be at least 3 characters long and include at least one letter. It may also contain numbers and spaces."
+            }
           />
         </div>
 

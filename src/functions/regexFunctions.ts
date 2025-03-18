@@ -23,3 +23,12 @@ export const isValidPassword = (password: string) => {
 export const isValidUsername = (username: string) => {
   return /^[a-zA-Z0-9_]+$/.test(username);
 };
+
+// Ensures a team name / league name contains only:
+// - Lowercase letters (a-z)
+// - Uppercase letters (A-Z)
+// - Digits (0-9)
+// - Spaces ( )
+export const isValidTeamOrLeagueName = (name: string) => {
+  return /^(?=.*[a-zA-Z])[a-zA-Z0-9 ]{3,}$/.test(String(name).trim());
+};
