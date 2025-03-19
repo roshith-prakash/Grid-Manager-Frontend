@@ -8,10 +8,12 @@ import { RxCross2 } from "react-icons/rx";
 
 const TeamModal = ({
   teamId,
+  displayLeague = true,
   isModalOpen,
   closeModal,
 }: {
   teamId: string;
+  displayLeague?: boolean;
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
@@ -64,11 +66,16 @@ const TeamModal = ({
             </h1>
 
             {/* League data */}
-            <div className="text-lg font-medium pt-4 space-y-2 text-center">
-              <p>League: {team.data.team.League?.name}</p>
-              <p>League ID: {team.data.team.League?.leagueId}</p>
-              <p>Points Scored: {team.data.team.score}</p>
-            </div>
+            {displayLeague && (
+              <div className="text-lg font-medium pt-4 space-y-2 text-center">
+                <p>League: {team.data.team.League?.name}</p>
+                <p>League ID: {team.data.team.League?.leagueId}</p>
+              </div>
+            )}
+
+            <p className="text-2xl w-fit mx-auto px-2 border-2 font-semibold py-2 rounded-lg border-darkbg/25 dark:border-white/25 mt-8">
+              Points Scored: {team.data.team.score}
+            </p>
 
             <p className="text-3xl font-semibold text-center mt-16 my-8">
               Team Drivers

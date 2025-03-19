@@ -60,6 +60,7 @@ const Leaderboard = () => {
       {/* View Team in Modal */}
       <TeamModal
         teamId={teamId}
+        displayLeague={false}
         isModalOpen={isTeamModalOpen}
         closeModal={() => setIsTeamModalOpen(false)}
       />
@@ -136,7 +137,10 @@ const Leaderboard = () => {
                     </h3>
                     <p>({driver?.code})</p>
                     <p>{driver?.constructor}</p>
-                    <p>Selected in {driver?.chosenPercentage}% of teams.</p>
+                    <p>
+                      Selected in {Number(driver?.chosenPercentage).toFixed(0)}%
+                      of teams.
+                    </p>
                   </div>
                 </Card>
               )
