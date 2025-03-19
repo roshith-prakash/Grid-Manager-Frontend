@@ -26,7 +26,7 @@ import { useInView } from "react-intersection-observer";
 import { BsFillTrash3Fill, BsPen } from "react-icons/bs";
 import toast from "react-hot-toast";
 import { IoMdShare } from "react-icons/io";
-// import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
+import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 
 const League = () => {
   const { leagueId } = useParams();
@@ -46,7 +46,7 @@ const League = () => {
   // Intersection observer to fetch new leagues
   const { ref, inView } = useInView();
 
-  // const hasWeekendStarted = useHasWeekendStarted();
+  const hasWeekendStarted = useHasWeekendStarted();
 
   // Fetch league data from server.
   const {
@@ -367,7 +367,7 @@ const League = () => {
                     ></SecondaryButton>
                   )}
                   <SecondaryButton
-                    //disabled={hasWeekendStarted}
+                    disabled={hasWeekendStarted}
                     className="border-transparent dark:hover:!text-cta shadow-md"
                     text={
                       <div className="flex  gap-x-2 items-center">
@@ -437,7 +437,7 @@ const League = () => {
                   ></SecondaryButton>
                 )}
                 <SecondaryButton
-                  //disabled={hasWeekendStarted}
+                  disabled={hasWeekendStarted}
                   className="border-transparent dark:hover:!text-cta shadow-md"
                   text={
                     <div className="flex  gap-x-2 items-center">
@@ -548,7 +548,7 @@ const League = () => {
                                     {team.User.id === dbUser?.id && (
                                       <div className="hidden md:flex flex-wrap flex-1 justify-end gap-x-4">
                                         <SecondaryButton
-                                          //disabled={hasWeekendStarted}
+                                          disabled={hasWeekendStarted}
                                           className="border-transparent shadow-md hover:text-cta"
                                           onClick={(e) => {
                                             e.stopPropagation();
@@ -609,7 +609,7 @@ const League = () => {
                                   {team.User.id === dbUser?.id && (
                                     <div className="flex md:hidden justify-end gap-x-4">
                                       <SecondaryButton
-                                        //disabled={hasWeekendStarted}
+                                        disabled={hasWeekendStarted}
                                         className="border-transparent flex-1  shadow-md hover:text-cta"
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -688,7 +688,7 @@ const League = () => {
                                   {team.User.id === dbUser?.id && (
                                     <div className="hidden md:flex flex-wrap flex-1 justify-end gap-x-4">
                                       <SecondaryButton
-                                        //disabled={hasWeekendStarted}
+                                        disabled={hasWeekendStarted}
                                         className="border-transparent shadow-md hover:text-cta"
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -749,7 +749,7 @@ const League = () => {
                                 {team.User.id === dbUser?.id && (
                                   <div className="flex md:hidden justify-end gap-x-4">
                                     <SecondaryButton
-                                      //disabled={hasWeekendStarted}
+                                      disabled={hasWeekendStarted}
                                       className="border-transparent flex-1  shadow-md hover:text-cta"
                                       onClick={(e) => {
                                         e.stopPropagation();
