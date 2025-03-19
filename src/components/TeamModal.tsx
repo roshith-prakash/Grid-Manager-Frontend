@@ -52,6 +52,7 @@ const TeamModal = ({
 
       {team?.data?.team && (
         <>
+          {/* Close Button */}
           <button
             onClick={closeModal}
             className="absolute right-5 text-2xl cursor-pointer"
@@ -86,11 +87,13 @@ const TeamModal = ({
               {team.data.team.teamDrivers?.map((driver: any) => (
                 <div
                   key={driver.code}
-                  className="flex flex-col w-56 rounded overflow-hidden border-2 dark:border-white/25 border-darkbg/50 shadow-lg"
+                  className="flex flex-col w-56 rounded overflow-hidden border-2 dark:border-white/25 shadow-lg"
                 >
                   <div
                     className="pt-2 flex items-end justify-center"
-                    style={{ backgroundColor: driver?.constructor_color }}
+                    style={{
+                      backgroundColor: driver?.constructor_color,
+                    }}
                   >
                     {driver?.image ? (
                       <img
@@ -108,7 +111,11 @@ const TeamModal = ({
                       {driver?.givenName} {driver?.familyName}
                     </h3>
                     <p>({driver?.code})</p>
-                    <p className="text-sm">{driver?.constructor}</p>
+                    <p className="text-sm">{driver?.constructor_name}</p>
+
+                    <p className="text-lg font-semibold py-2">
+                      Points Scored : {driver?.pointsForTeam}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -143,9 +150,15 @@ const TeamModal = ({
                     />
                   </div>
 
-                  <p className="py-4 text-lg font-semibold">
-                    {constructor?.name}
-                  </p>
+                  <div className="py-4">
+                    <p className=" text-lg font-semibold">
+                      {constructor?.name}
+                    </p>
+
+                    <p className="text-lg font-semibold py-2">
+                      Points Scored : {constructor?.pointsForTeam}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
