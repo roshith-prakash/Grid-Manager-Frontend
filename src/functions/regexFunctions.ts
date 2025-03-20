@@ -30,5 +30,5 @@ export const isValidUsername = (username: string) => {
 // - Digits (0-9)
 // - Spaces ( )
 export const isValidTeamOrLeagueName = (name: string) => {
-  return /^(?=.*[a-zA-Z])[a-zA-Z0-9 ]{3,}$/.test(String(name).trim());
+  return /^(?=.*[a-zA-Z]).{3,}$/.test(String(name).trim());
 };
