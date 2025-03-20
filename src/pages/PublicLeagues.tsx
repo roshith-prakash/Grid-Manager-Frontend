@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import HashLoader from "react-spinners/HashLoader";
 import Avatar from "@/components/reuseit/Avatar";
 import { LuCirclePlus } from "react-icons/lu";
+import { useDBUser } from "@/context/UserContext";
 
 const PublicLeagues = () => {
   // State for user input - passed to debouncer
@@ -16,6 +17,8 @@ const PublicLeagues = () => {
   // Debouncing the input of the user
   const debouncedSearch = useDebounce(search);
   const navigate = useNavigate();
+
+  const { dbUser } = useDBUser();
 
   // Intersection observer to fetch new leagues
   const { ref, inView } = useInView();
@@ -33,11 +36,12 @@ const PublicLeagues = () => {
     fetchNextPage: fetchNextLeagues,
     isFetchingNextPage: loadingNextLeagues,
   } = useInfiniteQuery({
-    queryKey: ["searchPosts", debouncedSearch],
+    queryKey: ["searchPosts", debouncedSearch, dbUser?.id],
     queryFn: ({ pageParam }) => {
       return axiosInstance.post("/team/search-public-leagues", {
         searchTerm: debouncedSearch,
         page: pageParam,
+        userId: dbUser?.id,
       });
     },
     initialPageParam: 0,
@@ -98,7 +102,7 @@ const PublicLeagues = () => {
 
           {/* Showing the input entered by the user */}
           {debouncedSearch && (
-            <p className="font-medium">
+            <p className="font-medium py-5">
               Showing search results for &quot;{debouncedSearch}&quot;
             </p>
           )}
@@ -181,7 +185,7 @@ const PublicLeagues = () => {
               <div className="flex justify-center">
                 <img
                   src={
-                    "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740067/homeNoPosts_bxhmtk.svg"
+                    "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742462679/Starman-bro_rgnlwy.svg"
                   }
                   className="max-w-[30%]"
                 />

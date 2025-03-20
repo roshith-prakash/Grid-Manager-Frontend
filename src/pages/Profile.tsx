@@ -471,7 +471,7 @@ const Profile = () => {
                   <div className="flex justify-center">
                     <img
                       src={
-                        "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740067/homeNoPosts_bxhmtk.svg"
+                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742462679/Starman-bro_rgnlwy.svg"
                       }
                       className="max-w-[30%]"
                     />
@@ -564,7 +564,7 @@ const Profile = () => {
                   <div className="flex justify-center">
                     <img
                       src={
-                        "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740067/homeNoPosts_bxhmtk.svg"
+                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742462679/Starman-bro_rgnlwy.svg"
                       }
                       className="max-w-[30%]"
                     />

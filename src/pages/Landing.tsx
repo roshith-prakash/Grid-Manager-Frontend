@@ -3,12 +3,12 @@ import { useGetNextRace } from "@/context/NextRaceContext";
 import { useEffect } from "react";
 
 const Landing = () => {
+  const { nextRace } = useGetNextRace();
+
   // Set window title.
   useEffect(() => {
     document.title = "Home | Grid Manager";
   }, []);
-
-  const { nextRace } = useGetNextRace();
 
   return (
     <div className="p-8 max-w-4xl mx-auto text-center space-y-8">
