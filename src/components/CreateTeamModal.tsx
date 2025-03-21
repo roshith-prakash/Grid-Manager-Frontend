@@ -2,8 +2,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import {
-  Draggable,
-  Droppable,
   ErrorStatement,
   Input,
   PrimaryButton,
@@ -15,24 +13,12 @@ import {
 } from "@/constants/constants";
 import { useDBUser } from "@/context/UserContext";
 import { axiosInstance } from "@/utils/axiosInstance";
-import {
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaUserAlt } from "react-icons/fa";
-import {
-  IoIosAddCircleOutline,
-  IoIosRemoveCircleOutline,
-} from "react-icons/io";
-import { RxCross2 } from "react-icons/rx";
-import Accordion from "./reuseit/Accordion";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { MdClose } from "react-icons/md";
 import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 
 const CreateTeamModal = ({
@@ -44,13 +30,6 @@ const CreateTeamModal = ({
   onClose: () => void;
   refetchFunction?: () => void;
 }) => {
-  // Setting up DND-KIT
-  const mouseSensor = useSensor(MouseSensor);
-  const touchSensor = useSensor(TouchSensor);
-  const keyboardSensor = useSensor(KeyboardSensor);
-
-  const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
-
   // Get User
   const { dbUser } = useDBUser();
 
@@ -105,146 +84,11 @@ const CreateTeamModal = ({
   // Name of the team
   const [name, setName] = useState("");
   const [disabled, setDisabled] = useState(false);
+  const [tabValue, setTabValue] = useState("drivers");
 
   const ref = useRef();
 
-  // Function to handle drag and drop
-  const handleDragDrivers = (event: any) => {
-    const { active, over } = event;
-    const itemId = parseInt(active.id); // Extract the item ID once
-
-    // Check if the item is being dropped onto a valid area
-    if (over) {
-      if (over.id === "team-drivers") {
-        // Check if the item is already in the dropped items to prevent duplicates
-        if (!teamDrivers.some((item) => item.permanentNumber === itemId)) {
-          const draggedItem = availableDrivers.find(
-            (item) => item.permanentNumber == itemId
-          );
-
-          // Ensure draggedItem exists
-          if (draggedItem) {
-            // Remove item from available items
-            setAvailableDrivers((items) =>
-              items.filter((item) => item.permanentNumber != itemId)
-            );
-
-            // Add item to dropped items
-            setTeamDrivers((items) => [...items, draggedItem]);
-            setAvailablePurse((purse) => purse - draggedItem?.price);
-          }
-        }
-      } else if (over.id === "available-drivers") {
-        // Prevent duplicate item drop in the same section
-        if (!availableDrivers.find((item) => item.permanentNumber === itemId)) {
-          const draggedItem = teamDrivers.find(
-            (item) => item.permanentNumber == itemId
-          );
-
-          // Ensure draggedItem exists
-          if (draggedItem) {
-            // Remove item from team
-            setTeamDrivers((items) =>
-              items.filter((item) => item.permanentNumber != itemId)
-            );
-
-            // Add item back to available constructors
-            setAvailableDrivers((items) => [...items, draggedItem]);
-
-            setAvailablePurse((purse) => purse + draggedItem?.price);
-          }
-        }
-      }
-    } else {
-      // When dropped outside both containers
-      const draggedItem =
-        availableDrivers.find((item) => item.permanentNumber === itemId) ||
-        teamDrivers.find((item) => item.permanentNumber === itemId);
-
-      // Ensure draggedItem exists before proceeding
-      if (draggedItem) {
-        // If dropped outside, reset the item to available items
-        if (!availableDrivers.find((item) => item.permanentNumber === itemId)) {
-          setAvailableDrivers((items) => [...items, draggedItem]);
-        }
-
-        // Remove the item from dropped items
-        setTeamDrivers((items) =>
-          items.filter((item) => item.permanentNumber !== itemId)
-        );
-      }
-    }
-  };
-
-  // Function to handle drag and drop
-  const handleDragConstructors = (event: any) => {
-    const { active, over } = event;
-    const itemId = parseInt(active.id); // Extract the item ID once
-
-    // Check if the item is being dropped onto a valid area
-    if (over) {
-      if (over.id === "team-constructors") {
-        // Check if the item is already in the dropped items to prevent duplicates
-        if (
-          !teamConstructors.some((item) => item.constructorNumber === itemId)
-        ) {
-          const draggedItem = availableConstructors.find(
-            (item) => item.constructorNumber == itemId
-          );
-
-          // Remove item from available items
-          setAvailableConstructors((items) =>
-            items.filter((item) => item.constructorNumber != itemId)
-          );
-
-          // Add item to dropped items
-          setTeamConstructors((items) => [...items, draggedItem]);
-          setAvailablePurse((purse) => purse - draggedItem?.price);
-        }
-      } else if (over.id === "available-constructors") {
-        // Prevent duplicate item drop in the same section
-        if (
-          !availableConstructors.find(
-            (item) => item.constructorNumber === itemId
-          )
-        ) {
-          const draggedItem = teamConstructors.find(
-            (item) => item.constructorNumber == itemId
-          );
-
-          // Remove item from team
-          setTeamConstructors((items) =>
-            items.filter((item) => item.constructorNumber != itemId)
-          );
-
-          // Add item back to available constructors
-          setAvailableConstructors((items) => [...items, draggedItem]);
-          setAvailablePurse((purse) => purse + draggedItem?.price);
-        }
-      }
-    } else {
-      // When dropped outside both containers
-      const draggedItem =
-        availableConstructors.find((item) => item.id === itemId) ||
-        teamConstructors.find((item) => item.id === itemId);
-
-      if (draggedItem) {
-        // If dropped outside, reset the item to available items
-        if (!availableConstructors.find((item) => item.id === itemId)) {
-          setAvailableConstructors((items) => [...items, draggedItem]);
-
-          setAvailablePurse((purse) => purse + draggedItem?.price);
-        }
-
-        // Remove the item from dropped items
-        setTeamConstructors((items) =>
-          items.filter((item) => item.id !== itemId)
-        );
-      }
-    }
-  };
-
-  // To add driver in Small Screens
+  // To add driver
   const addDriver = (driver: any) => {
     if (
       !teamDrivers.some(
@@ -271,7 +115,7 @@ const CreateTeamModal = ({
     }
   };
 
-  // To add driver in Small Screens
+  // To remove driver
   const removeDriver = (driver: any) => {
     if (
       !availableDrivers.some(
@@ -299,7 +143,7 @@ const CreateTeamModal = ({
     }
   };
 
-  // To add driver in Small Screens
+  // To add constructor
   const addConstructor = (constructor: any) => {
     if (
       !teamConstructors.some(
@@ -326,7 +170,7 @@ const CreateTeamModal = ({
     }
   };
 
-  // To add driver in Small Screens
+  // To add constructor
   const removeConstructor = (constructor: any) => {
     if (
       !availableConstructors.some(
@@ -414,26 +258,17 @@ const CreateTeamModal = ({
         onClick={onClose}
         className="absolute  right-5 text-2xl cursor-pointer"
       >
-        <RxCross2 />
+        <MdClose />
       </button>
 
       {/* Title */}
       <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
         {" "}
-        Create A Team!
+        Create a New Team!
       </h1>
 
-      {/* Available purse */}
-      <h2 className=" mb-10 pt-10 text-center font-medium text-2xl">
-        {" "}
-        Available Purse :{" "}
-        <span className={`${availablePurse < 0 && "text-red-500"}`}>
-          {availablePurse} Cr.
-        </span>
-      </h2>
-
       {/* Team Name */}
-      <div className="pb-10 px-4 py-5 flex flex-col items-center justify-center">
+      <div className="px-4 py-5 flex flex-col items-center justify-center">
         <p className="font-medium">Team Name</p>
         <Input
           value={name}
@@ -493,601 +328,367 @@ const CreateTeamModal = ({
         />
       </div>
 
-      {/* Drag and Drop - On Medium & large Screens */}
-      <div className="hidden md:flex flex-col md:px-5 min-h-screen">
-        {/* Drivers */}
-        <div className="flex flex-wrap-reverse">
-          <DndContext sensors={sensors} onDragEnd={handleDragDrivers}>
-            {/* Available Drivers */}
-            <div className="w-full lg:flex-1">
-              <div className="flex justify-between px-6 text-2xl font-medium">
-                <h3>Available Drivers</h3>
-              </div>
+      {/* Available purse */}
+      <h2
+        className={` ${
+          availablePurse < 0 ? "bg-red-500" : "bg-cta"
+        }  text-white mb-10 mt-10 py-2 px-6 w-fit rounded-3xl font-semibold mx-auto text-center transition-all text-2xl`}
+      >
+        {" "}
+        Available Purse : <span>{availablePurse} Cr.</span>
+      </h2>
 
-              <Droppable
-                id="available-drivers"
-                className="p-5 border-2 m-5 flex flex-wrap gap-3 justify-center shadow-md"
-              >
-                {availableDrivers
+      {/* Add Drivers & Constructors*/}
+      <div className="flex flex-col md:flex-row h-fit gap-y-16">
+        <div className="flex md:w-[38%] flex-col justify-start items-center gap-y-10">
+          <h1 className="border-b-4 w-full text-lg font-semibold text-center py-4">
+            Your Team
+          </h1>
+
+          <p className="text-xl">Drivers</p>
+          {/* Team Drivers */}
+          <div>
+            <div className="w-full flex flex-wrap gap-x-5 gap-y-12 justify-center px-4 py-5 lg:px-14">
+              {/* Map Drivers */}
+              {teamDrivers?.length > 0 &&
+                teamDrivers
                   ?.sort((a, b) => b?.price - a?.price)
-                  .map((driver) => {
+                  .map((driver: any) => {
                     return (
-                      <Draggable
-                        className="flex flex-col items-start w-full max-w-48 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg"
-                        key={driver?.driverId}
-                        id={`${driver?.permanentNumber}`}
-                      >
-                        {/* Driver Image Section */}
-                        <div
-                          className=" w-full flex items-end h-40 justify-center"
-                          style={{
-                            backgroundColor: driver?.constructor_color,
-                          }}
-                        >
-                          {driver?.image ? (
-                            <img
-                              src={driver.image}
-                              alt={driver.familyName}
-                              className="h-40 object-cover"
-                            />
-                          ) : (
-                            <FaUserAlt className="text-gray-400 text-4xl" />
-                          )}
-                        </div>
-
-                        {/* Driver Info Section */}
-                        <div className="py-4 bg-white dark:bg-secondarydarkbg  text-center w-full">
-                          <div className="px-4">
-                            <h3 className="text-lg font-semibold">
-                              {driver?.givenName} {driver?.familyName}
-                            </h3>
-                            <p> ({driver?.code})</p>
-                            <p className="text-sm text-darkbg/70 dark:text-white/50">
-                              {driver?.constructor}
-                            </p>
-                            <p className="text-md">
-                              Points:{" "}
-                              <span className="font-semibold">
-                                {driver?.points}
-                              </span>
-                            </p>
-                            <p className="text-md">
-                              Price:{" "}
-                              <span className="font-semibold">
-                                {driver?.price} Cr.
-                              </span>
-                            </p>
+                      <div className="relative">
+                        <div className=" h-24 w-24 border-b-2 rounded-full overflow-hidden">
+                          {/* Image */}
+                          <div
+                            className="h-full w-full pt-2 flex items-end justify-center"
+                            style={{
+                              backgroundColor: driver?.constructor_color,
+                            }}
+                          >
+                            {driver?.image ? (
+                              <img
+                                src={driver.image}
+                                alt={driver.familyName}
+                                className="object-cover"
+                              />
+                            ) : (
+                              <FaUserAlt className="text-gray-400 text-4xl" />
+                            )}
                           </div>
+
+                          <div className="absolute z-5 -bottom-2 rounded-full border-2 bg-white dark:bg-secondarydarkbg dark:border-white/25 py-1 w-full">
+                            <div>
+                              <p className="text-sm text-center">
+                                Price:{" "}
+                                <span className="font-semibold text-nowrap">
+                                  {driver?.price} Cr.
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Close Button */}
+                          <button
+                            onClick={() => {
+                              removeDriver(driver);
+                            }}
+                            className="absolute border-2 -right-2 -top-2 bg-white dark:bg-secondarydarkbg dark:border-white/25 p-2 rounded-full cursor-pointer"
+                          >
+                            <MdClose />
+                          </button>
                         </div>
-                      </Draggable>
+                      </div>
                     );
                   })}
-              </Droppable>
-            </div>
 
-            {/* Team Drivers */}
-            <div className="w-full lg:flex-1">
-              <div className="flex flex-wrap justify-between px-6 text-2xl font-medium">
-                <h3>Team Drivers</h3>
-                <h3
-                  className={`${
-                    teamDrivers?.length == NUMBER_OF_DRIVERS && "text-green-500"
-                  } ${
-                    teamDrivers?.length > NUMBER_OF_DRIVERS && "text-red-500"
-                  }`}
-                >
-                  {teamDrivers?.length} / {NUMBER_OF_DRIVERS}
-                </h3>
-              </div>
-
-              <Droppable
-                id="team-drivers"
-                className="p-5 border-2 m-5 flex flex-wrap gap-3 justify-center shadow-md"
-              >
-                {teamDrivers.length === 0 ? (
-                  <p className="py-10">Add drivers</p>
-                ) : (
-                  teamDrivers
-                    ?.sort((a, b) => b?.price - a?.price)
-                    .map((driver) => (
-                      <Draggable
-                        className="flex flex-col items-start w-full max-w-48 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg"
-                        key={driver?.driverId}
-                        id={`${driver?.permanentNumber}`}
-                      >
-                        {/* Driver Image Section */}
-                        <div
-                          className=" w-full flex items-end h-40 justify-center"
-                          style={{
-                            backgroundColor: driver?.constructor_color,
-                          }}
-                        >
-                          {driver?.image ? (
-                            <img
-                              src={driver.image}
-                              alt={driver.familyName}
-                              className="h-40 object-cover"
-                            />
-                          ) : (
-                            <FaUserAlt className="text-gray-400 text-4xl" />
-                          )}
-                        </div>
-
-                        {/* Driver Info Section */}
-                        <div className="py-4 bg-white dark:bg-secondarydarkbg text-center w-full">
-                          <div className="px-4">
-                            <h3 className="text-lg font-semibold">
-                              {driver?.givenName} {driver?.familyName}
-                            </h3>
-                            <p> ({driver?.code})</p>
-                            <p className="text-sm text-darkbg/70 dark:text-white/50">
-                              {driver?.constructor}
-                            </p>
-                            <p className="text-md">
-                              Points:{" "}
-                              <span className="font-semibold">
-                                {driver?.points}
-                              </span>
-                            </p>
-                            <p className="text-md">
-                              Price:{" "}
-                              <span className="font-semibold">
-                                {driver?.price} Cr.
-                              </span>
-                            </p>
-                          </div>
-                        </div>
-                      </Draggable>
-                    ))
-                )}
-              </Droppable>
-            </div>
-          </DndContext>
-        </div>
-
-        {/* Constructors */}
-        <div className="flex flex-wrap-reverse mt-16">
-          <DndContext sensors={sensors} onDragEnd={handleDragConstructors}>
-            {/* Available Constructors */}
-            <div className="w-full lg:flex-1">
-              <div className="flex justify-between px-6 text-2xl font-medium">
-                <h3>Available Constructors</h3>
-              </div>
-
-              <Droppable
-                id="available-constructors"
-                className="p-5 border-2 m-5 flex flex-wrap gap-3 justify-center shadow-md"
-              >
-                {availableConstructors
-                  ?.sort((a, b) => b?.price - a?.price)
-                  .map((constructor) => {
+              {/* Map Empty Buttons */}
+              {teamDrivers?.length < NUMBER_OF_DRIVERS &&
+                Array(NUMBER_OF_DRIVERS - teamDrivers?.length)
+                  ?.fill(null)
+                  ?.map((_, index: number) => {
                     return (
-                      <Draggable
-                        className="border rounded-sm pb-5 flex flex-col gap-y-2 bg-white dark:bg-secondarydarkbg shadow-md w-full max-w-64 text-center"
-                        key={constructor?.constructorId}
-                        id={`${constructor?.constructorNumber}`}
-                      >
-                        {" "}
-                        <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
-                          <img
-                            src={
-                              constructor?.logo
-                                ? constructor?.logo
-                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
-                            }
-                            className="h-36 object-contain"
-                          />
-                          <img
-                            src={
-                              constructor?.carImage
-                                ? constructor?.carImage
-                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
-                            }
-                          />
-                        </div>
-                        <div className="flex justify-center px-5"></div>
-                        <p className=" text-xl font-semibold">
-                          {constructor?.name}
+                      <button className="h-24 w-24 border-2 dark:border-white/20 p-2 flex justify-center items-center rounded-full">
+                        <p className="text-lg font-medium">
+                          Driver {teamDrivers?.length + index + 1}
                         </p>
-                        <div>
-                          Points in season:{" "}
-                          <span className="font-semibold">
-                            {constructor?.points}
-                          </span>
-                        </div>
-                        <div>
-                          Price:{" "}
-                          <span className="font-semibold">
-                            {constructor?.price} Cr.
-                          </span>
-                        </div>
-                      </Draggable>
+                      </button>
                     );
                   })}
-              </Droppable>
             </div>
-
-            {/* Team Constructors */}
-            <div className="w-full lg:flex-1">
-              <div
-                className={`flex flex-wrap justify-between px-6 text-2xl font-medium `}
-              >
-                <h3>Team Constructors</h3>
-                <h3
-                  className={`${
-                    teamConstructors?.length == NUMBER_OF_CONSTRUCTORS &&
-                    "text-green-500"
-                  } ${
-                    teamConstructors?.length > NUMBER_OF_CONSTRUCTORS &&
-                    "text-red-500"
-                  }`}
-                >
-                  {teamConstructors?.length} / {NUMBER_OF_CONSTRUCTORS}
-                </h3>
-              </div>
-
-              <Droppable
-                id="team-constructors"
-                className="p-5 border-2 m-5 flex flex-wrap gap-3 justify-center shadow-md"
-              >
-                {teamConstructors.length === 0 ? (
-                  <p className="py-10">Add Constructors</p>
-                ) : (
-                  teamConstructors
-                    ?.sort((a, b) => b?.price - a?.price)
-                    .map((constructor) => (
-                      <Draggable
-                        className="border rounded-sm pb-5 flex flex-col gap-y-2 bg-white dark:bg-secondarydarkbg shadow-md w-full max-w-64 text-center"
-                        key={constructor?.constructorId}
-                        id={`${constructor?.constructorNumber}`}
-                      >
-                        {" "}
-                        <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
-                          <img
-                            src={
-                              constructor?.logo
-                                ? constructor?.logo
-                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
-                            }
-                            className="h-36 object-contain"
-                          />
-                          <img
-                            src={
-                              constructor?.carImage
-                                ? constructor?.carImage
-                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
-                            }
-                          />
-                        </div>
-                        <div className="flex justify-center px-5"></div>
-                        <p className=" text-xl font-semibold">
-                          {constructor?.name}
-                        </p>
-                        <div>
-                          Points in season:{" "}
-                          <span className="font-semibold">
-                            {constructor?.points}
-                          </span>
-                        </div>
-                        <div>
-                          Price:{" "}
-                          <span className="font-semibold">
-                            {constructor?.price} Cr.
-                          </span>
-                        </div>
-                      </Draggable>
-                    ))
-                )}
-              </Droppable>
-            </div>
-          </DndContext>
-        </div>
-      </div>
-
-      {/* Add via Button- On Small Screens */}
-      <div className="flex md:hidden flex-col gap-y-10">
-        {/* Team Drivers */}
-        <div className="flex flex-col gap-y-5">
-          <div className="flex justify-between px-6 text-2xl font-medium">
-            <h3>Team Drivers</h3>
-            <span>
-              {teamDrivers?.length} / {NUMBER_OF_DRIVERS}
-            </span>
           </div>
 
-          <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
-            {teamDrivers?.length > 0 ? (
-              teamDrivers
-                ?.sort((a, b) => b?.price - a?.price)
-                .map((driver: any) => {
-                  return (
-                    <>
-                      <div className="flex flex-col w-full max-w-64 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
-                        {/* Driver Image Section */}
-                        <div
-                          className="h-full w-full flex items-end justify-center"
-                          style={{ backgroundColor: driver?.constructor_color }}
-                        >
-                          {driver?.image ? (
-                            <img
-                              src={driver.image}
-                              alt={driver.familyName}
-                              className=" h-40 object-cover"
-                            />
-                          ) : (
-                            <FaUserAlt className="text-gray-400 text-4xl" />
-                          )}
-                        </div>
-
-                        {/* Driver Info Section */}
-                        <div className="py-4 px-4">
-                          <div className="px-4">
-                            <h3 className="text-lg font-semibold">
-                              {driver?.givenName} {driver?.familyName} (
-                              {driver?.code})
-                            </h3>
-                            <p className="text-sm text-darkbg/70 dark:text-white/50">
-                              {driver?.constructor}
-                            </p>
-                            <p className="text-md">
-                              Points:{" "}
-                              <span className="font-semibold">
-                                {driver?.points}
-                              </span>
-                            </p>
-                            <p className="text-md">
-                              Price:{" "}
-                              <span className="font-semibold">
-                                {driver?.price} Cr.
-                              </span>
-                            </p>
-                          </div>
-
-                          <div className="mt-5">
-                            <SecondaryButton
-                              onClick={() => removeDriver(driver)}
-                              className="!py-1.5 !px-3 flex justify-center items-center gap-2 mx-auto !w-[90%]"
-                              text={
-                                <>
-                                  <IoIosRemoveCircleOutline className="text-lg" />
-                                  <span>Remove</span>
-                                </>
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  );
-                })
-            ) : (
-              <p className="text-center">Add Drivers!</p>
-            )}
-          </div>
-        </div>
-
-        {/* Available Drivers */}
-        <div className="flex flex-col gap-y-5">
-          <Accordion
-            text={
-              <div className="flex justify-between px-6 text-2xl font-medium">
-                <h3>Available Drivers</h3>
-              </div>
-            }
-          >
-            <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
-              {availableDrivers
-                ?.sort((a, b) => b?.price - a?.price)
-                .map((driver: any) => {
-                  return (
-                    <>
-                      <div className="flex flex-col w-full max-w-64 rounded overflow-hidden border border-darkbg/50 dark:border-white/25 shadow-lg">
-                        {/* Driver Image Section */}
-                        <div
-                          className="h-full w-full flex items-end justify-center"
-                          style={{ backgroundColor: driver?.constructor_color }}
-                        >
-                          {driver?.image ? (
-                            <img
-                              src={driver.image}
-                              alt={driver.familyName}
-                              className="h-40 object-cover"
-                            />
-                          ) : (
-                            <FaUserAlt className="text-gray-400 text-4xl" />
-                          )}
-                        </div>
-
-                        {/* Driver Info Section */}
-                        <div className="py-4 px-4 ">
-                          <div className="px-4">
-                            <h3 className="text-lg text-ellipsis text-nowrap font-semibold">
-                              {driver?.givenName} {driver?.familyName} (
-                              {driver?.code})
-                            </h3>
-                            <p className="text-sm text-darkbg/70 dark:text-white/50">
-                              {driver?.constructor}
-                            </p>
-                            <p className="text-md">
-                              Points:{" "}
-                              <span className="font-semibold">
-                                {driver?.points}
-                              </span>
-                            </p>
-                            <p className="text-md">
-                              Price:{" "}
-                              <span className="font-semibold">
-                                {driver?.price} Cr.
-                              </span>
-                            </p>
-                          </div>
-
-                          <div className="mt-5">
-                            <SecondaryButton
-                              onClick={() => addDriver(driver)}
-                              className="!py-1.5 !px-3 flex justify-center items-center gap-2 mx-auto !w-[90%]"
-                              text={
-                                <>
-                                  <IoIosAddCircleOutline className="text-lg" />
-                                  <span>Add</span>
-                                </>
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  );
-                })}
-            </div>
-          </Accordion>
-        </div>
-
-        {/* Team Constructors */}
-        <div className="flex flex-col gap-y-5">
-          <div className="flex justify-between px-6 text-2xl font-medium">
-            <h3>Team Constructors</h3>
-            <span>
-              {teamConstructors?.length} / {NUMBER_OF_CONSTRUCTORS}
-            </span>
-          </div>
-
-          <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
-            {teamConstructors?.length > 0 ? (
-              teamConstructors
-                ?.sort((a, b) => b?.price - a?.price)
-                .map((constructor: any) => {
-                  return (
-                    <>
-                      <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
-                        <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
-                          <img
-                            src={
-                              constructor?.logo
-                                ? constructor?.logo
-                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
-                            }
-                            className="h-36 object-contain"
-                          />
-                          <img
-                            src={
-                              constructor?.carImage
-                                ? constructor?.carImage
-                                : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
-                            }
-                          />
-                        </div>
-
-                        <p className="pt-2 text-lg font-semibold">
-                          {constructor?.name}
-                        </p>
-                        <div>
-                          Points in season:{" "}
-                          <span className="font-semibold">
-                            {constructor?.points}
-                          </span>
-                        </div>
-                        <div>
-                          Price:{" "}
-                          <span className="font-semibold">
-                            {constructor?.price} Cr.
-                          </span>
-                        </div>
-
-                        <div className="py-3 px-4 flex justify-center">
-                          <SecondaryButton
-                            onClick={() => removeConstructor(constructor)}
-                            className="!py-1.5 !w-[90%] !px-3 flex justify-center items-center gap-2"
-                            text={
-                              <>
-                                <IoIosRemoveCircleOutline className="text-lg" />
-                                <span>Remove</span>
-                              </>
-                            }
-                          />
-                        </div>
-                      </div>
-                    </>
-                  );
-                })
-            ) : (
-              <p className="text-center">Add Constructors!</p>
-            )}
-          </div>
-        </div>
-
-        {/* Available Constructors */}
-        <div className="flex flex-col gap-y-5">
-          <Accordion
-            text={
-              <div className="flex justify-between px-6 text-2xl font-medium">
-                <h3>Available Constructors</h3>
-              </div>
-            }
-          >
-            <div className="border-2 rounded-md border-darkbg/25 dark:border-white/25 flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
-              {availableConstructors?.length > 0 ? (
-                availableConstructors
+          <p className="text-xl">Constructors</p>
+          {/* Team Constructors */}
+          <div>
+            <div className="flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
+              {teamConstructors?.length > 0 &&
+                teamConstructors
                   ?.sort((a, b) => b?.price - a?.price)
                   .map((constructor: any) => {
                     return (
-                      <>
-                        <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
-                          <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
-                            <img
-                              src={
-                                constructor?.logo
-                                  ? constructor?.logo
-                                  : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
-                              }
-                              className="h-36 object-contain"
-                            />
-                            <img
-                              src={
-                                constructor?.carImage
-                                  ? constructor?.carImage
-                                  : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
-                              }
-                            />
+                      <div className="relative">
+                        <div className=" h-33 w-33 border-2 rounded-full overflow-hidden">
+                          {/* Image */}
+                          <div className="h-full w-full px-2 bg-white flex items-center justify-center">
+                            {constructor.logo ? (
+                              <img
+                                src={constructor.logo}
+                                alt={constructor.name}
+                                className="object-cover"
+                              />
+                            ) : (
+                              <FaUserAlt className="text-gray-400 text-4xl" />
+                            )}
                           </div>
 
-                          <p className="pt-2 text-lg font-semibold">
-                            {constructor?.name}
-                          </p>
-                          <div>
-                            Points in season:{" "}
-                            <span className="font-semibold">
-                              {constructor?.points}
-                            </span>
-                          </div>
-                          <div>
-                            Price:{" "}
-                            <span className="font-semibold">
-                              {constructor?.price} Cr.
-                            </span>
+                          <div className="absolute z-5  left-1/2 -translate-x-1/2 w-full  -bottom-2 rounded-full border-2 bg-white dark:bg-secondarydarkbg dark:border-white/25 py-1 ">
+                            <div>
+                              <p className="text-sm text-center">
+                                Price:{" "}
+                                <span className="font-semibold text-nowrap">
+                                  {constructor?.price} Cr.
+                                </span>
+                              </p>
+                            </div>
                           </div>
 
-                          <div className="py-3 px-4 flex justify-center">
-                            <SecondaryButton
-                              onClick={() => addConstructor(constructor)}
-                              className="!py-1.5 !w-[90%] !px-3 flex justify-center items-center gap-2"
-                              text={
-                                <>
-                                  <IoIosAddCircleOutline className="text-lg" />
-                                  <span>Add</span>
-                                </>
-                              }
-                            />
-                          </div>
+                          {/* Close Button */}
+                          <button
+                            onClick={() => {
+                              removeConstructor(constructor);
+                            }}
+                            className="absolute border-2 right-1 -top-1 bg-white dark:bg-secondarydarkbg dark:border-white/25 p-2 rounded-full cursor-pointer"
+                          >
+                            <MdClose />
+                          </button>
                         </div>
-                      </>
+                      </div>
                     );
-                  })
-              ) : (
-                <p className="text-center">Add Constructors!</p>
-              )}
+                  })}
+
+              {/* Map Empty Buttons */}
+              {teamConstructors?.length < NUMBER_OF_CONSTRUCTORS &&
+                Array(NUMBER_OF_CONSTRUCTORS - teamConstructors?.length)
+                  ?.fill(null)
+                  ?.map((_, index: number) => {
+                    return (
+                      <button className="flex justify-center h-33 w-33 items-center border-2 gap-2 dark:border-white/20 p-2 rounded-full">
+                        <p>
+                          Constructor {teamConstructors?.length + index + 1}
+                        </p>
+                      </button>
+                    );
+                  })}
             </div>
-          </Accordion>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex md:flex-1 flex-col gap-y-10">
+          {/* Tab Buttons */}
+          <div className="flex">
+            {/* Drivers Tab Button */}
+            <button
+              onClick={() => setTabValue("drivers")}
+              className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4 ${
+                tabValue == "drivers" &&
+                "text-cta border-cta dark:text-white dark:border-darkmodeCTA"
+              }`}
+            >
+              Drivers
+              <div className="flex justify-center pt-1 gap-1">
+                {Array(NUMBER_OF_DRIVERS)
+                  ?.fill(null)
+                  ?.map((_, index: number) => {
+                    return (
+                      <div
+                        className={`p-1 ${
+                          teamDrivers?.length >= index + 1
+                            ? "bg-cta"
+                            : "bg-gray-400"
+                        }  rounded-full`}
+                      ></div>
+                    );
+                  })}
+              </div>
+            </button>
+            {/* Constructors Tab Button */}
+            <button
+              onClick={() => setTabValue("constructors")}
+              className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4  ${
+                tabValue == "constructors" &&
+                "text-cta border-cta dark:text-white dark:border-darkmodeCTA"
+              }`}
+            >
+              Constructors
+              <div className="flex justify-center pt-1 gap-1">
+                {Array(NUMBER_OF_CONSTRUCTORS)
+                  ?.fill(null)
+                  ?.map((_, index: number) => {
+                    return (
+                      <div
+                        className={`p-1 ${
+                          teamConstructors?.length >= index + 1
+                            ? "bg-cta"
+                            : "bg-gray-400"
+                        }  rounded-full`}
+                      ></div>
+                    );
+                  })}
+              </div>
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div className="border-l-3 dark:border-white/15">
+            <div className="flex md:flex-1 flex-col gap-y-5">
+              <div className="flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
+                {/* Available Drivers */}
+                {tabValue == "drivers" && (
+                  <>
+                    {availableDrivers
+                      ?.sort((a, b) => b?.price - a?.price)
+                      .map((driver: any) => {
+                        return (
+                          <>
+                            <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
+                              {/* Driver Image Section */}
+                              <div
+                                className="h-full w-full flex items-end justify-center"
+                                style={{
+                                  backgroundColor: driver?.constructor_color,
+                                }}
+                              >
+                                {driver?.image ? (
+                                  <img
+                                    src={driver.image}
+                                    alt={driver.familyName}
+                                    className="h-40 object-cover"
+                                  />
+                                ) : (
+                                  <FaUserAlt className="text-gray-400 text-4xl" />
+                                )}
+                              </div>
+
+                              {/* Driver Info Section */}
+                              <div className="py-4 px-4 ">
+                                <div className="px-4">
+                                  <h3 className="text-lg text-ellipsis text-nowrap font-semibold">
+                                    {driver?.givenName} {driver?.familyName} (
+                                    {driver?.code})
+                                  </h3>
+                                  <p className="text-sm text-darkbg/70 dark:text-white/50">
+                                    {driver?.constructor}
+                                  </p>
+                                  <p className="text-md">
+                                    Points:{" "}
+                                    <span className="font-semibold">
+                                      {driver?.points}
+                                    </span>
+                                  </p>
+                                  <p className="text-md">
+                                    Price:{" "}
+                                    <span className="font-semibold">
+                                      {driver?.price} Cr.
+                                    </span>
+                                  </p>
+                                </div>
+
+                                <div className="mt-5">
+                                  <SecondaryButton
+                                    onClick={() => addDriver(driver)}
+                                    disabled={
+                                      teamDrivers?.length >= 5 ||
+                                      availablePurse <= 0
+                                    }
+                                    className="!py-1.5 !px-3 flex justify-center items-center gap-2 mx-auto !w-[90%]"
+                                    text={
+                                      <>
+                                        <IoIosAddCircleOutline className="text-lg" />
+                                        <span>Add</span>
+                                      </>
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        );
+                      })}
+                  </>
+                )}
+
+                {/* Available Constructors */}
+                {tabValue == "constructors" && (
+                  <>
+                    {availableConstructors?.length > 0 ? (
+                      availableConstructors
+                        ?.sort((a, b) => b?.price - a?.price)
+                        .map((constructor: any) => {
+                          return (
+                            <>
+                              <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
+                                <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
+                                  <img
+                                    src={
+                                      constructor?.logo
+                                        ? constructor?.logo
+                                        : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                                    }
+                                    className="h-36 object-contain"
+                                  />
+                                  <img
+                                    src={
+                                      constructor?.carImage
+                                        ? constructor?.carImage
+                                        : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                                    }
+                                  />
+                                </div>
+
+                                <p className="pt-2 text-lg font-semibold">
+                                  {constructor?.name}
+                                </p>
+                                <div>
+                                  Points in season:{" "}
+                                  <span className="font-semibold">
+                                    {constructor?.points}
+                                  </span>
+                                </div>
+                                <div>
+                                  Price:{" "}
+                                  <span className="font-semibold">
+                                    {constructor?.price} Cr.
+                                  </span>
+                                </div>
+
+                                <div className="py-3 px-4 flex justify-center">
+                                  <SecondaryButton
+                                    onClick={() => addConstructor(constructor)}
+                                    disabled={
+                                      teamConstructors?.length >= 2 ||
+                                      availablePurse <= 0
+                                    }
+                                    className="!py-1.5 !w-[90%] !px-3 flex justify-center items-center gap-2"
+                                    text={
+                                      <>
+                                        <IoIosAddCircleOutline className="text-lg" />
+                                        <span>Add</span>
+                                      </>
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </>
+                          );
+                        })
+                    ) : (
+                      <p className="text-center">Add Constructors!</p>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

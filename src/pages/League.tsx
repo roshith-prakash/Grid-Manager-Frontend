@@ -234,7 +234,7 @@ const League = () => {
 
           {/* Edit the League */}
           <AlertModal
-            className="max-w-2xl w-full !px-0 lg:px-5 noscroller"
+            className="!max-w-4xl w-full !px-0 lg:px-5 pb-10 noscroller"
             isOpen={isEditLeagueModalOpen}
             onClose={() => {
               setIsEditLeagueModalOpen(false);
@@ -359,7 +359,7 @@ const League = () => {
                       className="border-transparent dark:hover:!text-cta shadow-md"
                       text={
                         <div className="flex gap-x-2 items-center">
-                          <IoMdShare className="text-xl" />
+                          <BsPen className="text-xl" />
                           <span className="">Edit</span>
                         </div>
                       }
