@@ -4,11 +4,17 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { FaUserAlt } from "react-icons/fa";
 import Card from "@/components/reuseit/Card";
-import { TeamModal } from "@/components";
+import { ConstructorModal, DriverModal, TeamModal } from "@/components";
 
 const Leaderboard = () => {
   const [teamId, setTeamId] = useState("");
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+
+  const [selectedDriverId, setSelectedDriverId] = useState("");
+  const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
+
+  const [selectedConstructorId, setSelectedConstructorId] = useState("");
+  const [isConstructorModalOpen, setIsConstructorModalOpen] = useState(false);
 
   // Set page title
   useEffect(() => {
@@ -73,6 +79,22 @@ const Leaderboard = () => {
         displayLeague={false}
         isModalOpen={isTeamModalOpen}
         closeModal={() => setIsTeamModalOpen(false)}
+      />
+
+      <DriverModal
+        driverId={selectedDriverId}
+        isModalOpen={isDriverModalOpen}
+        closeModal={() => {
+          setIsDriverModalOpen(false);
+        }}
+      />
+
+      <ConstructorModal
+        constructorId={selectedConstructorId}
+        isModalOpen={isConstructorModalOpen}
+        closeModal={() => {
+          setIsConstructorModalOpen(false);
+        }}
       />
 
       <div className="py-10 text-center">
@@ -143,12 +165,18 @@ const Leaderboard = () => {
             {mostSelectedDrivers?.data?.drivers?.map(
               (driver: any, index: number) => (
                 <Card
+                  onClick={() => {
+                    setSelectedDriverId(driver?.id);
+                    setIsDriverModalOpen(true);
+                  }}
                   key={driver.code}
-                  className="w-56 text-center border-2 shadow-lg overflow-hidden"
+                  className="w-56 cursor-pointer text-center border-2 shadow-lg overflow-hidden"
                 >
                   <div
                     className="pt-2 flex items-end justify-center"
-                    style={{ backgroundColor: driver?.constructor_color }}
+                    style={{
+                      backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
+                    }}
                   >
                     {driver?.image ? (
                       <img
@@ -203,6 +231,10 @@ const Leaderboard = () => {
             {mostSelectedConstructors?.data?.constructors?.map(
               (constructor: any, index: number) => (
                 <Card
+                  onClick={() => {
+                    setSelectedConstructorId(constructor?.id);
+                    setIsConstructorModalOpen(true);
+                  }}
                   key={constructor.name}
                   className="w-64 text-center border-2 shadow-lg overflow-hidden"
                 >
@@ -261,12 +293,18 @@ const Leaderboard = () => {
             {highestScoringDrivers?.data?.drivers?.map(
               (driver: any, index: number) => (
                 <Card
+                  onClick={() => {
+                    setSelectedDriverId(driver?.id);
+                    setIsDriverModalOpen(true);
+                  }}
                   key={driver.code}
-                  className="w-60 text-center border-2 shadow-lg overflow-hidden"
+                  className="w-60 cursor-pointer text-center border-2 shadow-lg overflow-hidden"
                 >
                   <div
                     className="pt-2 flex items-end justify-center"
-                    style={{ backgroundColor: driver?.constructor_color }}
+                    style={{
+                      backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
+                    }}
                   >
                     {driver?.image ? (
                       <img
@@ -318,6 +356,10 @@ const Leaderboard = () => {
             {highestScoringConstructors?.data?.constructors?.map(
               (constructor: any, index: number) => (
                 <Card
+                  onClick={() => {
+                    setSelectedConstructorId(constructor?.id);
+                    setIsConstructorModalOpen(true);
+                  }}
                   key={constructor.name}
                   className="w-64 text-center border-2 shadow-lg overflow-hidden"
                 >

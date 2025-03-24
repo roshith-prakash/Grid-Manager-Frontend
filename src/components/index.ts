@@ -16,6 +16,8 @@ import CreateTeamModal from "./CreateTeamModal";
 import EditTeamModal from "./EditTeamModal";
 import EditLeagueModal from "./EditLeagueModal";
 import Countdown from "./CountDown";
+import DriverModal from "./DriverModal";
+import ConstructorModal from "./ConstructorModal";
 
 export {
   PrimaryButton,
@@ -36,4 +38,6 @@ export {
   EditTeamModal,
   EditLeagueModal,
   Countdown,
+  DriverModal,
+  ConstructorModal,
 };

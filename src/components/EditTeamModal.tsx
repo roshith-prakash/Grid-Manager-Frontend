@@ -2,6 +2,8 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import {
+  ConstructorModal,
+  DriverModal,
   ErrorStatement,
   Input,
   PrimaryButton,
@@ -47,6 +49,12 @@ const EditTeamModal = ({
   const [name, setName] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [tabValue, setTabValue] = useState("drivers");
+
+  const [selectedDriverId, setSelectedDriverId] = useState("");
+  const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
+
+  const [selectedConstructorId, setSelectedConstructorId] = useState("");
+  const [isConstructorModalOpen, setIsConstructorModalOpen] = useState(false);
 
   const ref = useRef();
 
@@ -313,6 +321,22 @@ const EditTeamModal = ({
 
   return (
     <div>
+      <DriverModal
+        driverId={selectedDriverId}
+        isModalOpen={isDriverModalOpen}
+        closeModal={() => {
+          setIsDriverModalOpen(false);
+        }}
+      />
+
+      <ConstructorModal
+        constructorId={selectedConstructorId}
+        isModalOpen={isConstructorModalOpen}
+        closeModal={() => {
+          setIsConstructorModalOpen(false);
+        }}
+      />
+
       <div ref={ref}></div>
 
       {/* Close div button */}
@@ -418,12 +442,18 @@ const EditTeamModal = ({
                   .map((driver: any) => {
                     return (
                       <div className="relative">
-                        <div className=" h-24 w-24 border-b-2 rounded-full overflow-hidden">
+                        <div
+                          onClick={() => {
+                            setSelectedDriverId(driver?.id);
+                            setIsDriverModalOpen(true);
+                          }}
+                          className="h-24 w-24 border-b-2 rounded-full overflow-hidden cursor-pointer"
+                        >
                           {/* Image */}
                           <div
                             className="h-full w-full pt-2 flex items-end justify-center"
                             style={{
-                              backgroundColor: driver?.constructor_color,
+                              backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
                             }}
                           >
                             {driver?.image ? (
@@ -450,7 +480,8 @@ const EditTeamModal = ({
 
                           {/* Close Button */}
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               removeDriver(driver);
                             }}
                             className="absolute border-2 -right-2 -top-2 bg-white dark:bg-secondarydarkbg dark:border-white/25 p-2 rounded-full cursor-pointer"
@@ -487,7 +518,13 @@ const EditTeamModal = ({
                   ?.sort((a, b) => b?.price - a?.price)
                   .map((constructor: any) => {
                     return (
-                      <div className="relative">
+                      <div
+                        onClick={() => {
+                          setSelectedConstructorId(constructor?.id);
+                          setIsConstructorModalOpen(true);
+                        }}
+                        className="relative cursor-pointer"
+                      >
                         <div className=" h-33 w-33 border-2 rounded-full overflow-hidden">
                           {/* Image */}
                           <div className="h-full w-full px-2 bg-white flex items-center justify-center">
@@ -515,7 +552,8 @@ const EditTeamModal = ({
 
                           {/* Close Button */}
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               removeConstructor(constructor);
                             }}
                             className="absolute border-2 right-1 -top-1 bg-white dark:bg-secondarydarkbg dark:border-white/25 p-2 rounded-full cursor-pointer"
@@ -612,12 +650,18 @@ const EditTeamModal = ({
                       .map((driver: any) => {
                         return (
                           <>
-                            <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
+                            <div
+                              onClick={() => {
+                                setSelectedDriverId(driver?.id);
+                                setIsDriverModalOpen(true);
+                              }}
+                              className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg"
+                            >
                               {/* Driver Image Section */}
                               <div
                                 className="h-full w-full flex items-end justify-center"
                                 style={{
-                                  backgroundColor: driver?.constructor_color,
+                                  backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
                                 }}
                               >
                                 {driver?.image ? (
@@ -639,7 +683,7 @@ const EditTeamModal = ({
                                     {driver?.code})
                                   </h3>
                                   <p className="text-sm text-darkbg/70 dark:text-white/50">
-                                    {driver?.constructor}
+                                    {driver?.constructor_name}
                                   </p>
                                   <p className="text-md">
                                     Points:{" "}
@@ -657,7 +701,10 @@ const EditTeamModal = ({
 
                                 <div className="mt-5">
                                   <SecondaryButton
-                                    onClick={() => addDriver(driver)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      addDriver(driver);
+                                    }}
                                     disabled={
                                       teamDrivers?.length >= 5 ||
                                       availablePurse <= 0
@@ -688,7 +735,13 @@ const EditTeamModal = ({
                         .map((constructor: any) => {
                           return (
                             <>
-                              <div className="flex max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg">
+                              <div
+                                onClick={() => {
+                                  setSelectedConstructorId(constructor?.id);
+                                  setIsConstructorModalOpen(true);
+                                }}
+                                className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg"
+                              >
                                 <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
                                   <img
                                     src={
@@ -725,7 +778,10 @@ const EditTeamModal = ({
 
                                 <div className="py-3 px-4 flex justify-center">
                                   <SecondaryButton
-                                    onClick={() => addConstructor(constructor)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      addConstructor(constructor);
+                                    }}
                                     disabled={
                                       teamConstructors?.length >= 2 ||
                                       availablePurse <= 0
