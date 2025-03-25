@@ -133,7 +133,12 @@ const DriverModal = ({
 
           {/* Driver Points Scoring  */}
           <div className="mt-5 px-5 pb-20">
-            <p className="text-xl font-medium">Points Scored For You: </p>
+            <p className="text-xl font-medium">
+              {driver?.data?.driver?.pointsHistory?.length > 0
+                ? "Points Scored"
+                : "Points Scored for you"}
+              :{" "}
+            </p>
 
             {driver?.data?.driver?.pointsHistory?.length > 0 && (
               <Table className="w-full mt-5">

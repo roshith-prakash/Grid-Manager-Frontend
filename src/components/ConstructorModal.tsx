@@ -69,7 +69,7 @@ const ConstructorModal = ({
           <div className="flex flex-wrap">
             <div className="w-full md:w-[40%]">
               {/* constructor Image Section */}
-              <div className="flex flex-col bg-white items-center pb-5 py-4 px-5 border-b-1">
+              <div className="flex flex-col bg-white items-center pb-5 py-4 px-5 border-b-2">
                 <img
                   src={
                     constructor?.data?.constructor?.logo
@@ -95,9 +95,14 @@ const ConstructorModal = ({
                 </h3>
 
                 <p className="text-md">
-                  Points:{" "}
+                  {constructor?.data?.constructor?.points
+                    ? "Points"
+                    : "Points scored for you"}
+                  :{" "}
                   <span className="font-semibold">
-                    {constructor?.data?.constructor?.points}
+                    {constructor?.data?.constructor?.points
+                      ? constructor?.data?.constructor?.points
+                      : constructor?.data?.constructor?.pointsForTeam}
                   </span>
                 </p>
                 <p className="text-md">
@@ -121,7 +126,13 @@ const ConstructorModal = ({
 
           {/* constructor Points Scoring  */}
           <div className="mt-5 px-5 pb-20">
-            <p className="text-xl font-medium">Points Scored: </p>
+            <p className="text-xl font-medium">
+              {" "}
+              {constructor?.data?.constructor?.pointsHistory?.length > 0
+                ? "Points Scored"
+                : "Points Scored for you"}
+              :{" "}
+            </p>
 
             {constructor?.data?.constructor?.pointsHistory?.length > 0 && (
               <Table className="w-full mt-5">
@@ -135,6 +146,41 @@ const ConstructorModal = ({
                 </TableHead>
                 <TableBody>
                   {constructor?.data?.constructor?.pointsHistory?.map(
+                    (session: {
+                      round: number;
+                      raceName: string;
+                      session: string;
+                      points: number;
+                    }) => {
+                      return (
+                        <TableRow>
+                          <TableCell> {session?.round}</TableCell>
+                          <TableCell>{session?.raceName}</TableCell>
+                          <TableCell> {session?.session}</TableCell>
+                          <TableCell className="font-semibold">
+                            {" "}
+                            {session?.points}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                  )}
+                </TableBody>
+              </Table>
+            )}
+
+            {constructor?.data?.constructor?.teamPointsHistory?.length > 0 && (
+              <Table className="w-full mt-5">
+                <TableHead>
+                  <TableRow>
+                    <TableHeader>Round</TableHeader>
+                    <TableHeader>Race</TableHeader>
+                    <TableHeader>Session</TableHeader>
+                    <TableHeader>Points Scored</TableHeader>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {constructor?.data?.constructor?.teamPointsHistory?.map(
                     (session: {
                       round: number;
                       raceName: string;
