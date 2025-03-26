@@ -99,7 +99,10 @@ const Protector = ({ children }: { children: ReactNode }) => {
           <div>
             {/* Title for page */}
             <p className="text-3xl lg:text-4xl px-5 text-center mt-14">
-              Oops! Your email isn&apos;t verified.
+              Verify your email!
+            </p>
+            <p className="text-xl lg:text-xl px-5 text-center mt-3">
+              Click the link in your email to verify your email.
             </p>
             <div className="mt-10 flex flex-col gap-10 justify-center items-center">
               {/* Image */}

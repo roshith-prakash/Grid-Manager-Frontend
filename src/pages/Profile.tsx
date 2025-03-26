@@ -393,7 +393,7 @@ const Profile = () => {
                     return page?.data.teams?.map((team: any) => {
                       return (
                         <div
-                          className="relative cursor-pointer bg-white dark:bg-secondarydarkbg p-4 rounded-lg shadow-md pt-6 transition-all hover:shadow-lg"
+                          className="relative cursor-pointer bg-white dark:bg-white/5 p-4 rounded-lg shadow-md pt-6 transition-all hover:shadow-lg"
                           onClick={() => {
                             setTeamId(team?.id);
                             setIsTeamModalOpen(true);
@@ -425,7 +425,7 @@ const Profile = () => {
 
                           <Card
                             key={team?.id}
-                            className="p-4 border-none shadow-none w-fit text-center"
+                            className="p-4 border-none shadow-none w-fit text-center !bg-transparent"
                           >
                             <p className="text-lg font-semibold text-darkbg dark:text-white">
                               {team?.name}
@@ -518,17 +518,10 @@ const Profile = () => {
                               className="mt-5 flex gap-x-3 items-center w-fit hover:underline"
                             >
                               {/* User's profile picture or avatar on left */}
-                              {league?.User?.photoURL ? (
-                                <img
-                                  src={league?.User?.photoURL}
-                                  className="h-10 w-10 rounded-full border border-gray-500"
-                                />
-                              ) : (
-                                <Avatar
-                                  imageSrc={league?.User?.photoURL}
-                                  fallBackText={league?.User?.name}
-                                />
-                              )}
+                              <Avatar
+                                imageSrc={league?.User?.photoURL}
+                                fallBackText={league?.User?.name}
+                              />
                               {/* User's name & username on the right */}
                               <div>
                                 <p className="text-md font-semibold break-all">

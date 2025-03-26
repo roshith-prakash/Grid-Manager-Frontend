@@ -5,8 +5,6 @@ import PasswordInput from "./reuseit/PasswordInput";
 import Navbar from "./reuseit/Navbar";
 import Footer from "./reuseit/Footer";
 import Checkbox from "./reuseit/Checkbox";
-import Draggable from "./Draggable";
-import Droppable from "./Droppable";
 import ErrorStatement from "./ErrorStatement";
 import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
@@ -22,8 +20,6 @@ import ConstructorModal from "./ConstructorModal";
 export {
   PrimaryButton,
   SecondaryButton,
-  Draggable,
-  Droppable,
   Input,
   PasswordInput,
   Navbar,

@@ -81,6 +81,7 @@ const Leaderboard = () => {
         closeModal={() => setIsTeamModalOpen(false)}
       />
 
+      {/* View Driver Data */}
       <DriverModal
         driverId={selectedDriverId}
         isModalOpen={isDriverModalOpen}
@@ -89,6 +90,7 @@ const Leaderboard = () => {
         }}
       />
 
+      {/* View Constructor Data */}
       <ConstructorModal
         constructorId={selectedConstructorId}
         isModalOpen={isConstructorModalOpen}
@@ -166,7 +168,7 @@ const Leaderboard = () => {
               (driver: any, index: number) => (
                 <Card
                   onClick={() => {
-                    setSelectedDriverId(driver?.id);
+                    setSelectedDriverId(driver?.driverId);
                     setIsDriverModalOpen(true);
                   }}
                   key={driver.code}
@@ -232,11 +234,11 @@ const Leaderboard = () => {
               (constructor: any, index: number) => (
                 <Card
                   onClick={() => {
-                    setSelectedConstructorId(constructor?.id);
+                    setSelectedConstructorId(constructor?.constructorId);
                     setIsConstructorModalOpen(true);
                   }}
                   key={constructor.name}
-                  className="w-64 text-center border-2 shadow-lg overflow-hidden"
+                  className="w-64 cursor-pointer text-center border-2 shadow-lg overflow-hidden"
                 >
                   <div className="bg-white p-5 border-b flex flex-col items-center">
                     <img
@@ -294,7 +296,7 @@ const Leaderboard = () => {
               (driver: any, index: number) => (
                 <Card
                   onClick={() => {
-                    setSelectedDriverId(driver?.id);
+                    setSelectedDriverId(driver?.driverId);
                     setIsDriverModalOpen(true);
                   }}
                   key={driver.code}
@@ -357,11 +359,11 @@ const Leaderboard = () => {
               (constructor: any, index: number) => (
                 <Card
                   onClick={() => {
-                    setSelectedConstructorId(constructor?.id);
+                    setSelectedConstructorId(constructor?.constructorId);
                     setIsConstructorModalOpen(true);
                   }}
                   key={constructor.name}
-                  className="w-64 text-center border-2 shadow-lg overflow-hidden"
+                  className="w-64 cursor-pointer text-center border-2 shadow-lg overflow-hidden"
                 >
                   <div className="bg-white p-5 border-b flex flex-col items-center">
                     <img

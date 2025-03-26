@@ -19,8 +19,9 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaUserAlt } from "react-icons/fa";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import { MdClose } from "react-icons/md";
 import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
+import { RxCross2 } from "react-icons/rx";
+import { useDBUser } from "@/context/UserContext";
 
 const EditTeamModal = ({
   teamId,
@@ -56,6 +57,7 @@ const EditTeamModal = ({
   const [selectedConstructorId, setSelectedConstructorId] = useState("");
   const [isConstructorModalOpen, setIsConstructorModalOpen] = useState(false);
 
+  const { dbUser } = useDBUser();
   const ref = useRef();
 
   const queryClient = useQueryClient();
@@ -322,6 +324,8 @@ const EditTeamModal = ({
   return (
     <div>
       <DriverModal
+        teamId={teamId}
+        userId={dbUser?.id}
         driverId={selectedDriverId}
         isModalOpen={isDriverModalOpen}
         closeModal={() => {
@@ -342,9 +346,9 @@ const EditTeamModal = ({
       {/* Close div button */}
       <button
         onClick={onClose}
-        className="absolute  right-5 text-2xl cursor-pointer"
+        className="absolute dark:bg-white bg-secondarydarkbg text-white hover:scale-110 dark:text-darkbg hover:text-red-500 transition-all rounded-full p-1 top-5 right-5 text-2xl cursor-pointer"
       >
-        <MdClose />
+        <RxCross2 />
       </button>
 
       {/* Title */}
@@ -444,7 +448,7 @@ const EditTeamModal = ({
                       <div className="relative">
                         <div
                           onClick={() => {
-                            setSelectedDriverId(driver?.id);
+                            setSelectedDriverId(driver?.driverId);
                             setIsDriverModalOpen(true);
                           }}
                           className="h-24 w-24 border-b-2 rounded-full overflow-hidden cursor-pointer"
@@ -486,7 +490,7 @@ const EditTeamModal = ({
                             }}
                             className="absolute border-2 -right-2 -top-2 bg-white dark:bg-secondarydarkbg dark:border-white/25 p-2 rounded-full cursor-pointer"
                           >
-                            <MdClose />
+                            <RxCross2 />
                           </button>
                         </div>
                       </div>
@@ -558,7 +562,7 @@ const EditTeamModal = ({
                             }}
                             className="absolute border-2 right-1 -top-1 bg-white dark:bg-secondarydarkbg dark:border-white/25 p-2 rounded-full cursor-pointer"
                           >
-                            <MdClose />
+                            <RxCross2 />
                           </button>
                         </div>
                       </div>
@@ -652,7 +656,7 @@ const EditTeamModal = ({
                           <>
                             <div
                               onClick={() => {
-                                setSelectedDriverId(driver?.id);
+                                setSelectedDriverId(driver?.driverId);
                                 setIsDriverModalOpen(true);
                               }}
                               className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg"

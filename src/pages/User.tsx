@@ -335,17 +335,10 @@ const User = () => {
                                 className="mt-5 flex gap-x-3 items-center w-fit hover:underline"
                               >
                                 {/* User's profile picture or avatar on left */}
-                                {league?.User?.photoURL ? (
-                                  <img
-                                    src={league?.User?.photoURL}
-                                    className="h-10 w-10 rounded-full border border-gray-500"
-                                  />
-                                ) : (
-                                  <Avatar
-                                    imageSrc={league?.User?.photoURL}
-                                    fallBackText={league?.User?.name}
-                                  />
-                                )}
+                                <Avatar
+                                  imageSrc={league?.User?.photoURL}
+                                  fallBackText={league?.User?.name}
+                                />
                                 {/* User's name & username on the right */}
                                 <div>
                                   <p className="text-md font-semibold break-all">

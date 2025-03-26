@@ -117,12 +117,12 @@ const PublicLeagues = () => {
                     if (league?.name) {
                       return (
                         <Link
-                          className="border-2 max-w-72 rounded-xl flex flex-col bg-white/5 w-fit px-5 py-5 transition-all hover:shadow-md hover:bg-white/10"
+                          className="bg-darkbg/0.5 max-w-60 w-full rounded-xl flex flex-col  px-5 py-5 transition-all shadow-lg hover:scale-105  hover:bg-white/10 dark:bg-white/5"
                           to={`/leagues/${league?.leagueId}`}
                         >
                           <div className="flex-1">
-                            <p className="text-lg font-semibold">
-                              League: {league?.name}
+                            <p className="text-lg text-ellipsis text-nowrap font-semibold">
+                              {league?.name}
                             </p>
                             <p className="text-md dark:text-white/80 text-darkbg/70">
                               League ID: {league?.leagueId}
@@ -138,17 +138,10 @@ const PublicLeagues = () => {
                             className="mt-5 flex gap-x-3 items-center w-fit hover:underline"
                           >
                             {/* User's profile picture or avatar on left */}
-                            {league?.User?.photoURL ? (
-                              <img
-                                src={league?.User?.photoURL}
-                                className="h-10 w-10 rounded-full border border-gray-500"
-                              />
-                            ) : (
-                              <Avatar
-                                imageSrc={league?.User?.photoURL}
-                                fallBackText={league?.User?.name}
-                              />
-                            )}
+                            <Avatar
+                              imageSrc={league?.User.photoURL}
+                              fallBackText={league?.User.name}
+                            ></Avatar>
                             {/* User's name & username on the right */}
                             <div>
                               <p className="text-md font-semibold break-all">

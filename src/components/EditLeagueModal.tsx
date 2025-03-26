@@ -5,8 +5,8 @@ import Input from "./reuseit/Input";
 import ErrorStatement from "./ErrorStatement";
 import Checkbox from "./reuseit/Checkbox";
 import PrimaryButton from "./reuseit/PrimaryButton";
-import { RxCross2 } from "react-icons/rx";
 import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
+import { RxCross2 } from "react-icons/rx";
 
 const EditLeagueModal = ({
   league,
@@ -77,7 +77,7 @@ const EditLeagueModal = ({
     <div className="relative bg-white dark:bg-secondarydarkbg  w-full dark:bg-darkgrey dark:text-darkmodetext px-5">
       <button
         onClick={onClose}
-        className="absolute  right-5 text-2xl cursor-pointer"
+        className="absolute dark:bg-white bg-secondarydarkbg text-white hover:scale-110 dark:text-darkbg hover:text-red-500 transition-all rounded-full p-1 top-0 right-5 text-2xl cursor-pointer"
       >
         <RxCross2 />
       </button>

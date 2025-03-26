@@ -11,25 +11,34 @@ import Table, {
   TableHeader,
   TableRow,
 } from "./reuseit/Table";
+import { useState } from "react";
 
 const DriverModal = ({
   driverId,
+  teamId,
+  userId,
   isModalOpen,
   closeModal,
 }: {
   driverId: string;
+  teamId?: string;
+  userId?: string;
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
+  const [tabValue, setTabValue] = useState("points");
+
   const {
     data: driver,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["driver", driverId],
+    queryKey: ["driver", driverId, teamId, userId],
     queryFn: async () => {
       return axiosInstance.post("/team/get-drivers-stats", {
         driverId,
+        teamId,
+        userId,
       });
     },
     enabled: !!driverId,
@@ -59,7 +68,7 @@ const DriverModal = ({
           {/* Close Button */}
           <button
             onClick={closeModal}
-            className="absolute top-5 right-5 text-2xl cursor-pointer"
+            className="absolute bg-white dark:bg-secondarydarkbg dark:text-white hover:scale-110 text-darkbg hover:text-red-500 transition-all rounded-full p-1 top-5 right-5 text-2xl cursor-pointer"
           >
             <RxCross2 />
           </button>
@@ -78,15 +87,15 @@ const DriverModal = ({
                   <img
                     src={driver?.data?.driver.image}
                     alt={driver?.data?.driver.familyName}
-                    className="h-52 object-cover"
+                    className="h-66 md:h-52 object-cover"
                   />
                 ) : (
                   <FaUserAlt className="text-gray-400 text-4xl" />
                 )}
               </div>
             </div>
-            <div className="w-full md:flex-1 border-b-4 border-black">
-              {/* Driver Data */}
+            {/* Driver Data */}
+            <div className="w-full md:flex-1 md:border-b-4 pt-4 md:pt-0 border-black">
               <div className="py-4 px-8 flex flex-col gap-y-2 ">
                 <h3 className="text-2xl text-ellipsis text-nowrap font-semibold">
                   {driver?.data?.driver?.givenName}{" "}
@@ -100,22 +109,29 @@ const DriverModal = ({
                   {driver?.data?.driver?.constructor_name}
                 </p>
                 <p className="text-md">
-                  {driver?.data?.driver?.points
-                    ? "Points"
-                    : "Points scored for you"}
-                  :{" "}
-                  <span className="font-semibold">
-                    {driver?.data?.driver?.points
-                      ? driver?.data?.driver?.points
-                      : driver?.data?.driver?.pointsForTeam}
+                  Points:
+                  <span className="font-semibold ml-1">
+                    {driver?.data?.driver?.points}
                   </span>
                 </p>
+
+                {/* IF driver is already present in a team */}
+                {driver?.data?.driver?.pointsForTeam && (
+                  <p className="text-md">
+                    Points For Your Team:
+                    <span className="font-semibold ml-1">
+                      {driver?.data?.driver?.pointsForTeam}
+                    </span>
+                  </p>
+                )}
+
                 <p className="text-md">
                   Price:{" "}
                   <span className="font-semibold">
                     {driver?.data?.driver?.price} Cr.
                   </span>
                 </p>
+
                 {driver?.data?.driver?.chosenPercentage && (
                   <p className="text-md">
                     Teams in which driver is present:{" "}
@@ -133,82 +149,111 @@ const DriverModal = ({
 
           {/* Driver Points Scoring  */}
           <div className="mt-5 px-5 pb-20">
-            <p className="text-xl font-medium">
-              {driver?.data?.driver?.pointsHistory?.length > 0
-                ? "Points Scored"
-                : "Points Scored for you"}
-              :{" "}
-            </p>
+            {/* Tab Buttons */}
 
-            {driver?.data?.driver?.pointsHistory?.length > 0 && (
-              <Table className="w-full mt-5">
-                <TableHead>
-                  <TableRow>
-                    <TableHeader>Round</TableHeader>
-                    <TableHeader>Race</TableHeader>
-                    <TableHeader>Session</TableHeader>
-                    <TableHeader>Points Scored</TableHeader>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {driver?.data?.driver?.pointsHistory?.map(
-                    (session: {
-                      round: number;
-                      raceName: string;
-                      session: string;
-                      points: number;
-                    }) => {
-                      return (
-                        <TableRow>
-                          <TableCell> {session?.round}</TableCell>
-                          <TableCell>{session?.raceName}</TableCell>
-                          <TableCell> {session?.session}</TableCell>
-                          <TableCell className="font-semibold">
-                            {" "}
-                            {session?.points}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
-                  )}
-                </TableBody>
-              </Table>
+            {driver?.data?.driver?.teamPointsHistory ? (
+              <div className="flex">
+                {/* Drivers Tab Button */}
+                <button
+                  onClick={() => setTabValue("points")}
+                  className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4 ${
+                    tabValue == "points" &&
+                    "text-cta border-cta dark:text-white dark:border-darkmodeCTA"
+                  }`}
+                >
+                  Points
+                </button>
+
+                {driver?.data?.driver?.teamPointsHistory && (
+                  <>
+                    {/* Constructors Tab Button */}
+                    <button
+                      onClick={() => setTabValue("pointsForTeam")}
+                      className={`flex-1 py-3 cursor-pointer transition-all duration-300 border-b-4  ${
+                        tabValue == "pointsForTeam" &&
+                        "text-cta border-cta dark:text-white dark:border-darkmodeCTA"
+                      }`}
+                    >
+                      Points For Your Team
+                    </button>
+                  </>
+                )}
+              </div>
+            ) : (
+              <p className="text-2xl ml-1 font-semibold pb-2">Points: </p>
             )}
 
-            {driver?.data?.driver?.teamPointsHistory?.length > 0 && (
-              <Table className="w-full mt-5">
-                <TableHead>
-                  <TableRow>
-                    <TableHeader>Round</TableHeader>
-                    <TableHeader>Race</TableHeader>
-                    <TableHeader>Session</TableHeader>
-                    <TableHeader>Points Scored</TableHeader>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {driver?.data?.driver?.teamPointsHistory?.map(
-                    (session: {
-                      round: number;
-                      raceName: string;
-                      session: string;
-                      points: number;
-                    }) => {
-                      return (
-                        <TableRow>
-                          <TableCell> {session?.round}</TableCell>
-                          <TableCell>{session?.raceName}</TableCell>
-                          <TableCell> {session?.session}</TableCell>
-                          <TableCell className="font-semibold">
-                            {" "}
-                            {session?.points}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
-                  )}
-                </TableBody>
-              </Table>
-            )}
+            {tabValue == "points" &&
+              driver?.data?.driver?.pointsHistory?.length > 0 && (
+                <Table className="w-full mt-5">
+                  <TableHead>
+                    <TableRow>
+                      <TableHeader>Round</TableHeader>
+                      <TableHeader>Race</TableHeader>
+                      <TableHeader>Session</TableHeader>
+                      <TableHeader>Points Scored</TableHeader>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {driver?.data?.driver?.pointsHistory?.map(
+                      (session: {
+                        round: number;
+                        raceName: string;
+                        session: string;
+                        points: number;
+                      }) => {
+                        return (
+                          <TableRow>
+                            <TableCell> {session?.round}</TableCell>
+                            <TableCell>{session?.raceName}</TableCell>
+                            <TableCell> {session?.session}</TableCell>
+                            <TableCell className="font-semibold">
+                              {" "}
+                              {session?.points}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )}
+                  </TableBody>
+                </Table>
+              )}
+
+            {tabValue == "pointsForTeam" &&
+              driver?.data?.driver?.teamPointsHistory?.length > 0 && (
+                <Table className="w-full mt-5">
+                  <TableHead>
+                    <TableRow>
+                      <TableHeader>Round</TableHeader>
+                      <TableHeader>Race</TableHeader>
+                      <TableHeader>Session</TableHeader>
+                      <TableHeader>Points Scored</TableHeader>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {driver?.data?.driver?.teamPointsHistory?.map(
+                      (session: {
+                        round: number;
+                        raceName: string;
+                        session: string;
+                        points: number;
+                      }) => {
+                        return (
+                          <TableRow>
+                            <TableCell> {session?.round}</TableCell>
+                            <TableCell>{session?.raceName}</TableCell>
+                            <TableCell> {session?.session}</TableCell>
+                            <TableCell className="font-semibold">
+                              {" "}
+                              {session?.points}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )}
+                  </TableBody>
+                </Table>
+              )}
           </div>
         </>
       )}

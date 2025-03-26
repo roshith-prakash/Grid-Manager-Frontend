@@ -5,6 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { FaUserAlt } from "react-icons/fa";
 import HashLoader from "react-spinners/HashLoader";
 import { RxCross2 } from "react-icons/rx";
+import DriverModal from "./DriverModal";
+import { useState } from "react";
+import { useDBUser } from "@/context/UserContext";
+import ConstructorModal from "./ConstructorModal";
 
 const TeamModal = ({
   teamId,
@@ -17,12 +21,20 @@ const TeamModal = ({
   isModalOpen: boolean;
   closeModal: () => void;
 }) => {
+  const [selectedDriverId, setSelectedDriverId] = useState("");
+  const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
+
+  const [selectedConstructorId, setSelectedConstructorId] = useState("");
+  const [isConstructorModalOpen, setIsConstructorModalOpen] = useState(false);
+
+  const { dbUser } = useDBUser();
+
   const {
     data: team,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["team", teamId],
+    queryKey: ["team", teamId, dbUser?.id],
     queryFn: async () => {
       return axiosInstance.post("/team/get-team-by-id", {
         teamId,
@@ -37,6 +49,28 @@ const TeamModal = ({
       isOpen={isModalOpen}
       onClose={closeModal}
     >
+      {/* View Driver Data */}
+      <DriverModal
+        teamId={teamId}
+        userId={dbUser?.id}
+        driverId={selectedDriverId}
+        isModalOpen={isDriverModalOpen}
+        closeModal={() => {
+          setIsDriverModalOpen(false);
+        }}
+      />
+
+      {/* View Constructor Data */}
+      <ConstructorModal
+        teamId={teamId}
+        userId={dbUser?.id}
+        constructorId={selectedConstructorId}
+        isModalOpen={isConstructorModalOpen}
+        closeModal={() => {
+          setIsConstructorModalOpen(false);
+        }}
+      />
+
       {isLoading && (
         <div className="flex justify-center items-center py-10">
           <HashLoader
@@ -52,10 +86,10 @@ const TeamModal = ({
 
       {team?.data?.team && (
         <>
-          {/* Close Button */}
+          {/* Close div button */}
           <button
             onClick={closeModal}
-            className="absolute right-5 text-2xl cursor-pointer"
+            className="absolute dark:bg-white bg-secondarydarkbg text-white hover:scale-110 dark:text-darkbg hover:text-red-500 transition-all rounded-full p-1 top-5 right-5 text-2xl cursor-pointer"
           >
             <RxCross2 />
           </button>
@@ -86,13 +120,17 @@ const TeamModal = ({
             <div className="flex flex-wrap gap-6 justify-center pt-6">
               {team.data.team.teamDrivers?.map((driver: any) => (
                 <div
+                  onClick={() => {
+                    setSelectedDriverId(driver?.driverId);
+                    setIsDriverModalOpen(true);
+                  }}
                   key={driver.code}
-                  className="flex flex-col w-56 rounded overflow-hidden border-2 dark:border-white/25 shadow-lg"
+                  className="flex cursor-pointer flex-col w-56 rounded overflow-hidden border-2 dark:border-white/25 shadow-lg"
                 >
                   <div
                     className="pt-2 flex items-end justify-center"
                     style={{
-                      backgroundColor: driver?.constructor_color,
+                      backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
                     }}
                   >
                     {driver?.image ? (
@@ -129,8 +167,12 @@ const TeamModal = ({
             <div className="flex flex-wrap gap-6 justify-center pt-6">
               {team.data.team.teamConstructors?.map((constructor: any) => (
                 <div
+                  onClick={() => {
+                    setSelectedConstructorId(constructor?.constructorId);
+                    setIsConstructorModalOpen(true);
+                  }}
                   key={constructor.name}
-                  className="flex dark:border-white/25 flex-col w-64 text-center border-2 overflow-hidden rounded shadow-lg"
+                  className="flex cursor-pointer dark:border-white/25 flex-col w-64 text-center border-2 overflow-hidden rounded shadow-lg"
                 >
                   <div className="flex bg-white flex-col items-center pb-5 px-5 border-b">
                     <img
