@@ -33,6 +33,7 @@ const User = () => {
     queryKey: ["userProfile", username, dbUser?.id],
     queryFn: async () => {
       return axiosInstance.post("/user/get-user-info", {
+        userId: dbUser?.id,
         username: username,
       });
     },
@@ -49,6 +50,7 @@ const User = () => {
     queryKey: ["userLeagues", user?.data?.user?.username],
     queryFn: ({ pageParam }) => {
       return axiosInstance.post("/team/get-user-public-leagues", {
+        userId: dbUser?.id,
         username: user?.data?.user?.username,
         page: pageParam,
         currentUserId: dbUser?.id,
@@ -72,6 +74,7 @@ const User = () => {
     queryKey: ["userTeams", user?.data?.user?.username, dbUser?.id],
     queryFn: ({ pageParam }) => {
       return axiosInstance.post("/team/get-user-public-teams", {
+        userId: dbUser?.id,
         username: user?.data?.user?.username,
         page: pageParam,
         currentUserId: dbUser?.id,

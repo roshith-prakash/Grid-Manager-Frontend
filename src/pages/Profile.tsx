@@ -51,6 +51,7 @@ const Profile = () => {
     queryKey: ["userLeagues", dbUser?.username],
     queryFn: ({ pageParam }) => {
       return axiosInstance.post("/team/get-user-leagues", {
+        userId: dbUser?.id,
         username: dbUser?.username,
         page: pageParam,
       });
@@ -76,6 +77,7 @@ const Profile = () => {
     queryKey: ["userTeams", dbUser?.username],
     queryFn: ({ pageParam }) => {
       return axiosInstance.post("/team/get-user-teams", {
+        userId: dbUser?.id,
         username: dbUser?.username,
         page: pageParam,
       });
@@ -108,7 +110,7 @@ const Profile = () => {
       ?.delete()
       ?.then(() => {
         axiosInstance
-          .post("/user/delete-user", { username: dbUser?.username })
+          .post("/user/delete-user", { userId: dbUser?.id })
           .then(() => {
             toast.success("User Deleted.");
             setDbUser(null);

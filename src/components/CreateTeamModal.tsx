@@ -39,7 +39,9 @@ const CreateTeamModal = ({
   const { data: drivers } = useQuery({
     queryKey: ["drivers"],
     queryFn: async () => {
-      return axiosInstance.get("/team/get-drivers");
+      return axiosInstance.post("/team/get-drivers", {
+        userId: dbUser?.id,
+      });
     },
     staleTime: Infinity,
   });
@@ -48,7 +50,9 @@ const CreateTeamModal = ({
   const { data: constructors } = useQuery({
     queryKey: ["constructors"],
     queryFn: async () => {
-      return axiosInstance.get("/team/get-constructors");
+      return axiosInstance.post("/team/get-constructors", {
+        userId: dbUser?.id,
+      });
     },
     staleTime: Infinity,
   });
@@ -234,7 +238,7 @@ const CreateTeamModal = ({
       setDisabled(true);
       axiosInstance
         .post("/team/create-team", {
-          user: dbUser,
+          userId: dbUser?.id,
           teamDrivers: teamDrivers,
           teamConstructors: teamConstructors,
           teamName: name,
@@ -260,6 +264,7 @@ const CreateTeamModal = ({
   return (
     <div>
       <DriverModal
+        userId={dbUser?.id}
         driverId={selectedDriverId}
         isModalOpen={isDriverModalOpen}
         closeModal={() => {
@@ -268,6 +273,7 @@ const CreateTeamModal = ({
       />
 
       <ConstructorModal
+        userId={dbUser?.id}
         constructorId={selectedConstructorId}
         isModalOpen={isConstructorModalOpen}
         closeModal={() => {
@@ -458,7 +464,7 @@ const CreateTeamModal = ({
                     return (
                       <div
                         onClick={() => {
-                          setSelectedConstructorId(constructor?.id);
+                          setSelectedConstructorId(constructor?.constructorId);
                           setIsConstructorModalOpen(true);
                         }}
                         className="relative cursor-pointer"
@@ -675,7 +681,9 @@ const CreateTeamModal = ({
                             <>
                               <div
                                 onClick={() => {
-                                  setSelectedConstructorId(constructor?.id);
+                                  setSelectedConstructorId(
+                                    constructor?.constructorId
+                                  );
                                   setIsConstructorModalOpen(true);
                                 }}
                                 className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg"

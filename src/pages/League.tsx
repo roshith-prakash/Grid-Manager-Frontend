@@ -58,6 +58,7 @@ const League = () => {
     queryKey: ["league", leagueId],
     queryFn: async () => {
       return axiosInstance.post("/team/get-league", {
+        userId: dbUser?.id,
         leagueId: leagueId,
       });
     },
@@ -76,6 +77,7 @@ const League = () => {
     queryKey: ["allTeams", leagueId],
     queryFn: ({ pageParam }) => {
       return axiosInstance.post("/team/get-teams-in-a-league", {
+        userId: dbUser?.id,
         leagueId: leagueId,
         page: pageParam,
       });
@@ -136,7 +138,7 @@ const League = () => {
   const deleteLeague = () => {
     setDisabled(true);
     axiosInstance
-      .post("/team/delete-league", { leagueId: leagueId })
+      .post("/team/delete-league", { leagueId: leagueId, userId: dbUser?.id })
       .then(async () => {
         toast.success("League Deleted.");
         await queryClient.refetchQueries({

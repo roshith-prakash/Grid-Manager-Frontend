@@ -66,7 +66,9 @@ const EditTeamModal = ({
   const { data: drivers } = useQuery({
     queryKey: ["drivers"],
     queryFn: async () => {
-      return axiosInstance.get("/team/get-drivers");
+      return axiosInstance.post("/team/get-drivers", {
+        userId: dbUser?.id,
+      });
     },
     staleTime: Infinity,
   });
@@ -75,7 +77,9 @@ const EditTeamModal = ({
   const { data: constructors } = useQuery({
     queryKey: ["constructors"],
     queryFn: async () => {
-      return axiosInstance.get("/team/get-constructors");
+      return axiosInstance.post("/team/get-constructors", {
+        userId: dbUser?.id,
+      });
     },
     staleTime: Infinity,
   });
@@ -83,7 +87,10 @@ const EditTeamModal = ({
   const { data: team } = useQuery({
     queryKey: ["team", teamId],
     queryFn: async () => {
-      return axiosInstance.post("/team/get-team-by-id", { teamId: teamId });
+      return axiosInstance.post("/team/get-team-by-id", {
+        userId: dbUser?.id,
+        teamId: teamId,
+      });
     },
     enabled: !!teamId,
   });
@@ -294,6 +301,7 @@ const EditTeamModal = ({
       setDisabled(true);
       axiosInstance
         .post("/team/edit-team", {
+          userId: dbUser?.id,
           teamId: teamId,
           teamDrivers: teamDrivers,
           teamConstructors: teamConstructors,

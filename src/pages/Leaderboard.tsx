@@ -5,6 +5,7 @@ import { axiosInstance } from "@/utils/axiosInstance";
 import { FaUserAlt } from "react-icons/fa";
 import Card from "@/components/reuseit/Card";
 import { ConstructorModal, DriverModal, TeamModal } from "@/components";
+import { useDBUser } from "@/context/UserContext";
 
 const Leaderboard = () => {
   const [teamId, setTeamId] = useState("");
@@ -16,6 +17,8 @@ const Leaderboard = () => {
   const [selectedConstructorId, setSelectedConstructorId] = useState("");
   const [isConstructorModalOpen, setIsConstructorModalOpen] = useState(false);
 
+  const { dbUser } = useDBUser();
+
   // Set page title
   useEffect(() => {
     document.title = "Leaderboard | Grid Manager";
@@ -25,7 +28,9 @@ const Leaderboard = () => {
     useQuery({
       queryKey: ["most-selected-drivers"],
       queryFn: () => {
-        return axiosInstance.get("/team/get-most-selected-drivers");
+        return axiosInstance.post("/team/get-most-selected-drivers", {
+          userId: dbUser?.id,
+        });
       },
       staleTime: 1000 * 60 * 15,
     });
@@ -36,7 +41,9 @@ const Leaderboard = () => {
   } = useQuery({
     queryKey: ["most-selected-constructors"],
     queryFn: () => {
-      return axiosInstance.get("/team/get-most-selected-constructors");
+      return axiosInstance.post("/team/get-most-selected-constructors", {
+        userId: dbUser?.id,
+      });
     },
     staleTime: 1000 * 60 * 15,
   });
@@ -47,7 +54,9 @@ const Leaderboard = () => {
   } = useQuery({
     queryKey: ["highest-scoring-drivers"],
     queryFn: () => {
-      return axiosInstance.get("/team/get-highest-scoring-drivers");
+      return axiosInstance.post("/team/get-highest-scoring-drivers", {
+        userId: dbUser?.id,
+      });
     },
     staleTime: 1000 * 60 * 15,
   });
@@ -58,7 +67,9 @@ const Leaderboard = () => {
   } = useQuery({
     queryKey: ["highest-scoring-constructors"],
     queryFn: () => {
-      return axiosInstance.get("/team/get-highest-scoring-constructors");
+      return axiosInstance.post("/team/get-highest-scoring-constructors", {
+        userId: dbUser?.id,
+      });
     },
     staleTime: 1000 * 60 * 15,
   });
@@ -66,7 +77,9 @@ const Leaderboard = () => {
   const { data: top3Teams, isLoading: isLoadingTopTeams } = useQuery({
     queryKey: ["top-3-teams"],
     queryFn: () => {
-      return axiosInstance.get("/team/get-top-3-teams");
+      return axiosInstance.post("/team/get-top-3-teams", {
+        userId: dbUser?.id,
+      });
     },
     staleTime: 1000 * 60 * 15,
   });
@@ -83,6 +96,7 @@ const Leaderboard = () => {
 
       {/* View Driver Data */}
       <DriverModal
+        userId={dbUser?.id}
         driverId={selectedDriverId}
         isModalOpen={isDriverModalOpen}
         closeModal={() => {
@@ -92,6 +106,7 @@ const Leaderboard = () => {
 
       {/* View Constructor Data */}
       <ConstructorModal
+        userId={dbUser?.id}
         constructorId={selectedConstructorId}
         isModalOpen={isConstructorModalOpen}
         closeModal={() => {

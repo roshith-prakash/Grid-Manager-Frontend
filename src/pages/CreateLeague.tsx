@@ -43,7 +43,7 @@ const CreateLeague = () => {
     axiosInstance
       .post("/team/create-league", {
         leagueName: leagueName,
-        user: dbUser,
+        userId: dbUser?.id,
         isPrivate: isPrivate,
       })
       .then((res) => {

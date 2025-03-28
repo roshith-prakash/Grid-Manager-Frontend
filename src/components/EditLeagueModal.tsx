@@ -7,6 +7,7 @@ import Checkbox from "./reuseit/Checkbox";
 import PrimaryButton from "./reuseit/PrimaryButton";
 import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 import { RxCross2 } from "react-icons/rx";
+import { useDBUser } from "@/context/UserContext";
 
 const EditLeagueModal = ({
   league,
@@ -24,6 +25,8 @@ const EditLeagueModal = ({
   const [error, setError] = useState({
     leagueName: 0,
   });
+
+  const { dbUser } = useDBUser();
 
   // Submit the data to the server to edit the user object.
   const handleSubmit = () => {
@@ -50,6 +53,7 @@ const EditLeagueModal = ({
 
     axiosInstance
       .post("/team/edit-league", {
+        userId: dbUser?.id,
         leagueId: league?.leagueId,
         leagueName: leagueName,
         isPrivate: isPrivate,
@@ -61,7 +65,7 @@ const EditLeagueModal = ({
       })
       .catch((err) => {
         console.log(err);
-        toast.error("Could not create league!");
+        toast.error("Could not edit league!");
         setDisabled(false);
       });
   };

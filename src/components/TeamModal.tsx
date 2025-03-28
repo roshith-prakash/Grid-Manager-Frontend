@@ -37,6 +37,7 @@ const TeamModal = ({
     queryKey: ["team", teamId, dbUser?.id],
     queryFn: async () => {
       return axiosInstance.post("/team/get-team-by-id", {
+        userId: dbUser?.id,
         teamId,
       });
     },

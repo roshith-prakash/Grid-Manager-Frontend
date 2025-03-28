@@ -43,6 +43,8 @@ const ConstructorModal = ({
     enabled: !!constructorId,
   });
 
+  console.log(error);
+
   return (
     <Modal
       className="w-full !max-w-4xl px-0 py-0 noscroller"
@@ -69,7 +71,7 @@ const ConstructorModal = ({
           {/* Close Button */}
           <button
             onClick={closeModal}
-            className="absolute top-5 right-5 text-2xl cursor-pointer"
+            className="absolute bg-white dark:bg-secondarydarkbg dark:text-white hover:scale-110 text-darkbg hover:text-red-500 transition-all rounded-full p-1 top-5 right-5 text-2xl cursor-pointer"
           >
             <RxCross2 />
           </button>
