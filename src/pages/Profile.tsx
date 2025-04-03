@@ -152,15 +152,18 @@ const Profile = () => {
 
   // Delete a selected team
   const deleteTeam = () => {
+    setDisabled(true);
     axiosInstance
       .post("/team/delete-team", { teamId: teamId, userId: dbUser?.id })
       .then(() => {
         toast.success("Team Deleted.");
         refetchTeams();
+        setDisabled(false);
         setIsDeleteTeamModalOpen(false);
       })
       .catch((err) => {
         console.log(err);
+        setDisabled(false);
         setIsDeleteTeamModalOpen(false);
         toast.error("Something went wrong.");
       });
@@ -431,7 +434,7 @@ const Profile = () => {
                     return page?.data.teams?.map((team: any) => {
                       return (
                         <div
-                          className="relative bg-[#e1e1e1]/25 rounded-xl flex flex-col dark:bg-white/5  p-4 pt-6 transition-all hover:shadow-md hover:bg-white/10 cursor-pointer"
+                          className="relative bg-[#e1e1e1]/25 rounded-xl flex flex-col dark:bg-white/5 p-4 pt-6 transition-all hover:shadow-md hover:bg-white/10 cursor-pointer"
                           onClick={() => {
                             setTeamId(team?.id);
                             setIsTeamModalOpen(true);

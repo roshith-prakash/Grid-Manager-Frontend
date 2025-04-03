@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+// import { useQueryClient } from "@tanstack/react-query";
 
 const CreateLeague = () => {
   const [leagueName, setLeagueName] = useState("");
@@ -19,6 +20,8 @@ const CreateLeague = () => {
   const [error, setError] = useState({
     leagueName: 0,
   });
+
+  // const queryClient = useQueryClient();
 
   // Set window title.
   useEffect(() => {
@@ -78,6 +81,7 @@ const CreateLeague = () => {
       })
       .then((res) => {
         setDisabled(false);
+        // queryClient.invalidateQueries({ queryKey: ["pubicLeagues"] }); // Force refetch
         navigate(`/leagues/${res?.data?.data?.leagueId}`);
       })
       .catch((err: AxiosError) => {

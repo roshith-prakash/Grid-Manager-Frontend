@@ -37,6 +37,8 @@ const PublicLeagues = () => {
         userId: dbUser?.id,
       });
     },
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   // Fetching searched leagues
@@ -47,7 +49,7 @@ const PublicLeagues = () => {
     fetchNextPage: fetchNextLeagues,
     isFetchingNextPage: loadingNextLeagues,
   } = useInfiniteQuery({
-    queryKey: ["searchPosts", debouncedSearch, dbUser?.id],
+    queryKey: ["publicLeagues", dbUser?.id, debouncedSearch],
     queryFn: ({ pageParam }) => {
       return axiosInstance.post("/team/search-public-leagues", {
         searchTerm: debouncedSearch,
@@ -59,13 +61,10 @@ const PublicLeagues = () => {
     getNextPageParam: (lastPage) => {
       return lastPage?.data?.nextPage;
     },
-    enabled:
-      debouncedSearch != null &&
-      debouncedSearch != undefined &&
-      debouncedSearch.length != 0,
     staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
 
   // Fetching next set of leagues

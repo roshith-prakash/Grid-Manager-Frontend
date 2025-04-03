@@ -181,8 +181,6 @@ const League = () => {
     }
   }, [tabValue, inView, fetchNextTeams, teams?.pages?.length]);
 
-  console.log("League", league);
-
   return (
     <div>
       {league && (
