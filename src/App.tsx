@@ -12,6 +12,7 @@ import {
   League,
   PublicLeagues,
   Leaderboard,
+  FAQ,
 } from "@/pages";
 import { Footer, Navbar, Protector } from "./components";
 import { useHasWeekendStarted } from "./functions/hasWeekendStarted";
@@ -73,7 +74,16 @@ function App() {
             <Route path="/signin" element={<Login />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/signout" element={<Signout />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/faq" element={<FAQ />} />
+
+            <Route
+              path="/leaderboard"
+              element={
+                <Protector>
+                  <Leaderboard />
+                </Protector>
+              }
+            />
 
             {/* Protected routes - Logged In User required. */}
 

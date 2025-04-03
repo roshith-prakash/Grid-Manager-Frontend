@@ -113,13 +113,15 @@ const ConstructorModal = ({
                 </p>
 
                 {/* IF driver is already present in a team */}
-                {constructor?.data?.constructor?.pointsForTeam && (
+                {constructor?.data?.constructor?.pointsForTeam ? (
                   <p className="text-md">
                     Points For Your Team:
                     <span className="font-semibold ml-1">
                       {constructor?.data?.constructor?.pointsForTeam}
                     </span>
                   </p>
+                ) : (
+                  <></>
                 )}
 
                 <p className="text-md">

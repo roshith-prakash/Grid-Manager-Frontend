@@ -27,6 +27,7 @@ import { BsFillTrash3Fill, BsPen } from "react-icons/bs";
 import toast from "react-hot-toast";
 import { IoMdShare } from "react-icons/io";
 import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
+import Tooltip from "@/components/reuseit/Tooltip";
 
 const League = () => {
   const { leagueId } = useParams();
@@ -47,6 +48,16 @@ const League = () => {
   const { ref, inView } = useInView();
 
   const hasWeekendStarted = useHasWeekendStarted();
+
+  // Fetch league data from server.
+  const { data: canUserJoinLeague } = useQuery({
+    queryKey: ["numberOfLeagues", dbUser?.id],
+    queryFn: async () => {
+      return axiosInstance.post("/team/check-if-user-can-join-league", {
+        userId: dbUser?.id,
+      });
+    },
+  });
 
   // Fetch league data from server.
   const {
@@ -89,27 +100,19 @@ const League = () => {
     enabled: !!league?.data?.data?.leagueId,
   });
 
-  // Fetching all teams in the league
+  // Fetching user's teams in the league
   const {
     data: userTeams,
     isLoading: loadingUserTeams,
     // error: teamsError,
-    fetchNextPage: fetchNextUserTeams,
-    isFetchingNextPage: loadingNextUserTeams,
     refetch: refetchUserTeams,
-    // refetch: refetchTeams,
-  } = useInfiniteQuery({
+  } = useQuery({
     queryKey: ["userTeams", dbUser?.id, leagueId],
-    queryFn: ({ pageParam }) => {
+    queryFn: () => {
       return axiosInstance.post("/team/get-user-league-teams", {
         userId: dbUser?.id,
         leagueId: leagueId,
-        page: pageParam,
       });
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => {
-      return lastPage?.data?.nextPage;
     },
     enabled: !!league?.data?.data?.leagueId,
   });
@@ -175,16 +178,8 @@ const League = () => {
   useEffect(() => {
     if (tabValue == "allTeams" && inView) {
       fetchNextTeams();
-    } else if (tabValue == "userTeams" && inView) {
-      fetchNextUserTeams();
     }
-  }, [
-    tabValue,
-    inView,
-    fetchNextTeams,
-    fetchNextUserTeams,
-    teams?.pages?.length,
-  ]);
+  }, [tabValue, inView, fetchNextTeams, teams?.pages?.length]);
 
   return (
     <div>
@@ -368,17 +363,38 @@ const League = () => {
                       onClick={() => setIsEditLeagueModalOpen(true)}
                     ></SecondaryButton>
                   )}
-                  <SecondaryButton
-                    disabled={hasWeekendStarted}
-                    className="border-transparent dark:hover:!text-cta shadow-md"
-                    text={
-                      <div className="flex  gap-x-2 items-center">
-                        <LuCirclePlus className="text-xl" />
-                        <span className="">Add</span>
-                      </div>
+                  <Tooltip
+                    displayed={
+                      hasWeekendStarted ||
+                      canUserJoinLeague?.data?.canUserJoinLeague == false ||
+                      userTeams?.data?.teams?.length >= 2
                     }
-                    onClick={() => setIsModalOpen(true)}
-                  ></SecondaryButton>
+                    text={
+                      hasWeekendStarted
+                        ? "Race weekend has started. Teams cannot be edited or added."
+                        : canUserJoinLeague?.data?.canUserJoinLeague === false
+                        ? "Can join a maximum of 5 leagues."
+                        : userTeams?.data?.teams?.length >= 2
+                        ? "Maximum of 2 teams can be added per league."
+                        : ""
+                    }
+                  >
+                    <SecondaryButton
+                      disabled={
+                        canUserJoinLeague?.data?.canUserJoinLeague == false ||
+                        hasWeekendStarted ||
+                        userTeams?.data?.teams?.length >= 2
+                      }
+                      className="border-transparent dark:hover:!text-cta dark:disabled:hover:!text-gray-400 shadow-md"
+                      text={
+                        <div className="flex gap-x-2 items-center">
+                          <LuCirclePlus className="text-xl" />
+                          <span className="">Add</span>
+                        </div>
+                      }
+                      onClick={() => setIsModalOpen(true)}
+                    ></SecondaryButton>
+                  </Tooltip>
                   {league?.data?.data?.User.id == dbUser?.id && (
                     <SecondaryButton
                       text={
@@ -412,6 +428,7 @@ const League = () => {
                 </p>
               </div>
 
+              {/* Smaller screen buttons */}
               <div className="flex md:hidden flex-wrap flex-1 gap-y-5 justify-around md:justify-end items-center gap-x-4">
                 <SecondaryButton
                   className="border-transparent dark:hover:!text-cta shadow-md"
@@ -438,17 +455,39 @@ const League = () => {
                     onClick={() => setIsEditLeagueModalOpen(true)}
                   ></SecondaryButton>
                 )}
-                <SecondaryButton
-                  disabled={hasWeekendStarted}
-                  className="border-transparent dark:hover:!text-cta shadow-md"
-                  text={
-                    <div className="flex  gap-x-2 items-center">
-                      <LuCirclePlus className="text-xl" />
-                      <span className="">Add</span>
-                    </div>
+                <Tooltip
+                  position="top"
+                  displayed={
+                    hasWeekendStarted ||
+                    canUserJoinLeague?.data?.canUserJoinLeague == false ||
+                    userTeams?.data?.teams?.length >= 2
                   }
-                  onClick={() => setIsModalOpen(true)}
-                ></SecondaryButton>
+                  text={
+                    hasWeekendStarted
+                      ? "Race weekend has started. Teams cannot be edited or added."
+                      : canUserJoinLeague?.data?.canUserJoinLeague === false
+                      ? "Can join a maximum of 5 leagues."
+                      : userTeams?.data?.teams?.length >= 2
+                      ? "Maximum of 2 teams can be added per league."
+                      : ""
+                  }
+                >
+                  <SecondaryButton
+                    disabled={
+                      hasWeekendStarted ||
+                      canUserJoinLeague?.data?.canUserJoinLeague == false ||
+                      userTeams?.data?.teams?.length >= 2
+                    }
+                    className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
+                    text={
+                      <div className="flex  gap-x-2 items-center">
+                        <LuCirclePlus className="text-xl" />
+                        <span className="">Add</span>
+                      </div>
+                    }
+                    onClick={() => setIsModalOpen(true)}
+                  ></SecondaryButton>
+                </Tooltip>
                 {league?.data?.data?.User.id == dbUser?.id && (
                   <SecondaryButton
                     text={
@@ -519,7 +558,7 @@ const League = () => {
               {tabValue == "allTeams" ? (
                 <>
                   {/* All Teams */}
-                  <div className="flex py-10  flex-col gap-5">
+                  <div className="flex py-10 flex-col gap-5">
                     {teams &&
                       teams?.pages?.map((page, pageIndex) => {
                         return page?.data.teams?.map(
@@ -549,21 +588,28 @@ const League = () => {
                                     {/* Edit & Delete Buttons */}
                                     {team.User.id === dbUser?.id && (
                                       <div className="hidden md:flex flex-wrap flex-1 justify-end gap-x-4">
-                                        <SecondaryButton
-                                          disabled={hasWeekendStarted}
-                                          className="border-transparent shadow-md hover:text-cta"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setTeamId(team?.id);
-                                            setIsEditTeamModalOpen(true);
-                                          }}
+                                        <Tooltip
+                                          displayed={hasWeekendStarted}
                                           text={
-                                            <div className="flex gap-x-2 items-center">
-                                              <RiTeamLine className="text-lg" />
-                                              <span>Edit</span>
-                                            </div>
+                                            "Race weekend has started. Teams cannot be edited."
                                           }
-                                        />
+                                        >
+                                          <SecondaryButton
+                                            disabled={hasWeekendStarted}
+                                            className="border-transparent shadow-md hover:text-cta"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setTeamId(team?.id);
+                                              setIsEditTeamModalOpen(true);
+                                            }}
+                                            text={
+                                              <div className="flex gap-x-2 items-center">
+                                                <RiTeamLine className="text-lg" />
+                                                <span>Edit</span>
+                                              </div>
+                                            }
+                                          />
+                                        </Tooltip>
                                         <SecondaryButton
                                           text={
                                             <div className="flex items-center gap-x-2">
@@ -609,22 +655,32 @@ const League = () => {
 
                                   {/* Buttons for small screens */}
                                   {team.User.id === dbUser?.id && (
-                                    <div className="flex md:hidden justify-end gap-x-4">
-                                      <SecondaryButton
-                                        disabled={hasWeekendStarted}
-                                        className="border-transparent flex-1  shadow-md hover:text-cta"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setTeamId(team?.id);
-                                          setIsEditTeamModalOpen(true);
-                                        }}
-                                        text={
-                                          <div className="flex justify-center gap-x-2 items-center">
-                                            <RiTeamLine className="text-lg" />
-                                            <span>Edit</span>
-                                          </div>
-                                        }
-                                      />
+                                    <div className="flex  md:hidden justify-end gap-x-4">
+                                      <div className="flex-1">
+                                        <Tooltip
+                                          position="top"
+                                          displayed={hasWeekendStarted}
+                                          text={
+                                            "Race weekend has started. Teams cannot be edited."
+                                          }
+                                        >
+                                          <SecondaryButton
+                                            disabled={hasWeekendStarted}
+                                            className="border-transparent w-full  shadow-md hover:text-cta"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setTeamId(team?.id);
+                                              setIsEditTeamModalOpen(true);
+                                            }}
+                                            text={
+                                              <div className="flex justify-center gap-x-2 items-center">
+                                                <RiTeamLine className="text-lg" />
+                                                <span>Edit</span>
+                                              </div>
+                                            }
+                                          />
+                                        </Tooltip>
+                                      </div>
                                       <SecondaryButton
                                         text={
                                           <div className="flex justify-center gap-x-2 items-center">
@@ -649,6 +705,8 @@ const League = () => {
                         );
                       })}
 
+                    <div ref={ref}></div>
+
                     {/* Loader */}
                     {(loadingTeams || loadingNextTeams) && (
                       <div className="flex justify-center items-center py-10">
@@ -661,7 +719,6 @@ const League = () => {
                         />
                       </div>
                     )}
-                    <div ref={ref}></div>
                   </div>
                 </>
               ) : (
@@ -669,105 +726,52 @@ const League = () => {
                   {/* User Teams */}
                   <div className="flex py-10  flex-col gap-5">
                     {userTeams &&
-                      userTeams?.pages?.map((page) => {
-                        return page?.data.teams?.map((team: any) => {
-                          return (
-                            <Card
-                              onClick={() => {
-                                setTeamId(team?.id);
-                                setIsTeamModalOpen(true);
-                              }}
-                              key={team.id}
-                              className="relative rounded-md border-2 cursor-pointer transition-all"
-                            >
-                              <div className="p-5 space-y-4">
-                                <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
-                                  <h3 className="text-xl font-bold  ">
-                                    {team?.name}
-                                  </h3>
+                      userTeams?.data?.teams?.map((team: any) => {
+                        return (
+                          <Card
+                            onClick={() => {
+                              setTeamId(team?.id);
+                              setIsTeamModalOpen(true);
+                            }}
+                            key={team.id}
+                            className="relative rounded-md border-2 cursor-pointer transition-all"
+                          >
+                            <div className="p-5 space-y-4">
+                              <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
+                                <h3 className="text-xl font-bold  ">
+                                  {team?.name}
+                                </h3>
 
-                                  {/* Edit & Delete Buttons */}
-                                  {team.User.id === dbUser?.id && (
-                                    <div className="hidden md:flex flex-wrap flex-1 justify-end gap-x-4">
-                                      <SecondaryButton
-                                        disabled={hasWeekendStarted}
-                                        className="border-transparent shadow-md hover:text-cta"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setTeamId(team?.id);
-                                          setIsEditTeamModalOpen(true);
-                                        }}
-                                        text={
-                                          <div className="flex gap-x-2 items-center">
-                                            <RiTeamLine className="text-lg" />
-                                            <span>Edit</span>
-                                          </div>
-                                        }
-                                      />
-                                      <SecondaryButton
-                                        text={
-                                          <div className="flex items-center gap-x-2">
-                                            <BsFillTrash3Fill className="text-lg" />
-                                            <span>Delete</span>
-                                          </div>
-                                        }
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setTeamId(team?.id);
-                                          setIsDeleteTeamModalOpen(true);
-                                        }}
-                                        disabled={disabled}
-                                        disabledText="Please wait..."
-                                        className="border-transparent text-red-500 hover:bg-red-600 hover:text-white shadow-md"
-                                      />
-                                    </div>
-                                  )}
-                                </div>
-
-                                <p className="text-md font-medium">
-                                  Points: {team?.score}
-                                </p>
-
-                                <Link
-                                  to={`/user/${team.User.username}`}
-                                  className="py-3 flex items-center space-x-3 w-fit hover:underline"
-                                >
-                                  <Avatar
-                                    className="h-12 w-12"
-                                    imageSrc={team.User.photoURL}
-                                    fallBackText={team.User.name}
-                                  />
-                                  <div>
-                                    <h3 className="text-md font-semibold ">
-                                      {team.User.name}
-                                    </h3>
-                                    <p className="text-sm text-darkbg/50 dark:text-white/50">
-                                      @{team.User.username}
-                                    </p>
-                                  </div>
-                                </Link>
-
-                                {/* Buttons for small screens */}
+                                {/* Edit & Delete Buttons */}
                                 {team.User.id === dbUser?.id && (
-                                  <div className="flex md:hidden justify-end gap-x-4">
+                                  <div className="hidden md:flex flex-wrap flex-1 justify-end gap-x-4">
+                                    <div>
+                                      <Tooltip
+                                        displayed={hasWeekendStarted}
+                                        text={
+                                          "Race weekend has started. Teams cannot be edited."
+                                        }
+                                      >
+                                        <SecondaryButton
+                                          disabled={hasWeekendStarted}
+                                          className="border-transparent w-full  shadow-md hover:text-cta"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setTeamId(team?.id);
+                                            setIsEditTeamModalOpen(true);
+                                          }}
+                                          text={
+                                            <div className="flex justify-center gap-x-2 items-center">
+                                              <RiTeamLine className="text-lg" />
+                                              <span>Edit</span>
+                                            </div>
+                                          }
+                                        />
+                                      </Tooltip>
+                                    </div>
                                     <SecondaryButton
-                                      disabled={hasWeekendStarted}
-                                      className="border-transparent flex-1  shadow-md hover:text-cta"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setTeamId(team?.id);
-                                        setIsEditTeamModalOpen(true);
-                                      }}
                                       text={
-                                        <div className="flex justify-center gap-x-2 items-center">
-                                          <RiTeamLine className="text-lg" />
-                                          <span>Edit</span>
-                                        </div>
-                                      }
-                                    />
-                                    <SecondaryButton
-                                      text={
-                                        <div className="flex justify-center gap-x-2 items-center">
+                                        <div className="flex items-center gap-x-2">
                                           <BsFillTrash3Fill className="text-lg" />
                                           <span>Delete</span>
                                         </div>
@@ -777,31 +781,101 @@ const League = () => {
                                         setTeamId(team?.id);
                                         setIsDeleteTeamModalOpen(true);
                                       }}
+                                      disabled={disabled}
                                       disabledText="Please wait..."
-                                      className="border-transparent flex-1 text-red-500 hover:bg-red-600 hover:text-white shadow-md"
+                                      className="border-transparent text-red-500 hover:bg-red-600 hover:text-white shadow-md"
                                     />
                                   </div>
                                 )}
                               </div>
-                            </Card>
-                          );
-                        });
+
+                              <p className="text-md font-medium">
+                                Points: {team?.score}
+                              </p>
+
+                              <Link
+                                to={`/user/${team.User.username}`}
+                                className="py-3 flex items-center space-x-3 w-fit hover:underline"
+                              >
+                                <Avatar
+                                  className="h-12 w-12"
+                                  imageSrc={team.User.photoURL}
+                                  fallBackText={team.User.name}
+                                />
+                                <div>
+                                  <h3 className="text-md font-semibold ">
+                                    {team.User.name}
+                                  </h3>
+                                  <p className="text-sm text-darkbg/50 dark:text-white/50">
+                                    @{team.User.username}
+                                  </p>
+                                </div>
+                              </Link>
+
+                              {/* Buttons for small screens */}
+                              {team.User.id === dbUser?.id && (
+                                <div className="flex md:hidden justify-end gap-x-4">
+                                  <div className="flex-1">
+                                    <Tooltip
+                                      position="top"
+                                      displayed={hasWeekendStarted}
+                                      text={
+                                        "Race weekend has started. Teams cannot be edited."
+                                      }
+                                    >
+                                      <SecondaryButton
+                                        disabled={hasWeekendStarted}
+                                        className="border-transparent w-full  shadow-md hover:text-cta"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setTeamId(team?.id);
+                                          setIsEditTeamModalOpen(true);
+                                        }}
+                                        text={
+                                          <div className="flex justify-center gap-x-2 items-center">
+                                            <RiTeamLine className="text-lg" />
+                                            <span>Edit</span>
+                                          </div>
+                                        }
+                                      />
+                                    </Tooltip>
+                                  </div>
+                                  <SecondaryButton
+                                    text={
+                                      <div className="flex justify-center gap-x-2 items-center">
+                                        <BsFillTrash3Fill className="text-lg" />
+                                        <span>Delete</span>
+                                      </div>
+                                    }
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setTeamId(team?.id);
+                                      setIsDeleteTeamModalOpen(true);
+                                    }}
+                                    disabledText="Please wait..."
+                                    className="border-transparent flex-1 text-red-500 hover:bg-red-600 hover:text-white shadow-md"
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </Card>
+                        );
                       })}
 
+                    <div ref={ref}></div>
+
                     {/* Loader */}
-                    {(loadingUserTeams || loadingNextUserTeams) && (
+                    {loadingUserTeams && (
                       <div className="flex justify-center items-center py-10">
                         <HashLoader
                           color={"#9b0ced"}
-                          loading={loadingUserTeams || loadingNextUserTeams}
+                          loading={loadingUserTeams}
                           size={100}
                           aria-label="Loading Spinner"
                           data-testid="loader"
                         />
                       </div>
                     )}
-
-                    <div ref={ref}></div>
                   </div>
                 </>
               )}

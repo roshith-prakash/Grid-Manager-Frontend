@@ -99,6 +99,7 @@ const Navbar = () => {
         isModalOpen={isLoginModalOpen}
         setIsModalOpen={() => setIsLoginModalOpen(false)}
       />
+
       <nav
         className={`dark:bg-darkbg relative z-2 flex items-center justify-between bg-white px-10 py-3 font-f1 dark:text-white border-b-1 border-darkbg/25 dark:border-white/25`}
       >
@@ -112,19 +113,31 @@ const Navbar = () => {
 
         {/* LG screen links */}
         <div className="hidden items-center -translate-x-14 gap-x-8 font-medium lg:flex">
+          {/* Home Page */}
           <Link
             to="/"
             className="hover:text-cta dark:hover:text-darkmodeCTA transition-all"
           >
             Home
           </Link>
+
           {dbUser ? (
             <>
-              <Link to="/leagues">Leagues</Link>
-              <Link to="/leaderboard">Leaderboard</Link>
+              <Link
+                to="/leagues"
+                className="hover:text-cta dark:hover:text-darkmodeCTA transition-all"
+              >
+                Leagues
+              </Link>
+              <Link
+                to="/leaderboard"
+                className="hover:text-cta dark:hover:text-darkmodeCTA transition-all"
+              >
+                Leaderboard
+              </Link>
               <button
                 onClick={() => setIsSignOutModalOpen(true)}
-                className="cursor-pointer"
+                className="cursor-pointer hover:text-cta dark:hover:text-darkmodeCTA transition-all"
               >
                 Sign out
               </button>
@@ -134,7 +147,7 @@ const Navbar = () => {
               {location.pathname != "/signup" && (
                 <button
                   onClick={() => setIsSignUpModalOpen(true)}
-                  className="cursor-pointer"
+                  className="cursor-pointer hover:text-cta dark:hover:text-darkmodeCTA transition-all"
                 >
                   Sign up
                 </button>
@@ -143,13 +156,21 @@ const Navbar = () => {
               {location.pathname != "/signin" && (
                 <button
                   onClick={() => setIsLoginModalOpen(true)}
-                  className="cursor-pointer"
+                  className="cursor-pointer hover:text-cta dark:hover:text-darkmodeCTA transition-all"
                 >
                   Sign in
                 </button>
               )}
             </>
           )}
+
+          {/* FAQ Page */}
+          <Link
+            to="/faq"
+            className="hover:text-cta dark:hover:text-darkmodeCTA transition-all"
+          >
+            FAQ
+          </Link>
         </div>
 
         {/* Theme + Popover - Large Screen */}
@@ -306,6 +327,7 @@ const Navbar = () => {
             )}
           </button>
 
+          {/* Pop over component */}
           <Popover>
             <PopoverTrigger className="flex items-center cursor-pointer">
               {dbUser ? (

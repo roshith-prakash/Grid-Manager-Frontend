@@ -2,8 +2,10 @@ import { Checkbox, ErrorStatement, Input, PrimaryButton } from "@/components";
 import { useDBUser } from "@/context/UserContext";
 import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 import { axiosInstance } from "@/utils/axiosInstance";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { RiErrorWarningLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
 const CreateLeague = () => {
@@ -17,6 +19,24 @@ const CreateLeague = () => {
   const [error, setError] = useState({
     leagueName: 0,
   });
+
+  const showPersistentToast = () => {
+    toast(
+      (t) => (
+        <div className="flex items-center gap-4">
+          <RiErrorWarningLine className="h-10 w-10" />
+          <span>You can create or join a maximum of 5 leagues.</span>
+          <button
+            className="ml-auto px-3 py-1 bg-white text-red-600 font-medium rounded-md cursor-pointer transition"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Dismiss
+          </button>
+        </div>
+      ),
+      { duration: Infinity } // Keeps the toast open indefinitely
+    );
+  };
 
   // Submit the data to the server to edit the user object.
   const handleSubmit = () => {
@@ -50,9 +70,12 @@ const CreateLeague = () => {
         setDisabled(false);
         navigate(`/leagues/${res?.data?.data?.leagueId}`);
       })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Could not create league!");
+      .catch((err: AxiosError) => {
+        if (err?.response?.status == 403) {
+          showPersistentToast();
+        } else {
+          toast("Could not create league!");
+        }
         setDisabled(false);
       });
   };

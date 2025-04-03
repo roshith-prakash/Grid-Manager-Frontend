@@ -116,13 +116,15 @@ const DriverModal = ({
                 </p>
 
                 {/* IF driver is already present in a team */}
-                {driver?.data?.driver?.pointsForTeam && (
+                {driver?.data?.driver?.pointsForTeam ? (
                   <p className="text-md">
                     Points For Your Team:
                     <span className="font-semibold ml-1">
                       {driver?.data?.driver?.pointsForTeam}
                     </span>
                   </p>
+                ) : (
+                  <></>
                 )}
 
                 <p className="text-md">

@@ -236,7 +236,7 @@ const User = () => {
                       return page?.data.teams?.map((team: any) => {
                         return (
                           <div
-                            className="relative cursor-pointer bg-white dark:bg-secondarydarkbg p-4 rounded-lg shadow-md  transition-all hover:shadow-lg"
+                            className=" bg-[#e1e1e1]/25 rounded-xl flex flex-col dark:bg-white/5  p-3 transition-all hover:shadow-md hover:bg-white/10 cursor-pointer"
                             onClick={() => {
                               setTeamId(team?.id);
                               setIsTeamModalOpen(true);
@@ -244,7 +244,7 @@ const User = () => {
                           >
                             <Card
                               key={team?.id}
-                              className="p-4 border-none shadow-none w-fit text-center"
+                              className="!bg-transparent p-4 border-none shadow-none w-fit text-center"
                             >
                               <p className="text-lg font-semibold text-darkbg dark:text-white">
                                 {team?.name}
@@ -272,6 +272,7 @@ const User = () => {
                         );
                       });
                     })}
+                  <div ref={ref}></div>
                 </div>
 
                 {(loadingTeams || loadingNextTeams) && (
@@ -307,19 +308,19 @@ const User = () => {
               </>
             ) : (
               <>
-                <div className="flex justify-center flex-wrap py-10 px-5 gap-10">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 py-10 px-2 gap-x-2 gap-y-10">
                   {leagues &&
                     leagues?.pages?.map((page) => {
                       return page?.data.leagues?.map((league: any) => {
                         return (
                           <>
                             <Link
-                              className="border-2 max-w-72 rounded-xl flex flex-col bg-white/5 w-fit px-5 py-5 transition-all hover:shadow-md hover:bg-white/10"
+                              className="mx-auto bg-[#e1e1e1]/25 max-w-3xs w-full rounded-xl flex flex-col dark:bg-white/5  px-5 py-5 transition-all hover:shadow-md hover:bg-white/10"
                               to={`/leagues/${league?.leagueId}`}
                             >
                               <div className="flex-1">
-                                <p className="text-lg font-semibold">
-                                  League: {league?.name}
+                                <p className="text-xl mb-4 font-semibold">
+                                  {league?.name}
                                 </p>
                                 <p className="text-md dark:text-white/80 text-darkbg/70">
                                   League ID: {league?.leagueId}
@@ -357,6 +358,7 @@ const User = () => {
                         );
                       });
                     })}
+                  <div ref={ref}></div>
                 </div>
 
                 {(loadingLeagues || loadingNextLeagues) && (

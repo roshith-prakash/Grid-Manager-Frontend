@@ -3,13 +3,14 @@ import useDebounce from "../utils/useDebounce";
 import { Input, SecondaryButton } from "../components";
 import { IoIosSearch } from "react-icons/io";
 import { useInView } from "react-intersection-observer";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../utils/axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
 import HashLoader from "react-spinners/HashLoader";
 import Avatar from "@/components/reuseit/Avatar";
 import { LuCirclePlus } from "react-icons/lu";
 import { useDBUser } from "@/context/UserContext";
+import Tooltip from "@/components/reuseit/Tooltip";
 
 const PublicLeagues = () => {
   // State for user input - passed to debouncer
@@ -23,10 +24,20 @@ const PublicLeagues = () => {
   // Intersection observer to fetch new leagues
   const { ref, inView } = useInView();
 
-  // Scroll to the top of page
+  //  Page Title
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.title = "Leagues | Grid Manager";
   }, []);
+
+  // Fetch league data from server.
+  const { data: canUserJoinLeague } = useQuery({
+    queryKey: ["numberOfLeagues", dbUser?.id],
+    queryFn: async () => {
+      return axiosInstance.post("/team/check-if-user-can-join-league", {
+        userId: dbUser?.id,
+      });
+    },
+  });
 
   // Fetching searched leagues
   const {
@@ -74,16 +85,22 @@ const PublicLeagues = () => {
               Find a League!
             </h1>
 
-            <SecondaryButton
-              className="border-transparent dark:hover:!text-cta shadow-md"
-              text={
-                <div className="flex  gap-x-2 items-center">
-                  <LuCirclePlus className="text-xl" />
-                  <span className="">Add</span>
-                </div>
-              }
-              onClick={() => navigate("/create-league")}
-            ></SecondaryButton>
+            <Tooltip
+              displayed={canUserJoinLeague?.data?.canUserJoinLeague == false}
+              text={"Can create or join a maximum of 5 leagues."}
+            >
+              <SecondaryButton
+                disabled={canUserJoinLeague?.data?.canUserJoinLeague == false}
+                className="border-transparent dark:hover:!text-cta dark:disabled:hover:!text-gray-400 shadow-md"
+                text={
+                  <div className="flex  gap-x-2 items-center">
+                    <LuCirclePlus className="text-xl" />
+                    <span className="">Add</span>
+                  </div>
+                }
+                onClick={() => navigate("/create-league")}
+              ></SecondaryButton>
+            </Tooltip>
           </div>
 
           {/* Input box */}
@@ -97,7 +114,6 @@ const PublicLeagues = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <p>( Note : Private Leagues will not be displayed. )</p>
           </div>
 
           {/* Showing the input entered by the user */}
@@ -117,11 +133,11 @@ const PublicLeagues = () => {
                     if (league?.name) {
                       return (
                         <Link
-                          className="bg-darkbg/0.5 max-w-60 w-full rounded-xl flex flex-col  px-5 py-5 transition-all shadow-lg hover:scale-105  hover:bg-white/10 dark:bg-white/5"
+                          className=" bg-[#e1e1e1]/25 max-w-3xs w-full rounded-xl flex flex-col dark:bg-white/5  px-5 py-5 transition-all hover:shadow-md hover:bg-white/10"
                           to={`/leagues/${league?.leagueId}`}
                         >
                           <div className="flex-1">
-                            <p className="text-lg text-ellipsis text-nowrap font-semibold">
+                            <p className="text-xl mb-4 font-semibold">
                               {league?.name}
                             </p>
                             <p className="text-md dark:text-white/80 text-darkbg/70">
@@ -139,9 +155,9 @@ const PublicLeagues = () => {
                           >
                             {/* User's profile picture or avatar on left */}
                             <Avatar
-                              imageSrc={league?.User.photoURL}
-                              fallBackText={league?.User.name}
-                            ></Avatar>
+                              imageSrc={league?.User?.photoURL}
+                              fallBackText={league?.User?.name}
+                            />
                             {/* User's name & username on the right */}
                             <div>
                               <p className="text-md font-semibold break-all">

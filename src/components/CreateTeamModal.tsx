@@ -22,6 +22,8 @@ import { FaUserAlt } from "react-icons/fa";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 import { RxCross2 } from "react-icons/rx";
+import { RiErrorWarningLine } from "react-icons/ri";
+import { AxiosError } from "axios";
 
 const CreateTeamModal = ({
   leagueId,
@@ -34,6 +36,42 @@ const CreateTeamModal = ({
 }) => {
   // Get User
   const { dbUser } = useDBUser();
+
+  const showTeamLimitToast = () => {
+    toast(
+      (t) => (
+        <div className="flex items-center gap-4">
+          <RiErrorWarningLine className="h-10 w-10" />
+          <span>You can only add upto 2 teams in a league.</span>
+          <button
+            className="ml-auto px-3 py-1 bg-white text-red-600 font-medium rounded-md cursor-pointer transition"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Dismiss
+          </button>
+        </div>
+      ),
+      { duration: Infinity } // Keeps the toast open indefinitely
+    );
+  };
+
+  const showLeagueLimitToast = () => {
+    toast(
+      (t) => (
+        <div className="flex items-center gap-4">
+          <RiErrorWarningLine className="h-10 w-10" />
+          <span>You can only join upto 5 leagues.</span>
+          <button
+            className="ml-auto px-3 py-1 bg-white text-red-600 font-medium rounded-md cursor-pointer transition"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Dismiss
+          </button>
+        </div>
+      ),
+      { duration: Infinity } // Keeps the toast open indefinitely
+    );
+  };
 
   // Querying Drivers
   const { data: drivers } = useQuery({
@@ -251,8 +289,23 @@ const CreateTeamModal = ({
           setDisabled(false);
           onClose();
         })
-        .catch(() => {
-          toast("Something went wrong!");
+        .catch((err: AxiosError) => {
+          if (err?.response?.status == 403) {
+            if (
+              err?.response?.data?.data ==
+              "You can only create 2 teams per league."
+            ) {
+              showTeamLimitToast();
+            }
+
+            if (
+              err?.response?.data?.data == "Maximum number of leagues reached."
+            ) {
+              showLeagueLimitToast();
+            }
+          } else {
+            toast("Something went wrong!");
+          }
           setDisabled(false);
           onClose();
         });

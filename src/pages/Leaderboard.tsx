@@ -138,13 +138,13 @@ const Leaderboard = () => {
             {top3Teams?.data?.teams?.map((team: any, index: number) => (
               <Card
                 key={team.id}
-                className="w-fit p-5 text-center border-2 shadow-lg overflow-hidden cursor-pointer"
+                className="w-full max-w-3xs py-5 px-4 text-center border-2 shadow-lg overflow-hidden cursor-pointer"
                 onClick={() => {
                   setTeamId(team?.id);
                   setIsTeamModalOpen(true);
                 }}
               >
-                <div className="p-5">
+                <div>
                   <h3 className="text-2xl font-bold">
                     #{index + 1}. {team?.name}
                   </h3>
