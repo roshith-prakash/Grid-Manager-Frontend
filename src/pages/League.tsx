@@ -181,6 +181,8 @@ const League = () => {
     }
   }, [tabValue, inView, fetchNextTeams, teams?.pages?.length]);
 
+  console.log("League", league);
+
   return (
     <div>
       {league && (
@@ -366,13 +368,15 @@ const League = () => {
                   <Tooltip
                     displayed={
                       hasWeekendStarted ||
-                      canUserJoinLeague?.data?.canUserJoinLeague == false ||
+                      (canUserJoinLeague?.data?.canUserJoinLeague == false &&
+                        league?.data?.data?.User?.id != dbUser?.id) ||
                       userTeams?.data?.teams?.length >= 2
                     }
                     text={
                       hasWeekendStarted
                         ? "Race weekend has started. Teams cannot be edited or added."
-                        : canUserJoinLeague?.data?.canUserJoinLeague === false
+                        : canUserJoinLeague?.data?.canUserJoinLeague == false &&
+                          league?.data?.data?.User?.id != dbUser?.id
                         ? "Can join a maximum of 5 leagues."
                         : userTeams?.data?.teams?.length >= 2
                         ? "Maximum of 2 teams can be added per league."
@@ -381,13 +385,14 @@ const League = () => {
                   >
                     <SecondaryButton
                       disabled={
-                        canUserJoinLeague?.data?.canUserJoinLeague == false ||
                         hasWeekendStarted ||
+                        (canUserJoinLeague?.data?.canUserJoinLeague == false &&
+                          league?.data?.data?.User?.id != dbUser?.id) ||
                         userTeams?.data?.teams?.length >= 2
                       }
-                      className="border-transparent dark:hover:!text-cta dark:disabled:hover:!text-gray-400 shadow-md"
+                      className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
                       text={
-                        <div className="flex gap-x-2 items-center">
+                        <div className="flex  gap-x-2 items-center">
                           <LuCirclePlus className="text-xl" />
                           <span className="">Add</span>
                         </div>
@@ -459,13 +464,15 @@ const League = () => {
                   position="top"
                   displayed={
                     hasWeekendStarted ||
-                    canUserJoinLeague?.data?.canUserJoinLeague == false ||
+                    (canUserJoinLeague?.data?.canUserJoinLeague == false &&
+                      league?.data?.data?.User?.id != dbUser?.id) ||
                     userTeams?.data?.teams?.length >= 2
                   }
                   text={
                     hasWeekendStarted
                       ? "Race weekend has started. Teams cannot be edited or added."
-                      : canUserJoinLeague?.data?.canUserJoinLeague === false
+                      : canUserJoinLeague?.data?.canUserJoinLeague == false &&
+                        league?.data?.data?.User?.id != dbUser?.id
                       ? "Can join a maximum of 5 leagues."
                       : userTeams?.data?.teams?.length >= 2
                       ? "Maximum of 2 teams can be added per league."
@@ -475,7 +482,8 @@ const League = () => {
                   <SecondaryButton
                     disabled={
                       hasWeekendStarted ||
-                      canUserJoinLeague?.data?.canUserJoinLeague == false ||
+                      (canUserJoinLeague?.data?.canUserJoinLeague == false &&
+                        league?.data?.data?.User?.id != dbUser?.id) ||
                       userTeams?.data?.teams?.length >= 2
                     }
                     className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
@@ -530,7 +538,7 @@ const League = () => {
             </Card>
 
             {/* Tab Buttons */}
-            <div className="flex">
+            <div className="flex pt-8">
               {/* Teams Tab Button */}
               <button
                 onClick={() => setTabValue("allTeams")}
@@ -705,6 +713,13 @@ const League = () => {
                         );
                       })}
 
+                    {(teams?.pages?.[0]?.data?.teams.length == 0 ||
+                      teams?.pages?.[0]?.data?.teams[0] == null) && (
+                      <p className="text-center text-xl font-semibold py-8">
+                        No teams present in the league.
+                      </p>
+                    )}
+
                     <div ref={ref}></div>
 
                     {/* Loader */}
@@ -723,9 +738,55 @@ const League = () => {
                 </>
               ) : (
                 <>
+                  <div className="py-10 md:px-20 flex gap-x-4 justify-between px-8">
+                    {/* Gradient Title */}
+                    <h1 className="text-hovercta dark:text-darkmodeCTA text-4xl font-semibold">
+                      Your Teams
+                    </h1>
+
+                    <Tooltip
+                      displayed={
+                        hasWeekendStarted ||
+                        (canUserJoinLeague?.data?.canUserJoinLeague == false &&
+                          league?.data?.data?.User?.id != dbUser?.id) ||
+                        userTeams?.data?.teams?.length >= 2
+                      }
+                      text={
+                        hasWeekendStarted
+                          ? "Race weekend has started. Teams cannot be edited or added."
+                          : canUserJoinLeague?.data?.canUserJoinLeague ==
+                              false &&
+                            league?.data?.data?.User?.id != dbUser?.id
+                          ? "Can join a maximum of 5 leagues."
+                          : userTeams?.data?.teams?.length >= 2
+                          ? "Maximum of 2 teams can be added per league."
+                          : ""
+                      }
+                    >
+                      <SecondaryButton
+                        disabled={
+                          hasWeekendStarted ||
+                          (canUserJoinLeague?.data?.canUserJoinLeague ==
+                            false &&
+                            league?.data?.data?.User?.id != dbUser?.id) ||
+                          userTeams?.data?.teams?.length >= 2
+                        }
+                        className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
+                        text={
+                          <div className="flex  gap-x-2 items-center">
+                            <LuCirclePlus className="text-xl" />
+                            <span className="">Add</span>
+                          </div>
+                        }
+                        onClick={() => setIsModalOpen(true)}
+                      ></SecondaryButton>
+                    </Tooltip>
+                  </div>
+
                   {/* User Teams */}
                   <div className="flex py-10  flex-col gap-5">
                     {userTeams &&
+                      userTeams?.data?.teams?.length > 0 &&
                       userTeams?.data?.teams?.map((team: any) => {
                         return (
                           <Card
@@ -861,6 +922,12 @@ const League = () => {
                           </Card>
                         );
                       })}
+
+                    {userTeams && userTeams?.data?.teams?.length <= 0 && (
+                      <p className="text-center text-xl py-8 font-semibold">
+                        You have not created any teams in this league.
+                      </p>
+                    )}
 
                     <div ref={ref}></div>
 

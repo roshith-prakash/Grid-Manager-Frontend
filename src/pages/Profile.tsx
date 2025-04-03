@@ -15,13 +15,14 @@ import { auth } from "../firebase/firebase";
 import { toast } from "react-hot-toast";
 import dayjs from "dayjs";
 import AlertModal from "@/components/reuseit/AlertModal";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import Card from "@/components/reuseit/Card";
 import { useInView } from "react-intersection-observer";
 import HashLoader from "react-spinners/HashLoader";
 import Avatar from "@/components/reuseit/Avatar";
 import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 import Tooltip from "@/components/reuseit/Tooltip";
+import { LuCirclePlus } from "react-icons/lu";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -39,6 +40,16 @@ const Profile = () => {
 
   // Intersection observer to fetch new teams / leagues
   const { ref, inView } = useInView();
+
+  // Fetch league data from server.
+  const { data: canUserCreateLeague } = useQuery({
+    queryKey: ["numberOfLeagues", dbUser?.id],
+    queryFn: async () => {
+      return axiosInstance.post("/team/check-if-user-can-join-league", {
+        userId: dbUser?.id,
+      });
+    },
+  });
 
   // Fetching user's leagues
   const {
@@ -388,6 +399,32 @@ const Profile = () => {
           {tabValue == "teams" ? (
             // Teams
             <>
+              <div className="py-14 md:px-20 flex gap-x-4 justify-between px-8">
+                {/* Gradient Title */}
+                <h1 className="text-hovercta dark:text-darkmodeCTA text-4xl font-semibold">
+                  Your Teams
+                </h1>
+                <Tooltip
+                  displayed={
+                    canUserCreateLeague?.data?.canUserJoinLeague == false
+                  }
+                  text={"Can create or join a maximum of 5 leagues."}
+                >
+                  <SecondaryButton
+                    disabled={
+                      canUserCreateLeague?.data?.canUserJoinLeague == false
+                    }
+                    className="border-transparent dark:hover:!text-cta dark:disabled:hover:!text-gray-400 shadow-md"
+                    text={
+                      <div className="flex gap-x-2 items-center">
+                        <LuCirclePlus className="text-xl" />
+                        <span className="">Join a League</span>
+                      </div>
+                    }
+                    onClick={() => navigate("/leagues")}
+                  ></SecondaryButton>
+                </Tooltip>
+              </div>
               <div className="flex justify-center flex-wrap py-10 px-5 gap-10">
                 {teams &&
                   teams?.pages?.map((page) => {
@@ -478,16 +515,8 @@ const Profile = () => {
               {/* If no teams are found */}
               {teams && teams?.pages?.[0]?.data?.teams.length == 0 && (
                 <div className="flex flex-col justify-center pt-10">
-                  <div className="flex justify-center">
-                    <img
-                      src={
-                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742462679/Starman-bro_rgnlwy.svg"
-                      }
-                      className="max-w-[30%]"
-                    />
-                  </div>
-                  <p className="text-center mt-5 text-2xl font-medium">
-                    Uh oh! Couldn&apos;t find any teams.
+                  <p className="text-center text-xl py-8 font-semibold">
+                    You have not created any teams.
                   </p>
                 </div>
               )}
@@ -495,7 +524,33 @@ const Profile = () => {
           ) : (
             // Leagues
             <>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 py-10 px-2 gap-x-2 gap-y-10">
+              <div className="py-14 md:px-20 flex justify-between px-8">
+                {/* Gradient Title */}
+                <h1 className="text-hovercta dark:text-darkmodeCTA text-4xl font-semibold">
+                  Your Leagues
+                </h1>
+                <Tooltip
+                  displayed={
+                    canUserCreateLeague?.data?.canUserJoinLeague == false
+                  }
+                  text={"Can create or join a maximum of 5 leagues."}
+                >
+                  <SecondaryButton
+                    disabled={
+                      canUserCreateLeague?.data?.canUserJoinLeague == false
+                    }
+                    className="border-transparent dark:hover:!text-cta dark:disabled:hover:!text-gray-400 shadow-md"
+                    text={
+                      <div className="flex gap-x-2 items-center">
+                        <LuCirclePlus className="text-xl" />
+                        <span className="">Create League</span>
+                      </div>
+                    }
+                    onClick={() => navigate("/create-league")}
+                  ></SecondaryButton>
+                </Tooltip>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 px-2 gap-x-2 gap-y-10">
                 {leagues &&
                   leagues?.pages?.map((page) => {
                     return page?.data.leagues?.map((league: any) => {
@@ -563,16 +618,8 @@ const Profile = () => {
               {/* If no leagues are found */}
               {leagues && leagues?.pages?.[0]?.data?.leagues.length == 0 && (
                 <div className="flex flex-col justify-center pt-10">
-                  <div className="flex justify-center">
-                    <img
-                      src={
-                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742462679/Starman-bro_rgnlwy.svg"
-                      }
-                      className="max-w-[30%]"
-                    />
-                  </div>
-                  <p className="text-center mt-5 text-2xl font-medium">
-                    Uh oh! Couldn&apos;t find any leagues.
+                  <p className="text-center text-xl py-8 font-semibold">
+                    You have not created or joined any leagues.
                   </p>
                 </div>
               )}

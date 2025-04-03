@@ -81,6 +81,7 @@ const Navbar = () => {
           </div>
         </div>
       </AlertModal>
+
       {/* Sign Up Modal */}
       <SignupModal
         moveToLogin={() => {
@@ -90,6 +91,7 @@ const Navbar = () => {
         isModalOpen={isSignUpModalOpen}
         setIsModalOpen={() => setIsSignUpModalOpen(false)}
       />
+
       {/* Login Modal */}
       <LoginModal
         moveToSignup={() => {

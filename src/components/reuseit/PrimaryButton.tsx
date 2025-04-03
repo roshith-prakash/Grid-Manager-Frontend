@@ -17,7 +17,7 @@ const PrimaryButton = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`border-cta bg-cta hover:bg-hovercta hover:border-hovercta disable w-fit min-w-14 rounded-full border-2 px-5 py-2 text-white transition-all disabled:border-gray-500 disabled:bg-gray-500 ${
+      className={`border-cta bg-cta hover:bg-hovercta hover:border-hovercta dark:bg-hovercta dark:border-hovercta dark:hover:bg-cta dark:hover:border-cta disable w-fit min-w-14 rounded-full border-2 px-5 py-2 text-white transition-all disabled:border-gray-500 disabled:bg-gray-500 ${
         !disabled && "cursor-pointer"
       } ${className}`}
     >

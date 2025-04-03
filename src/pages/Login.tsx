@@ -317,7 +317,7 @@ const Login = () => {
                   disabledText="Please Wait..."
                   onClick={handleLogin}
                   text={"Sign in"}
-                  className="w-full bg-darkbg dark:bg-darkbg/50 dark:border-white/25 dark:hover:!border-white border-darkbg hover:!bg-darkbg/85 hover:!border-darkbg/85 hover:!scale-100 rounded-xl"
+                  className="w-full text-sm dark:hover:!bg-cta dark:hover:!border-cta bg-darkbg border-darkbg hover:!bg-darkbg/85 hover:!border-darkbg/85 hover:!scale-100 rounded-xl"
                 />
               </div>
             </>

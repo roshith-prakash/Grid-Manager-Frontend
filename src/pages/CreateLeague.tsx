@@ -3,7 +3,7 @@ import { useDBUser } from "@/context/UserContext";
 import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { AxiosError } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,16 @@ const CreateLeague = () => {
   const [error, setError] = useState({
     leagueName: 0,
   });
+
+  // Set window title.
+  useEffect(() => {
+    document.title = `Create League | Grid Manager`;
+  }, [dbUser]);
+
+  // Scroll to top
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const showPersistentToast = () => {
     toast(

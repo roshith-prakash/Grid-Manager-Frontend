@@ -290,16 +290,8 @@ const User = () => {
                 {/* If no leagues are found */}
                 {teams && teams?.pages?.[0]?.data?.teams.length == 0 && (
                   <div className="flex flex-col justify-center pt-10">
-                    <div className="flex justify-center">
-                      <img
-                        src={
-                          "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742462679/Starman-bro_rgnlwy.svg"
-                        }
-                        className="max-w-[30%]"
-                      />
-                    </div>
-                    <p className="text-center mt-5 text-2xl font-medium">
-                      Uh oh! Couldn&apos;t find any teams.
+                    <p className="text-center text-xl py-8 font-semibold">
+                      No Teams present.
                     </p>
                   </div>
                 )}
@@ -376,16 +368,8 @@ const User = () => {
                 {/* If no leagues are found */}
                 {leagues && leagues?.pages?.[0]?.data?.leagues.length == 0 && (
                   <div className="flex flex-col justify-center pt-10">
-                    <div className="flex justify-center">
-                      <img
-                        src={
-                          "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742462679/Starman-bro_rgnlwy.svg"
-                        }
-                        className="max-w-[30%]"
-                      />
-                    </div>
-                    <p className="text-center mt-5 text-2xl font-medium">
-                      Uh oh! Couldn&apos;t find any leagues.
+                    <p className="text-center text-xl py-8 font-semibold">
+                      No Leagues present.
                     </p>
                   </div>
                 )}

@@ -34,7 +34,7 @@ const Tooltip = ({
 
       {displayed && (
         <div
-          className={`absolute w-full max-w-xs z-10 rounded-lg px-4 py-2 text-left text-sm ${
+          className={`absolute w-full text-center max-w-xs z-10 rounded-lg px-4 py-2 text-sm ${
             visible ? "opacity-100" : "opacity-0"
           } dark:bg-darkbg bg-white shadow-lg transition-all duration-300 ${className} ${
             positionStyles[position]
