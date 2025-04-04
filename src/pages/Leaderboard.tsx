@@ -257,12 +257,18 @@ const Leaderboard = () => {
                 >
                   <div className="bg-white p-5 border-b flex flex-col items-center">
                     <img
-                      src={constructor?.logo || "/default-logo.png"}
+                      src={
+                        constructor?.logo ||
+                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                      }
                       className="h-36 object-contain"
                       alt={constructor?.name}
                     />
                     <img
-                      src={constructor?.carImage || "/default-car.png"}
+                      src={
+                        constructor?.carImage ||
+                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                      }
                       alt="Car"
                     />
                   </div>
@@ -382,12 +388,18 @@ const Leaderboard = () => {
                 >
                   <div className="bg-white p-5 border-b flex flex-col items-center">
                     <img
-                      src={constructor?.logo || "/default-logo.png"}
+                      src={
+                        constructor?.logo ||
+                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                      }
                       className="h-36 object-contain"
                       alt={constructor?.name}
                     />
                     <img
-                      src={constructor?.carImage || "/default-car.png"}
+                      src={
+                        constructor?.carImage ||
+                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                      }
                       alt="Car"
                     />
                   </div>

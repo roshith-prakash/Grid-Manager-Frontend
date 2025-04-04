@@ -532,7 +532,13 @@ const CreateTeamModal = ({
                                 className="object-cover"
                               />
                             ) : (
-                              <FaUserAlt className="text-gray-400 text-4xl" />
+                              <img
+                                src={
+                                  "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                                }
+                                alt={"Default Logo"}
+                                className="object-cover"
+                              />
                             )}
                           </div>
 
@@ -726,7 +732,7 @@ const CreateTeamModal = ({
                 {/* Available Constructors */}
                 {tabValue == "constructors" && (
                   <>
-                    {availableConstructors?.length > 0 ? (
+                    {availableConstructors?.length > 0 &&
                       availableConstructors
                         ?.sort((a, b) => b?.price - a?.price)
                         .map((constructor: any) => {
@@ -797,10 +803,7 @@ const CreateTeamModal = ({
                               </div>
                             </>
                           );
-                        })
-                    ) : (
-                      <p className="text-center">Add Constructors!</p>
-                    )}
+                        })}
                   </>
                 )}
               </div>

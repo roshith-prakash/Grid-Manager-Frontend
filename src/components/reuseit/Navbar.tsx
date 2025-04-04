@@ -11,7 +11,6 @@ import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
 import SignupModal from "../SignupModal";
 import LoginModal from "../LoginModal";
-import logo from "@/assets/logo.png";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useAuth } from "@/context/AuthContext";
 import { RiAccountPinCircleLine } from "react-icons/ri";
@@ -21,6 +20,9 @@ import { PiSignOutFill } from "react-icons/pi";
 import { SiF1 } from "react-icons/si";
 import Avatar from "./Avatar";
 import AlertModal from "./AlertModal";
+
+import logoDark from "@/assets/car-dark.png";
+import logo from "@/assets/car.png";
 
 const Navbar = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode() as ContextValue;
@@ -107,7 +109,11 @@ const Navbar = () => {
       >
         {/* Grid Manager */}
         <Link to="/" aria-label="Home" className="flex gap-x-2 items-center">
-          <img src={logo} alt="Grid Manager" className="h-12 cursor-pointer" />
+          <img
+            src={isDarkMode ? logoDark : logo}
+            alt="Grid Manager"
+            className="h-8 cursor-pointer"
+          />
           <span className="hidden md:block font-semibold text-2xl">
             Grid Manager
           </span>
@@ -475,22 +481,22 @@ const Navbar = () => {
           aria-modal="true"
           aria-label="Drawer Menu"
         >
-          <div className="mb-14 flex items-center justify-between px-10 pt-3.5 lg:px-10">
+          <div className="mb-14 h-14 flex items-center justify-between px-10 pt-4.5 lg:px-10">
             <button
               className="cursor-pointer flex gap-x-2 items-center"
               onClick={() => handleSearch("/")}
               aria-label="Home"
             >
               <img
-                src={logo}
+                src={isDarkMode ? logoDark : logo}
                 alt="Grid Manager"
-                className="h-12 cursor-pointer"
+                className="h-8 cursor-pointer"
               />
               <span className="font-semibold text-2xl">Grid Manager</span>
             </button>
             <RxCross2
               onClick={() => setOpen(false)}
-              className="hover:text-cta cursor-pointer text-2xl transition-all"
+              className="hover:text-cta dark:hover:text-darkmodeCTA cursor-pointer text-2xl transition-all"
               aria-label="Close menu"
             />
           </div>
@@ -505,6 +511,7 @@ const Navbar = () => {
             >
               Home
             </button>
+
             {dbUser ? (
               <>
                 <button
@@ -552,6 +559,15 @@ const Navbar = () => {
                 </button>
               </>
             )}
+
+            <button
+              onClick={() => handleSearch("/faq")}
+              className="hover:text-cta w-fit cursor-pointer transition-all"
+              tabIndex={0}
+              aria-label="FAQ Page"
+            >
+              FAQ
+            </button>
           </div>
 
           {/* Footer Text   */}

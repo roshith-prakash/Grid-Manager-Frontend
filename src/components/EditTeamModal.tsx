@@ -547,7 +547,11 @@ const EditTeamModal = ({
                                 className="object-cover"
                               />
                             ) : (
-                              <FaUserAlt className="text-gray-400 text-4xl" />
+                              <img
+                                src="https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                                alt={"Default logo"}
+                                className="object-cover"
+                              />
                             )}
                           </div>
 

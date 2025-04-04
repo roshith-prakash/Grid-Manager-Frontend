@@ -5,14 +5,6 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import AlertModal from "@/components/reuseit/AlertModal";
-import Avatar from "@/components/reuseit/Avatar";
-import { LuCirclePlus } from "react-icons/lu";
-import { RiTeamLine } from "react-icons/ri";
-import Card from "@/components/reuseit/Card";
-import HashLoader from "react-spinners/HashLoader";
 import {
   CreateTeamModal,
   EditLeagueModal,
@@ -21,6 +13,14 @@ import {
   SecondaryButton,
   TeamModal,
 } from "@/components";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import AlertModal from "@/components/reuseit/AlertModal";
+import Avatar from "@/components/reuseit/Avatar";
+import { LuCirclePlus } from "react-icons/lu";
+import { RiTeamLine } from "react-icons/ri";
+import Card from "@/components/reuseit/Card";
+import HashLoader from "react-spinners/HashLoader";
 import { useDBUser } from "@/context/UserContext";
 import { useInView } from "react-intersection-observer";
 import { BsFillTrash3Fill, BsPen } from "react-icons/bs";
@@ -43,11 +43,10 @@ const League = () => {
   const { dbUser } = useDBUser();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const hasWeekendStarted = useHasWeekendStarted();
 
   // Intersection observer to fetch new leagues
   const { ref, inView } = useInView();
-
-  const hasWeekendStarted = useHasWeekendStarted();
 
   // Fetch league data from server.
   const { data: canUserJoinLeague } = useQuery({
@@ -372,7 +371,7 @@ const League = () => {
                     }
                     text={
                       hasWeekendStarted
-                        ? "Race weekend has started. Teams cannot be edited or added."
+                        ? "Race weekend has started. Teams cannot be added."
                         : canUserJoinLeague?.data?.canUserJoinLeague == false &&
                           league?.data?.data?.User?.id != dbUser?.id
                         ? "Can join a maximum of 5 leagues."
@@ -468,7 +467,7 @@ const League = () => {
                   }
                   text={
                     hasWeekendStarted
-                      ? "Race weekend has started. Teams cannot be edited or added."
+                      ? "Race weekend has started. Teams cannot be added."
                       : canUserJoinLeague?.data?.canUserJoinLeague == false &&
                         league?.data?.data?.User?.id != dbUser?.id
                       ? "Can join a maximum of 5 leagues."
@@ -751,7 +750,7 @@ const League = () => {
                       }
                       text={
                         hasWeekendStarted
-                          ? "Race weekend has started. Teams cannot be edited or added."
+                          ? "Race weekend has started. Teams cannot be added or edited."
                           : canUserJoinLeague?.data?.canUserJoinLeague ==
                               false &&
                             league?.data?.data?.User?.id != dbUser?.id
@@ -798,7 +797,7 @@ const League = () => {
                             <div className="p-5 space-y-4">
                               <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
                                 <h3 className="text-xl font-bold  ">
-                                  {team?.name}
+                                  #{team?.position}. {team?.name}
                                 </h3>
 
                                 {/* Edit & Delete Buttons */}
