@@ -43,8 +43,6 @@ const ConstructorModal = ({
     enabled: !!constructorId,
   });
 
-  console.log(error);
-
   return (
     <Modal
       className="w-full !max-w-4xl px-0 py-0 noscroller"

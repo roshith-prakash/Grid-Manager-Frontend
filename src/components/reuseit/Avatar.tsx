@@ -62,11 +62,7 @@ const Avatar = ({
         </p>
       ) : (
         <img
-          src={
-            "https://randomuser.me/api/portraits/lego/2.jpg"
-            // "https://res.cloudinary.com/do8rpl9l4/image/upload/v1741101895/defaultImage_z3roby.png"
-            // "https://res.cloudinary.com/do8rpl9l4/image/upload/v1738212915/image_1_jy29je.jpg"
-          }
+          src={"https://randomuser.me/api/portraits/lego/2.jpg"}
           className={` ${
             border &&
             ` dark:border-secondarydarkbg border-2 border-white ${borderClassName} `
