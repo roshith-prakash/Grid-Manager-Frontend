@@ -105,7 +105,7 @@ const Navbar = () => {
       />
 
       <nav
-        className={`dark:bg-darkbg relative z-2 flex items-center justify-between bg-white px-10 py-3 font-f1 dark:text-white border-b-1 border-darkbg/25 dark:border-white/25`}
+        className={`dark:bg-darkbg relative z-2 flex items-center justify-between bg-white px-10 py-3 font-f1 dark:text-white`}
       >
         {/* Grid Manager */}
         <Link to="/" aria-label="Home" className="flex gap-x-2 items-center">
