@@ -54,6 +54,15 @@ const FAQ = () => {
             </p>
           </div>
           <div>
+            <h3 className="text-xl font-medium">
+              When is the deadline for changes?
+            </h3>
+            <p className="text-gray-700 dark:text-gray-300">
+              Drivers and constructors in a team can be swapped before the race
+              weekend starts (i.e. before the First Practice session).
+            </p>
+          </div>
+          <div>
             <h3 className="text-xl font-medium">How are points calculated?</h3>
             <p className="text-gray-700 dark:text-gray-300">
               Points are based on real F1 race performances, including Grand
@@ -65,10 +74,9 @@ const FAQ = () => {
               What happens if I leave a league?
             </h3>
             <p className="text-gray-700 dark:text-gray-300">
-              You can only delete teams from a league. Once a team is deleted,
-              it cannot be recovered, and its points will be removed from the
-              team standings. To leave a league, delete all your teams from the
-              league.
+              To leave a league you created, you must delete the league. To
+              leave a league you did not create, delete all your teams in that
+              league. Once a league / team is deleted, it cannot be recovered.
             </p>
           </div>
           <div>
