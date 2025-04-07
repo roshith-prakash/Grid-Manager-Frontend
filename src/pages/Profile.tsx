@@ -18,7 +18,6 @@ import AlertModal from "@/components/reuseit/AlertModal";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import Card from "@/components/reuseit/Card";
 import { useInView } from "react-intersection-observer";
-import HashLoader from "react-spinners/HashLoader";
 import Avatar from "@/components/reuseit/Avatar";
 import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 import Tooltip from "@/components/reuseit/Tooltip";
@@ -57,7 +56,6 @@ const Profile = () => {
     isLoading: loadingLeagues,
     // error: leaguesError,
     fetchNextPage: fetchNextLeagues,
-    isFetchingNextPage: loadingNextLeagues,
     // refetch: refetchLeagues,
   } = useInfiniteQuery({
     queryKey: ["userLeagues", dbUser?.username],
@@ -83,7 +81,6 @@ const Profile = () => {
     isLoading: loadingTeams,
     // error: teamsError,
     fetchNextPage: fetchNextTeams,
-    isFetchingNextPage: loadingNextTeams,
     refetch: refetchTeams,
   } = useInfiniteQuery({
     queryKey: ["userTeams", dbUser?.username],
@@ -500,20 +497,27 @@ const Profile = () => {
                     });
                   })}
 
+                {loadingTeams &&
+                  Array(4)
+                    ?.fill(null)
+                    ?.map(() => {
+                      return (
+                        <div className="flex justify-center items-center py-10">
+                          <div className=" bg-[#e1e1e1]/25 rounded-xl flex flex-col dark:bg-white/5  p-3 transition-all hover:shadow-md hover:bg-white/10">
+                            <Card className="!bg-transparent flex flex-col gap-y-3 p-4 border-none shadow-none w-fit text-center">
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                            </Card>
+                          </div>
+                        </div>
+                      );
+                    })}
+
                 <div ref={ref}></div>
               </div>
-
-              {(loadingTeams || loadingNextTeams) && (
-                <div className="flex justify-center items-center py-10">
-                  <HashLoader
-                    color={"#9b0ced"}
-                    loading={loadingTeams || loadingNextTeams}
-                    size={100}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                  />
-                </div>
-              )}
 
               {/* If no teams are found */}
               {teams && teams?.pages?.[0]?.data?.teams.length == 0 && (
@@ -606,15 +610,33 @@ const Profile = () => {
                 <div ref={ref}></div>
               </div>
 
-              {(loadingLeagues || loadingNextLeagues) && (
-                <div className="flex justify-center items-center py-10">
-                  <HashLoader
-                    color={"#9b0ced"}
-                    loading={loadingLeagues || loadingNextLeagues}
-                    size={100}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                  />
+              {loadingLeagues && (
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 py-10 px-2 gap-x-2 gap-y-10">
+                  {Array(4)
+                    ?.fill(null)
+                    ?.map(() => {
+                      return (
+                        <div className="mx-auto bg-[#e1e1e1]/25 max-w-3xs w-full rounded-xl flex flex-col dark:bg-white/5  px-5 py-5 transition-all hover:shadow-md hover:bg-white/10">
+                          <div className="flex-1  flex flex-col gap-y-2">
+                            <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                            <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                            <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                            <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                          </div>
+
+                          {/* Author section - link to user's page. */}
+                          <div className="mt-5 flex gap-x-3 items-center w-fit hover:underline">
+                            {/* User's profile picture or avatar on left */}
+                            <div className="px-0.5 h-10 w-10 rounded-full bg-gray-500  animate-pulse mb-4 " />
+                            {/* User's name & username on the right */}
+                            <div className="flex flex-col gap-y-2">
+                              <p className="bg-gray-500 animate-pulse h-4 w-36 rounded"></p>
+                              <p className="bg-gray-500 animate-pulse h-4 w-36 rounded"></p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               )}
 

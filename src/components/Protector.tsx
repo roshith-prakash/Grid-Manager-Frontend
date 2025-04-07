@@ -6,7 +6,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { sendEmailVerification } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { ReactNode, useEffect, useState } from "react";
-import HashLoader from "react-spinners/HashLoader";
+import { GiCarWheel } from "react-icons/gi";
 
 const Protector = ({ children }: { children: ReactNode }) => {
   // Navigate function to navigate to different pages.
@@ -46,14 +46,8 @@ const Protector = ({ children }: { children: ReactNode }) => {
 
   if (loading) {
     return (
-      <div className="dark:bg-darkbg h-screen flex justify-center items-center">
-        <HashLoader
-          color={"#9b0ced"}
-          loading={loading}
-          size={150}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
+      <div className="dark:bg-darkbg dark:text-darkmodetext h-screen flex flex-col gap-y-4 justify-center items-center">
+        <GiCarWheel className=" text-9xl animate-spin" />
       </div>
     );
   }

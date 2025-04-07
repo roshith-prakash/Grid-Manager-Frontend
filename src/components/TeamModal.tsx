@@ -3,12 +3,12 @@ import { axiosInstance } from "@/utils/axiosInstance";
 import Modal from "./reuseit/Modal";
 import { useQuery } from "@tanstack/react-query";
 import { FaUserAlt } from "react-icons/fa";
-import HashLoader from "react-spinners/HashLoader";
 import { RxCross2 } from "react-icons/rx";
 import DriverModal from "./DriverModal";
 import { useState } from "react";
 import { useDBUser } from "@/context/UserContext";
 import ConstructorModal from "./ConstructorModal";
+import Card from "./reuseit/Card";
 
 const TeamModal = ({
   teamId,
@@ -73,17 +73,68 @@ const TeamModal = ({
       />
 
       {isLoading && (
-        <div className="flex justify-center items-center py-10">
-          <HashLoader
-            color={"#9b0ced"}
-            size={100}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+        <div className="max-w-4xl mx-auto p-6">
+          {/* Team name */}
+          <h1 className="mx-auto h-7 w-60 bg-gray-500 animate-pulse rounded mb-6"></h1>
+
+          <p className="mx-auto h-8 w-60 bg-gray-500 animate-pulse rounded mt-8"></p>
+
+          <p className="text-3xl font-semibold text-center mt-16 my-8">
+            Team Drivers
+          </p>
+
+          {/* Drivers */}
+          <div className="flex flex-wrap gap-6 justify-center pt-6">
+            {Array(5)
+              .fill(null)
+              .map(() => {
+                return (
+                  <Card className="w-64 text-center border-2 shadow-lg overflow-hidden">
+                    <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
+                      <div className="h-52 object-contain" />
+                    </div>
+                    <div className="flex flex-col gap-y-2 pt-4 pb-3">
+                      <p className="bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
+                      <p className="bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
+                      <p className="bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
+                    </div>
+                  </Card>
+                );
+              })}
+          </div>
+
+          <p className="text-3xl font-semibold text-center mt-16 my-8">
+            Team Constructors
+          </p>
+
+          {/* Constructors */}
+          <div className="flex flex-wrap gap-6 justify-center pt-6">
+            {Array(2)
+              .fill(null)
+              .map(() => {
+                return (
+                  <Card className="w-64 text-center border-2 shadow-lg overflow-hidden">
+                    <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
+                      <div className="h-52 object-contain" />
+                    </div>
+                    <div className="flex flex-col gap-y-2 pt-4">
+                      <p className="bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
+                      <p className="bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
+                    </div>
+                  </Card>
+                );
+              })}
+          </div>
         </div>
       )}
 
-      {error && <p className="text-center">Could not fetch Team!</p>}
+      {error && (
+        <div className="min-h-72 flex justify-center items-center">
+          <p className="text-center text-xl font-semibold px-5">
+            Could not fetch team!
+          </p>
+        </div>
+      )}
 
       {team?.data?.team && (
         <>

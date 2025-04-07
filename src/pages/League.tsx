@@ -20,7 +20,6 @@ import Avatar from "@/components/reuseit/Avatar";
 import { LuCirclePlus } from "react-icons/lu";
 import { RiTeamLine } from "react-icons/ri";
 import Card from "@/components/reuseit/Card";
-import HashLoader from "react-spinners/HashLoader";
 import { useDBUser } from "@/context/UserContext";
 import { useInView } from "react-intersection-observer";
 import { BsFillTrash3Fill, BsPen } from "react-icons/bs";
@@ -80,7 +79,6 @@ const League = () => {
     isLoading: loadingTeams,
     // error: teamsError,
     fetchNextPage: fetchNextTeams,
-    isFetchingNextPage: loadingNextTeams,
     refetch: refetchTeams,
     // refetch: refetchTeams,
   } = useInfiniteQuery({
@@ -720,17 +718,30 @@ const League = () => {
                     <div ref={ref}></div>
 
                     {/* Loader */}
-                    {(loadingTeams || loadingNextTeams) && (
-                      <div className="flex justify-center items-center py-10">
-                        <HashLoader
-                          color={"#9b0ced"}
-                          loading={loadingTeams || loadingNextTeams}
-                          size={100}
-                          aria-label="Loading Spinner"
-                          data-testid="loader"
-                        />
-                      </div>
-                    )}
+                    {loadingTeams &&
+                      Array(4)
+                        ?.fill(null)
+                        ?.map(() => {
+                          return (
+                            <Card className="relative rounded-md border-2 cursor-pointer transition-all">
+                              <div className="p-5 space-y-4">
+                                <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
+                                  <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse font-bold "></h3>
+                                </div>
+
+                                <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
+
+                                <div className="py-3 flex items-center space-x-3 w-fit hover:underline">
+                                  <div className="h-12 w-12 bg-gray-500 animate-pulse rounded-full" />
+                                  <div>
+                                    <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse "></h3>
+                                    <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </Card>
+                          );
+                        })}
                   </div>
                 </>
               ) : (
@@ -928,18 +939,30 @@ const League = () => {
 
                     <div ref={ref}></div>
 
-                    {/* Loader */}
-                    {loadingUserTeams && (
-                      <div className="flex justify-center items-center py-10">
-                        <HashLoader
-                          color={"#9b0ced"}
-                          loading={loadingUserTeams}
-                          size={100}
-                          aria-label="Loading Spinner"
-                          data-testid="loader"
-                        />
-                      </div>
-                    )}
+                    {loadingUserTeams &&
+                      Array(2)
+                        ?.fill(null)
+                        ?.map(() => {
+                          return (
+                            <Card className="relative rounded-md border-2 cursor-pointer transition-all">
+                              <div className="p-5 space-y-4">
+                                <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
+                                  <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse font-bold "></h3>
+                                </div>
+
+                                <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
+
+                                <div className="py-3 flex items-center space-x-3 w-fit hover:underline">
+                                  <div className="h-12 w-12 bg-gray-500 animate-pulse rounded-full" />
+                                  <div>
+                                    <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse "></h3>
+                                    <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </Card>
+                          );
+                        })}
                   </div>
                 </>
               )}
@@ -948,19 +971,200 @@ const League = () => {
         </>
       )}
 
-      {!isLoading && (
-        <div className="flex justify-center items-center py-10">
-          <HashLoader
-            color={"#9b0ced"}
-            loading={isLoading}
-            size={100}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+      {isLoading && (
+        <div className="p-6 space-y-6">
+          {/* League Info */}
+          <Card className="py-5 px-6">
+            <div className="flex flex-wrap gap-8 justify-center md:justify-between items-center">
+              {/* Title */}
+              <h2 className="h-7 w-60 animate-pulse rounded bg-gray-500"></h2>
+
+              {/* Buttons */}
+              <div className="hidden md:flex flex-wrap flex-1 gap-y-5 justify-around md:justify-end items-center gap-x-4">
+                <SecondaryButton
+                  disabled={true}
+                  className="border-transparent dark:hover:!text-cta shadow-md"
+                  text={
+                    <div className="flex gap-x-2 items-center">
+                      <IoMdShare className="text-xl" />
+                      <span className="">Share</span>
+                    </div>
+                  }
+                ></SecondaryButton>
+
+                <Tooltip displayed={true} text={"League has not loaded."}>
+                  <SecondaryButton
+                    disabled={true}
+                    className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
+                    text={
+                      <div className="flex  gap-x-2 items-center">
+                        <LuCirclePlus className="text-xl" />
+                        <span className="">Add</span>
+                      </div>
+                    }
+                  ></SecondaryButton>
+                </Tooltip>
+              </div>
+            </div>
+
+            {/* League Info */}
+            <div className="py-8 text-md font-medium flex flex-col items-center md:items-start gap-y-2">
+              <p className="h-4 w-40 animate-pulse rounded bg-gray-500"></p>
+              <p className="h-4 w-40 animate-pulse rounded bg-gray-500"></p>
+              <p className="h-4 w-40 animate-pulse rounded bg-gray-500"></p>
+            </div>
+
+            {/* Smaller screen buttons */}
+            <div className="flex md:hidden flex-wrap flex-1 gap-y-5 justify-around md:justify-end items-center gap-x-4">
+              <SecondaryButton
+                disabled={true}
+                className="border-transparent dark:hover:!text-cta shadow-md"
+                text={
+                  <div className="flex gap-x-2 items-center">
+                    <IoMdShare className="text-xl" />
+                    <span className="">Share</span>
+                  </div>
+                }
+              ></SecondaryButton>
+
+              <Tooltip
+                position="top"
+                displayed={true}
+                text={"League has not loaded."}
+              >
+                <SecondaryButton
+                  disabled={true}
+                  className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
+                  text={
+                    <div className="flex  gap-x-2 items-center">
+                      <LuCirclePlus className="text-xl" />
+                      <span className="">Add</span>
+                    </div>
+                  }
+                ></SecondaryButton>
+              </Tooltip>
+            </div>
+          </Card>
+
+          {/* User Info */}
+          <Card>
+            <div className="p-4 flex items-center space-x-4 w-fit">
+              <div className="h-12 w-12 rounded-full animate-pulse bg-gray-500"></div>
+              <div className="flex flex-col gap-y-2">
+                <h3 className="h-4 w-40 animate-pulse rounded bg-gray-500"></h3>
+                <p className="h-4 w-40 animate-pulse rounded bg-gray-500"></p>
+              </div>
+            </div>
+          </Card>
+
+          {/* Tab Buttons */}
+          <div className="flex pt-8">
+            {/* Teams Tab Button */}
+            <div
+              className={`flex-1 text-center py-3  transition-all duration-300 border-b-4`}
+            >
+              All Teams
+            </div>
+            {/* Leagues Tab Button */}
+            <div
+              className={`flex-1 text-center py-3  transition-all duration-300 border-b-4 `}
+            >
+              Your Teams
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          <div>
+            {tabValue == "allTeams" ? (
+              <>
+                {/* All Teams */}
+                <div className="flex py-10 flex-col gap-5">
+                  {Array(4)
+                    ?.fill(null)
+                    ?.map(() => {
+                      return (
+                        <Card className="relative rounded-md border-2 cursor-pointer transition-all">
+                          <div className="p-5 space-y-4">
+                            <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
+                              <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse font-bold "></h3>
+                            </div>
+
+                            <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
+
+                            <div className="py-3 flex items-center space-x-3 w-fit hover:underline">
+                              <div className="h-12 w-12 bg-gray-500 animate-pulse rounded-full" />
+                              <div className="flex flex-col gap-y-2">
+                                <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse "></h3>
+                                <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      );
+                    })}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="py-10 md:px-20 flex gap-x-4 justify-between px-8">
+                  {/* Gradient Title */}
+                  <h1 className="text-hovercta dark:text-darkmodeCTA text-4xl font-semibold">
+                    Your Teams
+                  </h1>
+
+                  <Tooltip displayed={true} text={"League has not loaded"}>
+                    <SecondaryButton
+                      disabled={true}
+                      className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
+                      text={
+                        <div className="flex  gap-x-2 items-center">
+                          <LuCirclePlus className="text-xl" />
+                          <span className="">Add</span>
+                        </div>
+                      }
+                    ></SecondaryButton>
+                  </Tooltip>
+                </div>
+
+                {/* User Teams */}
+                <div className="flex py-10  flex-col gap-5">
+                  {Array(2)
+                    ?.fill(null)
+                    ?.map(() => {
+                      return (
+                        <Card className="relative rounded-md border-2 cursor-pointer transition-all">
+                          <div className="p-5 space-y-4">
+                            <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
+                              <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse font-bold "></h3>
+                            </div>
+
+                            <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
+
+                            <div className="py-3 flex items-center space-x-3 w-fit hover:underline">
+                              <div className="h-12 w-12 bg-gray-500 animate-pulse rounded-full" />
+                              <div className="flex flex-col gap-y-2">
+                                <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse "></h3>
+                                <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      );
+                    })}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
 
-      {error && <p className="text-center">League does not exist!</p>}
+      {error && (
+        <div className="min-h-72 flex justify-center items-center">
+          <p className="text-center text-xl font-semibold px-5">
+            League does not exist.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

@@ -6,7 +6,6 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../utils/axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
-import HashLoader from "react-spinners/HashLoader";
 import Avatar from "@/components/reuseit/Avatar";
 import { LuCirclePlus } from "react-icons/lu";
 import { useDBUser } from "@/context/UserContext";
@@ -47,7 +46,6 @@ const PublicLeagues = () => {
     isLoading: loadingLeagues,
     // error: leaguesError,
     fetchNextPage: fetchNextLeagues,
-    isFetchingNextPage: loadingNextLeagues,
   } = useInfiniteQuery({
     queryKey: ["publicLeagues", dbUser?.id, debouncedSearch],
     queryFn: ({ pageParam }) => {
@@ -78,10 +76,10 @@ const PublicLeagues = () => {
     <>
       <div className="min-h-[70vh] dark:bg-darkbg dark:text-darkmodetext md:min-h-[65vh] lg:min-h-[60vh] px-8 lg:px-10 py-10">
         <div>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between gap-x-4 items-center">
             {/* Gradient Title */}
-            <h1 className="text-hovercta dark:text-darkmodeCTA text-4xl font-semibold">
-              Find a League!
+            <h1 className="text-hovercta dark:text-darkmodeCTA text-3xl md:text-4xl font-semibold">
+              Leagues
             </h1>
 
             <Tooltip
@@ -92,9 +90,9 @@ const PublicLeagues = () => {
                 disabled={canUserJoinLeague?.data?.canUserJoinLeague == false}
                 className="border-transparent dark:hover:!text-cta dark:disabled:hover:!text-gray-400 shadow-md"
                 text={
-                  <div className="flex  gap-x-2 items-center">
+                  <div className="flex gap-x-2 items-center">
                     <LuCirclePlus className="text-xl" />
-                    <span className="">Add</span>
+                    <span className="text-nowrap">Create a League</span>
                   </div>
                 }
                 onClick={() => navigate("/create-league")}
@@ -147,7 +145,7 @@ const PublicLeagues = () => {
                             </p>
                           </div>
 
-                          {/* Author section - link to user's page. */}
+                          {/* League creator section - link to user's page. */}
                           <Link
                             to={`/user/${league?.User?.username}`}
                             className="mt-5 flex gap-x-3 items-center w-fit hover:underline"
@@ -175,15 +173,32 @@ const PublicLeagues = () => {
             </div>
           )}
 
-          {(loadingLeagues || loadingNextLeagues) && (
-            <div className="flex justify-center items-center py-10">
-              <HashLoader
-                color={"#9b0ced"}
-                loading={loadingLeagues || loadingNextLeagues}
-                size={100}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
+          {loadingLeagues && (
+            <div className="py-10 lg:px-5 flex justify-center flex-wrap gap-8">
+              {Array(4)
+                ?.fill(null)
+                ?.map(() => {
+                  return (
+                    <div className=" bg-[#e1e1e1]/25 max-w-3xs w-full rounded-xl flex flex-col dark:bg-white/5  px-5 py-5 transition-all hover:shadow-md hover:bg-white/10">
+                      <div className="flex-1">
+                        <p className="px-0.5 h-4 w-48 bg-gray-500 rounded animate-pulse mb-4 "></p>
+                        <p className="px-0.5 h-4 w-48 bg-gray-500 rounded animate-pulse mb-4 "></p>
+                        <p className="px-0.5 h-4 w-48 bg-gray-500 rounded animate-pulse mb-4 "></p>
+                      </div>
+
+                      {/* League creator section - link to user's page. */}
+                      <div className="mt-5 flex gap-x-3 items-center w-fit">
+                        {/* User's profile picture or avatar on left */}
+                        <div className="px-0.5 h-10 w-10 rounded-full bg-gray-500  animate-pulse mb-4 " />
+                        {/* User's name & username on the right */}
+                        <div>
+                          <p className="px-0.5 h-4 w-32 bg-gray-500 rounded animate-pulse mb-4 "></p>
+                          <p className="px-0.5 h-4 w-32 bg-gray-500 rounded animate-pulse mb-4 "></p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
           )}
 

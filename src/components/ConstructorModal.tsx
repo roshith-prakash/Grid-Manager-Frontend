@@ -1,7 +1,6 @@
 import { axiosInstance } from "@/utils/axiosInstance";
 import Modal from "./reuseit/Modal";
 import { useQuery } from "@tanstack/react-query";
-import HashLoader from "react-spinners/HashLoader";
 import { RxCross2 } from "react-icons/rx";
 import Table, {
   TableBody,
@@ -50,18 +49,75 @@ const ConstructorModal = ({
       onClose={closeModal}
     >
       {isLoading && (
-        <div className="flex justify-center items-center py-10">
-          <HashLoader
-            color={"#9b0ced"}
-            size={100}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        </div>
+        <>
+          {/* Constructor Data */}
+          <div className="flex flex-wrap">
+            <div className="w-full md:w-[40%]">
+              {/* Constructor Image Section */}
+              <div className="h-52 bg-gray-500 animate-pulse  pb-5 py-4 px-5 border-b-2"></div>
+            </div>
+            {/* Constructor Info */}
+            <div className="w-full md:flex-1 border-b-4">
+              <div className="py-4 px-8 flex flex-col gap-y-2 ">
+                <h3 className="h-6 w-52 bg-gray-500 animate-pulse rounded text-ellipsis text-nowrap font-semibold"></h3>
+
+                <p className="h-4 w-40 bg-gray-500 animate-pulse rounded"></p>
+
+                <p className="h-4 w-40 bg-gray-500 animate-pulse rounded"></p>
+
+                <p className="h-4 w-40 bg-gray-500 animate-pulse rounded"></p>
+              </div>
+            </div>
+          </div>
+
+          {/* Constructor Points Scoring  */}
+          <div className="mt-5 px-5 pb-20">
+            <p className="text-2xl ml-1 font-semibold pb-2">Points: </p>
+
+            <Table className="w-full mt-5">
+              <TableHead>
+                <TableRow>
+                  <TableHeader>Round</TableHeader>
+                  <TableHeader>Race</TableHeader>
+                  <TableHeader>Session</TableHeader>
+                  <TableHeader>Points Scored</TableHeader>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Array(5)
+                  .fill(null)
+                  ?.map(() => {
+                    return (
+                      <TableRow>
+                        <TableCell>
+                          {" "}
+                          <p className="h-4 w-40 bg-gray-500 animate-pulse rounded"></p>
+                        </TableCell>
+                        <TableCell>
+                          <p className="h-4 w-40 bg-gray-500 animate-pulse rounded"></p>
+                        </TableCell>
+                        <TableCell>
+                          {" "}
+                          <p className="h-4 w-40 bg-gray-500 animate-pulse rounded"></p>
+                        </TableCell>
+                        <TableCell className="font-semibold">
+                          <p className="h-4 w-10 bg-gray-500 animate-pulse rounded"></p>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       {error && (
-        <p className="text-center">Could not fetch constructor data!</p>
+        <div className="min-h-72 flex justify-center items-center">
+          <p className="text-center text-xl font-semibold px-5">
+            Could not fetch constructor data!
+          </p>
+        </div>
       )}
 
       {constructor?.data?.constructor && (

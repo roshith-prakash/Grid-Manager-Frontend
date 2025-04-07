@@ -7,7 +7,6 @@ import { TfiWrite } from "react-icons/tfi";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../utils/axiosInstance";
 import Profile from "./Profile";
-import HashLoader from "react-spinners/HashLoader";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import Card from "@/components/reuseit/Card";
@@ -45,7 +44,6 @@ const User = () => {
     isLoading: loadingLeagues,
     // error: ,
     fetchNextPage: fetchNextLeagues,
-    isFetchingNextPage: loadingNextLeagues,
   } = useInfiniteQuery({
     queryKey: ["userLeagues", user?.data?.user?.username],
     queryFn: ({ pageParam }) => {
@@ -69,7 +67,6 @@ const User = () => {
     isLoading: loadingTeams,
     // error: teamsError,
     fetchNextPage: fetchNextTeams,
-    isFetchingNextPage: loadingNextTeams,
   } = useInfiniteQuery({
     queryKey: ["userTeams", user?.data?.user?.username, dbUser?.id],
     queryFn: ({ pageParam }) => {
@@ -89,8 +86,12 @@ const User = () => {
 
   // Set window title.
   useEffect(() => {
-    document.title = `${user?.data?.user?.name} | Grid Manager`;
-  }, [user]);
+    if (user) {
+      document.title = `${user?.data?.user?.name} | Grid Manager`;
+    } else {
+      document.title = `${username} | Grid Manager`;
+    }
+  }, [user, username]);
 
   // Scroll to top
   useEffect(() => {
@@ -113,6 +114,7 @@ const User = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView, fetchNextTeams, fetchNextLeagues]);
 
+  // If the profile is the current user's profile, show the profile component.
   if (username == dbUser?.username) {
     return <Profile />;
   }
@@ -127,14 +129,101 @@ const User = () => {
 
       {/* If data is being fetched*/}
       {loadingUser && (
-        <div className="dark:bg-darkbg min-h-[70vh] md:min-h-[65vh] lg:min-h-[60vh] p-20 pb-40 flex justify-center items-center">
-          <HashLoader
-            color={"#9b0ced"}
-            loading={loadingUser}
-            size={100}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+        <div className="lg:min-h-screen bg-bgwhite dark:bg-darkbg dark:text-darkmodetext w-full pb-20">
+          {/* Background color div */}
+          <div className="bg-secondarydarkbg  border-b-4 border-black h-48"></div>
+
+          {/* Profile Info Div */}
+          <div className="bg-white dark:bg-secondarydarkbg dark:border-white/25 shadow-xl -translate-y-14 border-2 min-h-52 pt-20 pb-10 rounded-lg mx-5 md:mx-10 lg:mx-20">
+            {/* Floating Image */}
+            <div className="absolute w-full -top-16 flex justify-center">
+              <div
+                className={`bg-gray-500  rounded-full h-32 w-32 border-8 `}
+              />
+            </div>
+
+            <div className="px-2">
+              {/* Name of the user */}
+              <p className="h-6 w-48 bg-gray-500 animate-pulse rounded mx-auto"></p>
+              {/* Username of the user */}
+              <p className="mt-2 h-4 w-48 bg-gray-500 animate-pulse rounded mx-auto "></p>
+            </div>
+
+            <hr className="my-5 mx-2 dark:border-white/25" />
+
+            {/* Date when user joined the journal */}
+            <div className="mt-5 text-greyText h-4 w-56 bg-gray-500 animate-pulse rounded mx-auto"></div>
+          </div>
+
+          {/* Tab Buttons */}
+          <div className="flex">
+            {/* Teams Tab Button */}
+            <div
+              className={`flex-1 py-3 text-center transition-all duration-300 border-b-4`}
+            >
+              Teams
+            </div>
+            {/* Leagues Tab Button */}
+            <div
+              className={`flex-1 py-3 text-center transition-all duration-300 border-b-4 `}
+            >
+              Leagues
+            </div>
+          </div>
+
+          <div>
+            {tabValue == "teams" ? (
+              <div className="flex justify-center flex-wrap py-10 px-5 gap-10">
+                {loadingUser &&
+                  Array(4)
+                    ?.fill(null)
+                    ?.map(() => {
+                      return (
+                        <div className="flex justify-center items-center py-10">
+                          <div className=" bg-[#e1e1e1]/25 rounded-xl flex flex-col dark:bg-white/5  p-3 transition-all hover:shadow-md hover:bg-white/10">
+                            <Card className="!bg-transparent flex flex-col gap-y-3 p-4 border-none shadow-none w-fit text-center">
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                            </Card>
+                          </div>
+                        </div>
+                      );
+                    })}
+                <div ref={ref}></div>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 py-10 px-2 gap-x-2 gap-y-10">
+                {Array(4)
+                  ?.fill(null)
+                  ?.map(() => {
+                    return (
+                      <div className="mx-auto bg-[#e1e1e1]/25 max-w-3xs w-full rounded-xl flex flex-col dark:bg-white/5  px-5 py-5 transition-all hover:shadow-md hover:bg-white/10">
+                        <div className="flex-1  flex flex-col gap-y-2">
+                          <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                          <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                          <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                          <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                        </div>
+
+                        {/* Author section - link to user's page. */}
+                        <div className="mt-5 flex gap-x-3 items-center w-fit hover:underline">
+                          {/* User's profile picture or avatar on left */}
+                          <div className="px-0.5 h-10 w-10 rounded-full bg-gray-500  animate-pulse mb-4 " />
+                          {/* User's name & username on the right */}
+                          <div className="flex flex-col gap-y-2">
+                            <p className="bg-gray-500 animate-pulse h-4 w-36 rounded"></p>
+                            <p className="bg-gray-500 animate-pulse h-4 w-36 rounded"></p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -272,20 +361,27 @@ const User = () => {
                         );
                       });
                     })}
+
+                  {loadingTeams &&
+                    Array(4)
+                      ?.fill(null)
+                      ?.map(() => {
+                        return (
+                          <div className="flex justify-center items-center py-10">
+                            <div className=" bg-[#e1e1e1]/25 rounded-xl flex flex-col dark:bg-white/5  p-3 transition-all hover:shadow-md hover:bg-white/10">
+                              <Card className="!bg-transparent flex flex-col gap-y-3 p-4 border-none shadow-none w-fit text-center">
+                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              </Card>
+                            </div>
+                          </div>
+                        );
+                      })}
                   <div ref={ref}></div>
                 </div>
-
-                {(loadingTeams || loadingNextTeams) && (
-                  <div className="flex justify-center items-center py-10">
-                    <HashLoader
-                      color={"#9b0ced"}
-                      loading={loadingTeams || loadingNextTeams}
-                      size={100}
-                      aria-label="Loading Spinner"
-                      data-testid="loader"
-                    />
-                  </div>
-                )}
 
                 {/* If no leagues are found */}
                 {teams && teams?.pages?.[0]?.data?.teams.length == 0 && (
@@ -353,15 +449,33 @@ const User = () => {
                   <div ref={ref}></div>
                 </div>
 
-                {(loadingLeagues || loadingNextLeagues) && (
-                  <div className="flex justify-center items-center py-10">
-                    <HashLoader
-                      color={"#9b0ced"}
-                      loading={loadingLeagues || loadingNextLeagues}
-                      size={100}
-                      aria-label="Loading Spinner"
-                      data-testid="loader"
-                    />
+                {loadingLeagues && (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 py-10 px-2 gap-x-2 gap-y-10">
+                    {Array(4)
+                      ?.fill(null)
+                      ?.map(() => {
+                        return (
+                          <div className="mx-auto bg-[#e1e1e1]/25 max-w-3xs w-full rounded-xl flex flex-col dark:bg-white/5  px-5 py-5 transition-all hover:shadow-md hover:bg-white/10">
+                            <div className="flex-1  flex flex-col gap-y-2">
+                              <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                              <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                              <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                              <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
+                            </div>
+
+                            {/* Author section - link to user's page. */}
+                            <div className="mt-5 flex gap-x-3 items-center w-fit hover:underline">
+                              {/* User's profile picture or avatar on left */}
+                              <div className="px-0.5 h-10 w-10 rounded-full bg-gray-500  animate-pulse mb-4 " />
+                              {/* User's name & username on the right */}
+                              <div className="flex flex-col gap-y-2">
+                                <p className="bg-gray-500 animate-pulse h-4 w-36 rounded"></p>
+                                <p className="bg-gray-500 animate-pulse h-4 w-36 rounded"></p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 )}
 
