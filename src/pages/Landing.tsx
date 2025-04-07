@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useDBUser } from "@/context/UserContext";
 import { useNavigate } from "react-router-dom";
 
-import f1car from "@/assets/aston.png";
+import f1car from "@/assets/aston-1.png";
 
 const Landing = () => {
   const { nextRace } = useGetNextRace();
@@ -46,10 +46,10 @@ const Landing = () => {
             />
           </div>
         </div>
-        <div className="flex-1">
+        <div className="flex-1  ">
           <img
             src={f1car}
-            className=" w-[50rem] scale-[1.75] ml-[40%] lg:ml-[30%] "
+            className=" w-[50rem] mt-24 xl:mt-0 h-min  scale-[1.75] ml-[40%] lg:ml-[30%] "
             alt="F1 Car"
           />
         </div>
