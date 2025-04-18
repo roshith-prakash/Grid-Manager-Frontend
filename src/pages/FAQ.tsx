@@ -1,3 +1,4 @@
+import { changeCost } from "@/constants/constants";
 import { useEffect } from "react";
 
 const FAQ = () => {
@@ -35,6 +36,13 @@ const FAQ = () => {
             <span className="font-bold">2 teams</span>.
           </li>
           <li>Pick your drivers and team within the budget constraints.</li>
+          <li>
+            Your team can be updated as many times as you like before the first
+            race. After the first race, you can make{" "}
+            <span className="font-bold">2 free changes per week</span>. Any
+            additional change will cost{" "}
+            <span className="font-bold">{changeCost} points</span>.
+          </li>
           <li>Earn points based on real-world race performances.</li>
           <li>Compete with other players in your leagues for the top spot!</li>
         </ul>
@@ -49,8 +57,9 @@ const FAQ = () => {
               Can I change my team after creating it?
             </h3>
             <p className="text-gray-700 dark:text-gray-300">
-              Yes, you can make changes to your team before the race weekend
-              deadline.
+              Yes, you can make unlimited changes before the first race.
+              Afterwards, you're allowed 2 free changes per week. Any extra
+              changes will cost {changeCost} points each.
             </p>
           </div>
           <div>

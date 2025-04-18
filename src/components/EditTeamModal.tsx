@@ -10,6 +10,7 @@ import {
   SecondaryButton,
 } from "@/components";
 import {
+  changeCost,
   NUMBER_OF_CONSTRUCTORS,
   NUMBER_OF_DRIVERS,
 } from "@/constants/constants";
@@ -22,6 +23,14 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 import { RxCross2 } from "react-icons/rx";
 import { useDBUser } from "@/context/UserContext";
+
+// Counts the number of changes made
+const countNumberOfChanges = (array1: string[], array2: string[]) => {
+  const set2 = new Set(array2);
+  const uniqueInArray1 = array1.filter((item) => !set2.has(item));
+  const uniqueSet = new Set(uniqueInArray1);
+  return uniqueSet.size;
+};
 
 const EditTeamModal = ({
   teamId,
@@ -57,6 +66,8 @@ const EditTeamModal = ({
   const [selectedConstructorId, setSelectedConstructorId] = useState("");
   const [isConstructorModalOpen, setIsConstructorModalOpen] = useState(false);
 
+  const [numberOfChangesMade, setNumberOfChangesMade] = useState(0);
+
   const { dbUser } = useDBUser();
   const ref = useRef();
 
@@ -84,6 +95,7 @@ const EditTeamModal = ({
     staleTime: Infinity,
   });
 
+  // Querying team
   const { data: team } = useQuery({
     queryKey: ["team", teamId],
     queryFn: async () => {
@@ -329,6 +341,33 @@ const EditTeamModal = ({
     }
   };
 
+  useEffect(() => {
+    if (team?.data?.team) {
+      let changes = 0;
+
+      const driverIds = teamDrivers.map((item: any) => item?.driverId);
+      const constructorIds = teamConstructors.map(
+        (item: any) => item?.constructorId
+      );
+
+      changes += countNumberOfChanges(team?.data?.team?.driverIds, driverIds);
+      changes += countNumberOfChanges(
+        team?.data?.team?.constructorIds,
+        constructorIds
+      );
+
+      setNumberOfChangesMade(changes);
+    }
+  }, [
+    teamDrivers.length,
+    teamConstructors.length,
+    team?.data?.team?.driverIds,
+    team?.data?.team?.constructorIds,
+    teamDrivers,
+    teamConstructors,
+    team?.data?.team,
+  ]);
+
   return (
     <div>
       <DriverModal
@@ -425,6 +464,43 @@ const EditTeamModal = ({
           text="Edit Team"
         />
       </div>
+
+      {/* Free Changes */}
+
+      {team?.data?.team?.freeChangeLimit != -1 && (
+        <>
+          <h2
+            className={` ${
+              availablePurse < 0 ? "bg-red-500" : "bg-cta"
+            }  text-white mb-10 mt-10 py-2 px-6 w-fit rounded-3xl font-semibold mx-auto text-center transition-all text-lg`}
+          >
+            {" "}
+            Free changes available :{" "}
+            <span>{team?.data?.team?.freeChangeLimit}</span>
+          </h2>
+          {/* Number of changes made */}
+          <div className="flex flex-col items-center">
+            <h2
+              className={` ${
+                numberOfChangesMade > team?.data?.team?.freeChangeLimit
+                  ? "bg-red-500"
+                  : "bg-cta"
+              }  text-white mb-4 py-2 px-6 w-fit rounded-3xl font-semibold mx-auto text-center transition-all text-lg`}
+            >
+              {" "}
+              Changes Made : <span>{numberOfChangesMade}</span>
+            </h2>
+            <ErrorStatement
+              className="!text-lg"
+              isOpen={numberOfChangesMade > team?.data?.team?.freeChangeLimit}
+              text={`Number of changes exceeds free change limit. A penalty of ${
+                (numberOfChangesMade - team?.data?.team?.freeChangeLimit) *
+                changeCost
+              } points will be levied.`}
+            />
+          </div>
+        </>
+      )}
 
       {/* Available purse */}
       <h2
