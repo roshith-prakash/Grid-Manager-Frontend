@@ -128,8 +128,8 @@ const Leaderboard = () => {
                   return (
                     <Card className="w-64 text-center py-5 border-2 shadow-lg overflow-hidden">
                       <div className="flex flex-col gap-y-2 pt-4 pb-3">
-                        <p className="bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
-                        <p className="bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
                       </div>
                     </Card>
                   );
@@ -171,9 +171,9 @@ const Leaderboard = () => {
                         <div className="h-52 object-contain" />
                       </div>
                       <div className="flex flex-col gap-y-2 pt-4 pb-3">
-                        <p className="bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
-                        <p className="bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
-                        <p className="bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
                       </div>
                     </Card>
                   );
@@ -237,9 +237,9 @@ const Leaderboard = () => {
                       <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
                         <div className="h-52 object-contain" />
                       </div>
-                      <div className="flex flex-col gap-y-2 pt-4">
-                        <p className="bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
-                        <p className="bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
+                      <div className="flex flex-col gap-y-2 pt-4 pb-3">
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
                       </div>
                     </Card>
                   );
@@ -294,23 +294,25 @@ const Leaderboard = () => {
             Highest Point Scoring Drivers
           </h2>
 
-          {isLoadingHighestPointScoringDrivers &&
-            Array(3)
-              .fill(null)
-              .map(() => {
-                return (
-                  <Card className="w-64 text-center border-2 shadow-lg overflow-hidden">
-                    <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
-                      <div className="h-52 object-contain" />
-                    </div>
-                    <div className="flex flex-col gap-y-2 pt-4 pb-3">
-                      <p className="bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
-                      <p className="bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
-                      <p className="bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
-                    </div>
-                  </Card>
-                );
-              })}
+          <div className="flex flex-wrap gap-8 justify-center">
+            {isLoadingHighestPointScoringDrivers &&
+              Array(3)
+                .fill(null)
+                .map(() => {
+                  return (
+                    <Card className="w-64 text-center border-2 shadow-lg overflow-hidden">
+                      <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
+                        <div className="h-52 object-contain" />
+                      </div>
+                      <div className="flex flex-col gap-y-2 pt-4 pb-3">
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
+                      </div>
+                    </Card>
+                  );
+                })}
+          </div>
 
           <div className="flex flex-wrap gap-8 justify-center">
             {highestScoringDrivers?.data?.drivers?.map(
@@ -368,9 +370,9 @@ const Leaderboard = () => {
                       <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
                         <div className="h-52 object-contain" />
                       </div>
-                      <div className="flex flex-col gap-y-2 pt-4">
-                        <p className="bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
-                        <p className="bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
+                      <div className="flex flex-col gap-y-2 pt-4 pb-3">
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
+                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
                       </div>
                     </Card>
                   );
