@@ -179,6 +179,14 @@ const Navbar = () => {
           >
             FAQ
           </Link>
+
+          {/* FAQ Page */}
+          <Link
+            to="/notices"
+            className="hover:text-cta dark:hover:text-darkmodeCTA transition-all"
+          >
+            Notices
+          </Link>
         </div>
 
         {/* Theme + Popover - Large Screen */}
@@ -567,6 +575,15 @@ const Navbar = () => {
               aria-label="FAQ Page"
             >
               FAQ
+            </button>
+
+            <button
+              onClick={() => handleSearch("/notices")}
+              className="hover:text-cta w-fit cursor-pointer transition-all"
+              tabIndex={0}
+              aria-label="Notices Page"
+            >
+              Notices
             </button>
           </div>
 

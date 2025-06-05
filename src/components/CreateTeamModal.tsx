@@ -710,7 +710,8 @@ const CreateTeamModal = ({
                                     }}
                                     disabled={
                                       teamDrivers?.length >= 5 ||
-                                      availablePurse <= 0
+                                      availablePurse <= 0 ||
+                                      driver?.isDriverDisabled
                                     }
                                     className="!py-1.5 !px-3 flex justify-center items-center gap-2 mx-auto !w-[90%]"
                                     text={
@@ -789,7 +790,8 @@ const CreateTeamModal = ({
                                     }}
                                     disabled={
                                       teamConstructors?.length >= 2 ||
-                                      availablePurse <= 0
+                                      availablePurse <= 0 ||
+                                      constructor?.isConstructorDisabled
                                     }
                                     className="!py-1.5 !w-[90%] !px-3 flex justify-center items-center gap-2"
                                     text={

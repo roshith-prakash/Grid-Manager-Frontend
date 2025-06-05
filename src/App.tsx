@@ -13,6 +13,7 @@ import {
   PublicLeagues,
   Leaderboard,
   FAQ,
+  Notices,
 } from "@/pages";
 import { Footer, Navbar, Protector } from "./components";
 import { useHasWeekendStarted } from "./functions/hasWeekendStarted";
@@ -75,6 +76,7 @@ function App() {
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/signout" element={<Signout />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/notices" element={<Notices />} />
 
             <Route
               path="/leaderboard"
