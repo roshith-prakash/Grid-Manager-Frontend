@@ -18,10 +18,18 @@ import AlertModal from "@/components/reuseit/AlertModal";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import Card from "@/components/reuseit/Card";
 import { useInView } from "react-intersection-observer";
-import Avatar from "@/components/reuseit/Avatar";
 import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 import Tooltip from "@/components/reuseit/Tooltip";
 import { LuCirclePlus } from "react-icons/lu";
+import {
+  Calendar,
+  Edit3,
+  Hash,
+  Trash2,
+  Trophy,
+  User,
+  Users,
+} from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -425,25 +433,21 @@ const Profile = () => {
                   ></SecondaryButton>
                 </Tooltip>
               </div>
-              <div className="flex justify-center flex-wrap py-10 px-5 gap-10">
+              <div className="grid lg:px-20 md:grid-cols-2 lg:grid-cols-4 px-2 gap-x-6 gap-y-10">
                 {teams &&
                   teams?.pages?.map((page) => {
                     return page?.data.teams?.map((team: any) => {
                       return (
-                        <div
-                          className="relative bg-[#e1e1e1]/25 rounded-xl flex flex-col dark:bg-white/5 p-4 pt-6 transition-all hover:shadow-md hover:bg-white/10 cursor-pointer"
-                          onClick={() => {
-                            setTeamId(team?.id);
-                            setIsTeamModalOpen(true);
-                          }}
-                        >
-                          <div className="flex gap-2 absolute top-3 right-3">
-                            <Tooltip
-                              displayed={hasWeekendStarted}
-                              text={
-                                "Race weekend has started. Teams cannot be edited."
-                              }
-                            >
+                        <div className="max-w-sm min-w-xs mx-auto">
+                          <div
+                            className="group bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 p-6 transition-all hover:shadow-lg hover:border-black/25 shadow dark:hover:border-white/25 cursor-pointer relative overflow-hidden"
+                            onClick={() => {
+                              setTeamId(team?.id);
+                              setIsTeamModalOpen(true);
+                            }}
+                          >
+                            {/* Action Buttons */}
+                            <div className="absolute z-5 top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                               <button
                                 disabled={hasWeekendStarted}
                                 onClick={(e) => {
@@ -451,47 +455,94 @@ const Profile = () => {
                                   setTeamId(team?.id);
                                   setIsEditModalOpen(true);
                                 }}
-                                className="text-xl disabled:text-gray-400 hover:text-cta dark:hover:text-darkmodeCTA transition-all cursor-pointer"
+                                className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 cursor-pointer"
+                                title={
+                                  hasWeekendStarted
+                                    ? "Race weekend has started. Teams cannot be edited."
+                                    : "Edit team"
+                                }
                               >
-                                <BsPen className="text-xl" />
+                                <Edit3 className="w-4 h-4 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400" />
                               </button>
-                            </Tooltip>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setTeamId(team?.id);
-                                setIsDeleteTeamModalOpen(true);
-                              }}
-                              className="text-xl hover:text-red-600 transition-all cursor-pointer"
-                            >
-                              <BsFillTrash3Fill className="text-red-500" />
-                            </button>
-                          </div>
 
-                          <Card
-                            key={team?.id}
-                            className="p-4 border-none shadow-none w-fit text-center !bg-transparent"
-                          >
-                            <p className="text-lg font-semibold text-darkbg dark:text-white">
-                              {team?.name}
-                            </p>
-                            <p className="text-md text-gray-600 dark:text-white/70">
-                              Points:{" "}
-                              <span className="font-medium">{team?.score}</span>
-                            </p>
-                            <p className="text-md text-gray-600 dark:text-white/70">
-                              {team?.League?.name}
-                            </p>
-                            <p className="text-md text-gray-600 dark:text-white/70">
-                              League ID: {team?.League?.leagueId}
-                            </p>
-                            <p className="text-sm text-gray-500 dark:text-white/50 mt-2">
-                              Last Updated:{" "}
-                              {dayjs(new Date(team?.updatedAt)).format(
-                                "MMM DD, YYYY"
-                              )}
-                            </p>
-                          </Card>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setTeamId(team?.id);
+                                  setIsDeleteTeamModalOpen(true);
+                                }}
+                                className="w-8 h-8 cursor-pointer rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all hover:bg-red-50 dark:hover:bg-red-900/30"
+                                title="Delete team"
+                              >
+                                <Trash2 className="w-4 h-4 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400" />
+                              </button>
+                            </div>
+
+                            {/* Team Header */}
+                            <div className="relative mb-4">
+                              <div className="flex items-center gap-3 mb-2">
+                                <div className="w-10 h-10 bg-cta/20 dark:bg-cta/30 rounded-lg flex items-center justify-center">
+                                  <Trophy className="w-5 h-5 text-cta dark:text-darkmodeCTA" />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
+                                  {team?.name}
+                                </h3>
+                              </div>
+                            </div>
+
+                            {/* Points Display */}
+                            <div className="relative z-10 mb-4">
+                              <div className="bg-slate-50 dark:bg-white/10 rounded-lg p-3">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                    Total Points
+                                  </span>
+                                  <span className="text-2xl font-bold text-slate-900 dark:text-white">
+                                    {team?.score}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* League Information */}
+                            <div className="relative z-10 space-y-3 mb-4">
+                              <div className="flex items-center gap-2">
+                                <Users className="w-4 h-4 text-slate-500" />
+                                <span className="text-sm text-slate-600 dark:text-slate-400">
+                                  League:
+                                </span>
+                                <span className="text-sm font-medium text-slate-900 dark:text-white">
+                                  {team?.League?.name}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                <Hash className="w-4 h-4 text-slate-500" />
+                                <span className="text-sm text-slate-600 dark:text-slate-400">
+                                  ID:
+                                </span>
+                                <span className="text-sm font-mono font-medium text-slate-900 dark:text-white">
+                                  {team?.League?.leagueId}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Last Updated */}
+                            <div className="relative z-10 pt-3 border-t border-slate-200 dark:border-slate-600">
+                              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                <Calendar className="w-3 h-3" />
+                                <span>
+                                  Updated{" "}
+                                  {dayjs(new Date(team?.updatedAt)).format(
+                                    "MMM DD, YYYY"
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Hover Indicator */}
+                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cta to-hovercta transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                          </div>
                         </div>
                       );
                     });
@@ -557,51 +608,70 @@ const Profile = () => {
                   ></SecondaryButton>
                 </Tooltip>
               </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 px-2 gap-x-2 gap-y-10">
+              <div className="grid lg:px-20 md:grid-cols-2 lg:grid-cols-4 px-2 gap-x-6 gap-y-10">
                 {leagues &&
                   leagues?.pages?.map((page) => {
                     return page?.data.leagues?.map((league: any) => {
                       return (
                         <>
                           <Link
-                            className="mx-auto bg-[#e1e1e1]/25 max-w-3xs w-full rounded-xl flex flex-col dark:bg-white/5  px-5 py-5 transition-all hover:shadow-md hover:bg-white/10"
-                            to={`/leagues/${league?.leagueId}`}
+                            key={league.leagueId}
+                            to={`/leagues/${league.leagueId}`}
+                            className="group bg-grey/5 dark:bg-white/5 shadow rounded-xl border border-slate-200 dark:border-white/10 p-6 hover:shadow-lg hover:border-black/25 dark:hover:border-white/25 transition-all"
                           >
-                            <div className="flex-1">
-                              <p className="text-xl mb-4 font-semibold">
-                                {league?.name}
-                              </p>
-                              <p className="text-md dark:text-white/80 text-darkbg/70">
-                                League ID: {league?.leagueId}
-                              </p>
-                              <p className="text-md dark:text-white/80 text-darkbg/70">
-                                Number of Teams: {league?.numberOfTeams}
-                              </p>
-                              <p className="text-md dark:text-white/80 text-darkbg/70">
-                                Private: {String(league?.private)}
-                              </p>
-                            </div>
-
-                            {/* Author section - link to user's page. */}
-                            <Link
-                              to={`/user/${league?.User?.username}`}
-                              className="mt-5 flex gap-x-3 items-center w-fit hover:underline"
-                            >
-                              {/* User's profile picture or avatar on left */}
-                              <Avatar
-                                imageSrc={league?.User?.photoURL}
-                                fallBackText={league?.User?.name}
-                              />
-                              {/* User's name & username on the right */}
+                            <div className="space-y-4">
+                              {/* League Info */}
                               <div>
-                                <p className="text-md font-semibold break-all">
-                                  {league?.User?.name}
-                                </p>
-                                <p className="text-sm text-darkbg/50 dark:text-white/50 break-all">
-                                  @{league?.User?.username}
-                                </p>
+                                <h3 className="text-xl font-semibold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors mb-3">
+                                  {league.name}
+                                </h3>
+
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                                    <span className="font-medium">ID:</span>
+                                    <span className="font-mono">
+                                      {league.leagueId}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                                    <Users className="w-4 h-4" />
+                                    <span>{league.numberOfTeams} teams</span>
+                                  </div>
+                                </div>
                               </div>
-                            </Link>
+
+                              {/* League Creator */}
+                              <div className="pt-4 border-t border-slate-200 dark:border-white/15">
+                                <Link
+                                  to={`/user/${league.User?.username}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 rounded-lg p-2 -m-2 transition-colors"
+                                >
+                                  <div className="w-10 h-10 bg-slate-200 dark:bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    {league.User?.photoURL ? (
+                                      <img
+                                        src={
+                                          league.User.photoURL ||
+                                          "/placeholder.svg"
+                                        }
+                                        alt={league.User.name}
+                                        className="w-10 h-10 rounded-full object-cover"
+                                      />
+                                    ) : (
+                                      <User className="w-5 h-5 text-slate-500" />
+                                    )}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="font-medium text-slate-900 dark:text-white truncate">
+                                      {league.User?.name}
+                                    </p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
+                                      @{league.User?.username}
+                                    </p>
+                                  </div>
+                                </Link>
+                              </div>
+                            </div>
                           </Link>
                         </>
                       );
