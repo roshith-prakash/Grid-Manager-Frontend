@@ -448,9 +448,11 @@ const CreateTeamModal = ({
                         >
                           {/* Image */}
                           <div
-                            className="h-full w-full pt-2 flex items-end justify-center"
+                            className="h-full w-full flex items-end justify-center"
                             style={{
-                              backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
+                              background: driver?.constructor_color
+                                ? `linear-gradient(135deg, ${driver.constructor_color}40, ${driver.constructor_color}80)`
+                                : "linear-gradient(135deg, #f1f5f9, #e2e8f0)",
                             }}
                           >
                             {driver?.image ? (
@@ -658,13 +660,15 @@ const CreateTeamModal = ({
                                 setSelectedDriverId(driver?.driverId);
                                 setIsDriverModalOpen(true);
                               }}
-                              className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg"
+                              className="flex cursor-pointer max-w-64 w-full rounded-2xl flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden border-white/15 shadow-lg"
                             >
                               {/* Driver Image Section */}
                               <div
-                                className="h-full w-full flex items-end justify-center"
+                                className="h-full w-full pt-4 flex items-end justify-center"
                                 style={{
-                                  backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
+                                  background: driver?.constructor_color
+                                    ? `linear-gradient(135deg, ${driver.constructor_color}40, ${driver.constructor_color}80)`
+                                    : "linear-gradient(135deg, #f1f5f9, #e2e8f0)",
                                 }}
                               >
                                 {driver?.image ? (
@@ -746,7 +750,7 @@ const CreateTeamModal = ({
                                   );
                                   setIsConstructorModalOpen(true);
                                 }}
-                                className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg"
+                                className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 rounded-2xl overflow-hidden border-white/15 shadow-lg"
                               >
                                 <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
                                   <img
@@ -755,7 +759,7 @@ const CreateTeamModal = ({
                                         ? constructor?.logo
                                         : "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
                                     }
-                                    className="h-36 object-contain"
+                                    className="h-36  object-contain"
                                   />
                                   <img
                                     src={

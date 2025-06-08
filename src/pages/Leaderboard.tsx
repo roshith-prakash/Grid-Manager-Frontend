@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/utils/axiosInstance";
-import { FaUserAlt } from "react-icons/fa";
-import Card from "@/components/reuseit/Card";
+import { User, Trophy, TrendingUp, Users, Car, Target } from "lucide-react";
 import { ConstructorModal, DriverModal, TeamModal } from "@/components";
 import { useDBUser } from "@/context/UserContext";
 
@@ -84,9 +83,39 @@ const Leaderboard = () => {
     staleTime: 1000 * 60 * 15,
   });
 
+  const getRankBadgeColor = (index: number) => {
+    switch (index) {
+      case 0:
+        return "bg-gradient-to-r from-yellow-400 to-yellow-600 text-white";
+      case 1:
+        return "bg-gradient-to-r from-gray-400 to-gray-500 text-white";
+      case 2:
+        return "bg-gradient-to-r from-amber-400 to-amber-600 text-white";
+      default:
+        return "bg-gradient-to-r from-slate-400 to-slate-600 text-white";
+    }
+  };
+
+  const LoadingSkeleton = ({
+    type,
+  }: {
+    type: "team" | "driver" | "constructor";
+  }) => (
+    <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg border border-slate-200 dark:border-white/10 overflow-hidden animate-pulse">
+      {type !== "team" && (
+        <div className="h-48 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600"></div>
+      )}
+      <div className="p-6 space-y-3">
+        <div className="h-6 bg-slate-200 dark:bg-slate-600 rounded-lg w-3/4"></div>
+        <div className="h-4 bg-slate-200 dark:bg-slate-600 rounded w-1/2"></div>
+        <div className="h-4 bg-slate-200 dark:bg-slate-600 rounded w-2/3"></div>
+      </div>
+    </div>
+  );
+
   return (
-    <>
-      {/* View Team in Modal */}
+    <div className="min-h-screen">
+      {/* Modals */}
       <TeamModal
         teamId={teamId}
         displayLeague={false}
@@ -94,330 +123,386 @@ const Leaderboard = () => {
         closeModal={() => setIsTeamModalOpen(false)}
       />
 
-      {/* View Driver Data */}
       <DriverModal
         userId={dbUser?.id}
         driverId={selectedDriverId}
         isModalOpen={isDriverModalOpen}
-        closeModal={() => {
-          setIsDriverModalOpen(false);
-        }}
+        closeModal={() => setIsDriverModalOpen(false)}
       />
 
-      {/* View Constructor Data */}
       <ConstructorModal
         userId={dbUser?.id}
         constructorId={selectedConstructorId}
         isModalOpen={isConstructorModalOpen}
-        closeModal={() => {
-          setIsConstructorModalOpen(false);
-        }}
+        closeModal={() => setIsConstructorModalOpen(false)}
       />
 
-      <div className="py-10 text-center">
-        <h1 className="text-5xl font-semibold italic">Leaderboard</h1>
+      <div className="container mx-auto px-4 py-12">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center px-4 py-2 bg-cta/10 dark:bg-cta/50 text-cta dark:text-white rounded-full text-sm font-medium mb-4">
+            <Trophy className="w-4 h-4 mr-2" />
+            Championship Stats
+          </div>
+          <h1 className="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-slate-800  to-cta dark:from-white dark:via-cta dark:to-cta bg-clip-text text-transparent mb-4">
+            Leaderboard
+          </h1>
+          <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+            Track the best performing teams, drivers, and constructors in the
+            championship
+          </p>
+        </div>
 
         {/* Top Teams */}
-        <div className="mt-20">
-          <h2 className="text-3xl font-semibold mb-6">Top Teams</h2>
-          <div className="flex flex-wrap gap-8 justify-center">
-            {isLoadingTopTeams &&
-              Array(3)
-                .fill(null)
-                .map(() => {
-                  return (
-                    <Card className="w-64 text-center py-5 border-2 shadow-lg overflow-hidden">
-                      <div className="flex flex-col gap-y-2 pt-4 pb-3">
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
-                      </div>
-                    </Card>
-                  );
-                })}
-
-            {top3Teams?.data?.teams?.map((team: any, index: number) => (
-              <Card
-                key={team.id}
-                className="w-full max-w-3xs py-5 px-4 text-center border-2 shadow-lg overflow-hidden cursor-pointer"
-                onClick={() => {
-                  setTeamId(team?.id);
-                  setIsTeamModalOpen(true);
-                }}
-              >
-                <div>
-                  <h3 className="text-2xl font-bold">
-                    #{index + 1}. {team?.name}
-                  </h3>
-                  <p className="pt-3 text-lg font-medium">
-                    Points: {team?.score}
-                  </p>
-                </div>
-              </Card>
-            ))}
+        <section className="mb-20">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <Users className="w-8 h-8 text-cta" />
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white">
+              Championship Leaders
+            </h2>
           </div>
-        </div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {isLoadingTopTeams
+              ? Array(3)
+                  .fill(null)
+                  .map((_, i) => <LoadingSkeleton key={i} type="team" />)
+              : top3Teams?.data?.teams?.map((team: any, index: number) => (
+                  <div
+                    key={team.id}
+                    onClick={() => {
+                      setTeamId(team?.id);
+                      setIsTeamModalOpen(true);
+                    }}
+                    className="group cursor-pointer transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg hover:shadow-2xl border border-slate-200 dark:border-white/5 overflow-hidden">
+                      <div className="relative p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div
+                            className={` top-5.5 right-4 px-3 py-1 rounded-full text-sm font-bold ${getRankBadgeColor(
+                              index
+                            )}`}
+                          >
+                            #{index + 1}
+                          </div>
+                          <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
+                            {team?.name}
+                          </h3>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-600 dark:text-slate-300">
+                            Total Points
+                          </span>
+                          <span className="text-2xl font-bold text-cta dark:text-darkmodeCTA">
+                            {team?.score}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+          </div>
+        </section>
 
         {/* Most Selected Drivers */}
-        <div className="mt-20">
-          <h2 className="text-3xl font-semibold mb-6">Most Selected Drivers</h2>
-          <div className="flex flex-wrap gap-8 justify-center">
-            {isLoadingMostSelectedDrivers &&
-              Array(3)
-                .fill(null)
-                .map(() => {
-                  return (
-                    <Card className="w-64 text-center border-2 shadow-lg overflow-hidden">
-                      <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
-                        <div className="h-52 object-contain" />
-                      </div>
-                      <div className="flex flex-col gap-y-2 pt-4 pb-3">
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
-                      </div>
-                    </Card>
-                  );
-                })}
-
-            {mostSelectedDrivers?.data?.drivers?.map(
-              (driver: any, index: number) => (
-                <Card
-                  onClick={() => {
-                    setSelectedDriverId(driver?.driverId);
-                    setIsDriverModalOpen(true);
-                  }}
-                  key={driver.code}
-                  className="w-56 cursor-pointer text-center border-2 shadow-lg overflow-hidden"
-                >
-                  <div
-                    className="pt-2 flex items-end justify-center"
-                    style={{
-                      backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
-                    }}
-                  >
-                    {driver?.image ? (
-                      <img
-                        src={driver.image}
-                        alt={driver.familyName}
-                        className="h-40 object-cover"
-                      />
-                    ) : (
-                      <FaUserAlt className="text-gray-400 text-4xl" />
-                    )}
-                  </div>
-                  <div className="py-4">
-                    <h3 className="text-lg font-semibold">
-                      #{index + 1}. {driver?.givenName} {driver?.familyName}
-                    </h3>
-                    <p>({driver?.code})</p>
-                    <p>{driver?.constructor}</p>
-                    <p>
-                      Selected in {Number(driver?.chosenPercentage).toFixed(0)}%
-                      of teams.
-                    </p>
-                  </div>
-                </Card>
-              )
-            )}
+        <section className="mb-20">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <TrendingUp className="w-8 h-8 text-cta dark:text-darkmodeCTA" />
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white">
+              Most Popular Drivers
+            </h2>
           </div>
-        </div>
+
+          <div className="flex justify-center flex-wrap gap-6">
+            {isLoadingMostSelectedDrivers
+              ? Array(4)
+                  .fill(null)
+                  .map((_, i) => <LoadingSkeleton key={i} type="driver" />)
+              : mostSelectedDrivers?.data?.drivers?.map(
+                  (driver: any, index: number) => (
+                    <div
+                      key={driver.code}
+                      onClick={() => {
+                        setSelectedDriverId(driver?.driverId);
+                        setIsDriverModalOpen(true);
+                      }}
+                      className="group min-w-2xs cursor-pointer transform hover:scale-105 transition-all duration-300"
+                    >
+                      <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg hover:shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden">
+                        <div
+                          className="relative h-48 flex items-end justify-center px-4"
+                          style={{
+                            background: driver?.constructor_color
+                              ? `linear-gradient(135deg, ${driver.constructor_color}40, ${driver.constructor_color}80)`
+                              : "linear-gradient(135deg, #f1f5f9, #e2e8f0)",
+                          }}
+                        >
+                          <div
+                            className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-bold ${getRankBadgeColor(
+                              index
+                            )}`}
+                          >
+                            #{index + 1}
+                          </div>
+                          {driver?.image ? (
+                            <img
+                              src={driver.image || "/placeholder.svg"}
+                              alt={driver.familyName}
+                              className="h-40 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <div className="h-40 w-32 bg-slate-200 dark:bg-slate-600 rounded-lg flex items-center justify-center">
+                              <User className="w-16 h-16 text-slate-400" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-6">
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
+                            {driver?.givenName} {driver?.familyName}
+                          </h3>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                            ({driver?.code})
+                          </p>
+                          <p className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-3">
+                            {driver?.constructor}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-slate-600 dark:text-slate-300">
+                              Selection Rate
+                            </span>
+                            <span className="text-lg font-bold text-cta dark:text-darkmodeCTA">
+                              {Number(driver?.chosenPercentage).toFixed(0)}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
+          </div>
+        </section>
 
         {/* Most Selected Constructors */}
-        <div className="mt-20">
-          <h2 className="text-3xl font-semibold mb-6">
-            Most Selected Constructors
-          </h2>
-          <div className="flex flex-wrap gap-8 justify-center">
-            {isLoadingMostSelectedConstructors &&
-              Array(3)
-                .fill(null)
-                .map(() => {
-                  return (
-                    <Card className="w-64 text-center border-2 shadow-lg overflow-hidden">
-                      <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
-                        <div className="h-52 object-contain" />
-                      </div>
-                      <div className="flex flex-col gap-y-2 pt-4 pb-3">
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
-                      </div>
-                    </Card>
-                  );
-                })}
-
-            {mostSelectedConstructors?.data?.constructors?.map(
-              (constructor: any, index: number) => (
-                <Card
-                  onClick={() => {
-                    setSelectedConstructorId(constructor?.constructorId);
-                    setIsConstructorModalOpen(true);
-                  }}
-                  key={constructor.name}
-                  className="w-64 cursor-pointer text-center border-2 shadow-lg overflow-hidden"
-                >
-                  <div className="bg-white p-5 border-b flex flex-col items-center">
-                    <img
-                      src={
-                        constructor?.logo ||
-                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
-                      }
-                      className="h-36 object-contain"
-                      alt={constructor?.name}
-                    />
-                    <img
-                      src={
-                        constructor?.carImage ||
-                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
-                      }
-                      alt="Car"
-                    />
-                  </div>
-                  <div className="py-4">
-                    <p className="text-lg font-semibold">
-                      #{index + 1}. {constructor?.name}
-                    </p>
-                    <p>
-                      Selected in{" "}
-                      {Number(constructor?.chosenPercentage).toFixed(0)}% of
-                      teams.
-                    </p>
-                  </div>
-                </Card>
-              )
-            )}
+        <section className="mb-20">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <Car className="w-8 h-8 text-cta dark:text-darkmodeCTA" />
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white">
+              Popular Constructors
+            </h2>
           </div>
-        </div>
+
+          <div className="flex justify-center flex-wrap gap-6">
+            {isLoadingMostSelectedConstructors
+              ? Array(3)
+                  .fill(null)
+                  .map((_, i) => <LoadingSkeleton key={i} type="constructor" />)
+              : mostSelectedConstructors?.data?.constructors?.map(
+                  (constructor: any, index: number) => (
+                    <div
+                      key={constructor.name}
+                      onClick={() => {
+                        setSelectedConstructorId(constructor?.constructorId);
+                        setIsConstructorModalOpen(true);
+                      }}
+                      className="group min-w-2xs cursor-pointer transform hover:scale-105 transition-all duration-300"
+                    >
+                      <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg hover:shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden">
+                        <div className="relative bg-white p-6 h-48 flex flex-col items-center justify-center">
+                          <div
+                            className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-bold ${getRankBadgeColor(
+                              index
+                            )}`}
+                          >
+                            #{index + 1}
+                          </div>
+                          <img
+                            src={
+                              constructor?.logo ||
+                              "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                            }
+                            className="h-20 object-contain mb-2"
+                            alt={constructor?.name}
+                          />
+                          <img
+                            src={
+                              constructor?.carImage ||
+                              "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                            }
+                            alt="Car"
+                            className="h-16 object-contain"
+                          />
+                        </div>
+                        <div className="p-6">
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 group-hover:text-cta dark:group-hover:dark:text-darkmodeCTA transition-colors">
+                            {constructor?.name}
+                          </h3>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-slate-600 dark:text-slate-300">
+                              Selection Rate
+                            </span>
+                            <span className="text-lg font-bold text-cta dark:text-darkmodeCTA">
+                              {Number(constructor?.chosenPercentage).toFixed(0)}
+                              %
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
+          </div>
+        </section>
 
         {/* Highest Point Scoring Drivers */}
-        <div className="mt-20">
-          <h2 className="text-3xl font-semibold mb-6">
-            Highest Point Scoring Drivers
-          </h2>
-
-          <div className="flex flex-wrap gap-8 justify-center">
-            {isLoadingHighestPointScoringDrivers &&
-              Array(3)
-                .fill(null)
-                .map(() => {
-                  return (
-                    <Card className="w-64 text-center border-2 shadow-lg overflow-hidden">
-                      <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
-                        <div className="h-52 object-contain" />
-                      </div>
-                      <div className="flex flex-col gap-y-2 pt-4 pb-3">
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-20 mx-auto rounded"></p>
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-2 w-48 mx-auto rounded"></p>
-                      </div>
-                    </Card>
-                  );
-                })}
+        <section className="mb-20">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <Target className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white">
+              Top Scoring Drivers
+            </h2>
           </div>
 
-          <div className="flex flex-wrap gap-8 justify-center">
-            {highestScoringDrivers?.data?.drivers?.map(
-              (driver: any, index: number) => (
-                <Card
-                  onClick={() => {
-                    setSelectedDriverId(driver?.driverId);
-                    setIsDriverModalOpen(true);
-                  }}
-                  key={driver.code}
-                  className="w-60 cursor-pointer text-center border-2 shadow-lg overflow-hidden"
-                >
-                  <div
-                    className="pt-2 flex items-end justify-center"
-                    style={{
-                      backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
-                    }}
-                  >
-                    {driver?.image ? (
-                      <img
-                        src={driver.image}
-                        alt={driver.familyName}
-                        className="h-40 object-cover"
-                      />
-                    ) : (
-                      <FaUserAlt className="text-gray-400 text-4xl" />
-                    )}
-                  </div>
-                  <div className="py-4">
-                    <h3 className="text-lg font-semibold">
-                      #{index + 1}. {driver?.givenName} {driver?.familyName}
-                    </h3>
-                    <p>({driver?.code})</p>
-                    <p>{driver?.constructor}</p>
-                    <p>Points: {driver?.points}</p>
-                  </div>
-                </Card>
-              )
-            )}
+          <div className="flex justify-center flex-wrap gap-6">
+            {isLoadingHighestPointScoringDrivers
+              ? Array(4)
+                  .fill(null)
+                  .map((_, i) => <LoadingSkeleton key={i} type="driver" />)
+              : highestScoringDrivers?.data?.drivers?.map(
+                  (driver: any, index: number) => (
+                    <div
+                      key={driver.code}
+                      onClick={() => {
+                        setSelectedDriverId(driver?.driverId);
+                        setIsDriverModalOpen(true);
+                      }}
+                      className="group min-w-2xs cursor-pointer transform hover:scale-105 transition-all duration-300"
+                    >
+                      <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg hover:shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden">
+                        <div
+                          className="relative h-48 flex items-end justify-center px-4"
+                          style={{
+                            background: driver?.constructor_color
+                              ? `linear-gradient(135deg, ${driver.constructor_color}40, ${driver.constructor_color}80)`
+                              : "linear-gradient(135deg, #f1f5f9, #e2e8f0)",
+                          }}
+                        >
+                          <div
+                            className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-bold ${getRankBadgeColor(
+                              index
+                            )}`}
+                          >
+                            #{index + 1}
+                          </div>
+                          {driver?.image ? (
+                            <img
+                              src={driver.image || "/placeholder.svg"}
+                              alt={driver.familyName}
+                              className="h-40 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <div className="h-40 w-32 bg-slate-200 dark:bg-slate-600 rounded-lg flex items-center justify-center">
+                              <User className="w-16 h-16 text-slate-400" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-6">
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
+                            {driver?.givenName} {driver?.familyName}
+                          </h3>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                            ({driver?.code})
+                          </p>
+                          <p className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-3">
+                            {driver?.constructor}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-slate-600 dark:text-slate-300">
+                              Points
+                            </span>
+                            <span className="text-lg font-bold text-cta dark:text-darkmodeCTA">
+                              {driver?.points}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
           </div>
-        </div>
+        </section>
 
         {/* Highest Point Scoring Constructors */}
-        <div className="mt-20">
-          <h2 className="text-3xl font-semibold mb-6">
-            Highest Point Scoring Constructors
-          </h2>
-          <div className="flex flex-wrap gap-8 justify-center">
-            {isLoadingHighestPointScoringConstructors &&
-              Array(3)
-                .fill(null)
-                .map(() => {
-                  return (
-                    <Card className="w-64 text-center border-2 shadow-lg overflow-hidden">
-                      <div className="bg-white animate-pulse p-5 border-b flex flex-col items-center">
-                        <div className="h-52 object-contain" />
-                      </div>
-                      <div className="flex flex-col gap-y-2 pt-4 pb-3">
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
-                        <p className="bg-gray-400 dark:bg-gray-500 animate-pulse p-3 w-48 mx-auto rounded"></p>
-                      </div>
-                    </Card>
-                  );
-                })}
-
-            {highestScoringConstructors?.data?.constructors?.map(
-              (constructor: any, index: number) => (
-                <Card
-                  onClick={() => {
-                    setSelectedConstructorId(constructor?.constructorId);
-                    setIsConstructorModalOpen(true);
-                  }}
-                  key={constructor.name}
-                  className="w-64 cursor-pointer text-center border-2 shadow-lg overflow-hidden"
-                >
-                  <div className="bg-white p-5 border-b flex flex-col items-center">
-                    <img
-                      src={
-                        constructor?.logo ||
-                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
-                      }
-                      className="h-36 object-contain"
-                      alt={constructor?.name}
-                    />
-                    <img
-                      src={
-                        constructor?.carImage ||
-                        "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
-                      }
-                      alt="Car"
-                    />
-                  </div>
-                  <div className="py-4">
-                    <p className="text-lg font-semibold">
-                      #{index + 1}. {constructor?.name}
-                    </p>
-                    <p>Points: {constructor?.points}</p>
-                  </div>
-                </Card>
-              )
-            )}
+        <section className="mb-20">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <Trophy className="w-8 h-8 text-cta dark:text-darkmodeCTA" />
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white">
+              Top Scoring Constructors
+            </h2>
           </div>
-        </div>
+
+          <div className="flex justify-center flex-wrap gap-6">
+            {isLoadingHighestPointScoringConstructors
+              ? Array(3)
+                  .fill(null)
+                  .map((_, i) => <LoadingSkeleton key={i} type="constructor" />)
+              : highestScoringConstructors?.data?.constructors?.map(
+                  (constructor: any, index: number) => (
+                    <div
+                      key={constructor.name}
+                      onClick={() => {
+                        setSelectedConstructorId(constructor?.constructorId);
+                        setIsConstructorModalOpen(true);
+                      }}
+                      className="group min-w-2xs cursor-pointer transform hover:scale-105 transition-all duration-300"
+                    >
+                      <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg hover:shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden">
+                        <div className="relative bg-white p-6 h-48 flex flex-col items-center justify-center">
+                          <div
+                            className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-bold ${getRankBadgeColor(
+                              index
+                            )}`}
+                          >
+                            #{index + 1}
+                          </div>
+                          <img
+                            src={
+                              constructor?.logo ||
+                              "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742205725/F1_App_Red_Logo_White_Background_lkgsio.avif"
+                            }
+                            className="h-20 object-contain mb-2"
+                            alt={constructor?.name}
+                          />
+                          <img
+                            src={
+                              constructor?.carImage ||
+                              "https://res.cloudinary.com/dvwdsxirc/image/upload/v1742206187/white-formula-one-car-side-view-photo-removebg-preview_ztz5ej.png"
+                            }
+                            alt="Car"
+                            className="h-16 object-contain"
+                          />
+                        </div>
+                        <div className="p-6">
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
+                            {constructor?.name}
+                          </h3>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-slate-600 dark:text-slate-300">
+                              Points
+                            </span>
+                            <span className="text-lg font-bold text-cta dark:text-darkmodeCTA">
+                              {constructor?.points}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
+          </div>
+        </section>
       </div>
-    </>
+    </div>
   );
 };
 

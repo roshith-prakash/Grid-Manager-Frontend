@@ -228,7 +228,7 @@ const League = () => {
 
           {/* Edit the League */}
           <AlertModal
-            className="!max-w-4xl w-full !px-0 lg:px-5 pb-10 noscroller"
+            className="!px-0 lg:px-5 py-0 noscroller border-none"
             isOpen={isEditLeagueModalOpen}
             onClose={() => {
               setIsEditLeagueModalOpen(false);

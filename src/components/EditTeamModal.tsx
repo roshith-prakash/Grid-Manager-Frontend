@@ -541,7 +541,9 @@ const EditTeamModal = ({
                           <div
                             className="h-full w-full pt-2 flex items-end justify-center"
                             style={{
-                              backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
+                              background: driver?.constructor_color
+                                ? `linear-gradient(135deg, ${driver.constructor_color}40, ${driver.constructor_color}80)`
+                                : "linear-gradient(135deg, #f1f5f9, #e2e8f0)",
                             }}
                           >
                             {driver?.image ? (
@@ -747,13 +749,15 @@ const EditTeamModal = ({
                                 setSelectedDriverId(driver?.driverId);
                                 setIsDriverModalOpen(true);
                               }}
-                              className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg"
+                              className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded-2xl border-white/15 shadow-lg"
                             >
                               {/* Driver Image Section */}
                               <div
-                                className="h-full w-full flex items-end justify-center"
+                                className="h-full w-full pt-4 flex items-end justify-center"
                                 style={{
-                                  backgroundImage: `linear-gradient(${driver?.constructor_color},#000)`,
+                                  background: driver?.constructor_color
+                                    ? `linear-gradient(135deg, ${driver.constructor_color}40, ${driver.constructor_color}80)`
+                                    : "linear-gradient(135deg, #f1f5f9, #e2e8f0)",
                                 }}
                               >
                                 {driver?.image ? (
@@ -833,7 +837,7 @@ const EditTeamModal = ({
                                   setSelectedConstructorId(constructor?.id);
                                   setIsConstructorModalOpen(true);
                                 }}
-                                className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded border-white/15 shadow-lg"
+                                className="flex cursor-pointer max-w-64 w-full flex-col pb-3 text-center gap-y-1 border-2 overflow-hidden rounded-2xl border-white/15 shadow-lg"
                               >
                                 <div className="flex flex-col bg-white items-center pb-5 px-5 border-b-1">
                                   <img

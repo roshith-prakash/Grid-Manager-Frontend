@@ -143,12 +143,6 @@ const Navbar = () => {
               >
                 Leaderboard
               </Link>
-              <button
-                onClick={() => setIsSignOutModalOpen(true)}
-                className="cursor-pointer hover:text-cta dark:hover:text-darkmodeCTA transition-all"
-              >
-                Sign out
-              </button>
             </>
           ) : (
             <>
@@ -187,6 +181,15 @@ const Navbar = () => {
           >
             Notices
           </Link>
+
+          {dbUser && (
+            <button
+              onClick={() => setIsSignOutModalOpen(true)}
+              className="cursor-pointer hover:text-cta dark:hover:text-darkmodeCTA transition-all"
+            >
+              Sign out
+            </button>
+          )}
         </div>
 
         {/* Theme + Popover - Large Screen */}
@@ -538,14 +541,6 @@ const Navbar = () => {
                 >
                   Leaderboard
                 </button>
-                <button
-                  onClick={() => handleSearch("/signout")}
-                  className="hover:text-cta w-fit cursor-pointer transition-all"
-                  tabIndex={0}
-                  aria-label="Sign out"
-                >
-                  Sign out
-                </button>
               </>
             ) : (
               <>
@@ -585,6 +580,17 @@ const Navbar = () => {
             >
               Notices
             </button>
+
+            {dbUser && (
+              <button
+                onClick={() => handleSearch("/signout")}
+                className="hover:text-cta w-fit cursor-pointer transition-all"
+                tabIndex={0}
+                aria-label="Sign out"
+              >
+                Sign out
+              </button>
+            )}
           </div>
 
           {/* Footer Text   */}

@@ -139,7 +139,9 @@ const DriverModal = ({
               <div
                 className="h-full w-full flex items-end justify-center pt-5"
                 style={{
-                  backgroundImage: `linear-gradient(${driver?.data?.driver?.constructor_color},#000)`,
+                  background: driver?.data?.driver?.constructor_color
+                    ? `linear-gradient(135deg, ${driver?.data?.driver?.constructor_color}40, ${driver?.data?.driver?.constructor_color}80)`
+                    : "linear-gradient(135deg, #f1f5f9, #e2e8f0)",
                 }}
               >
                 {driver?.data?.driver?.image ? (
@@ -154,7 +156,7 @@ const DriverModal = ({
               </div>
             </div>
             {/* Driver Data */}
-            <div className="w-full md:flex-1 md:border-b-4 pt-4 md:pt-0 border-black">
+            <div className="w-full md:flex-1 md:border-b-2 pt-4 md:pt-0 border-black/50">
               <div className="py-4 px-8 flex flex-col gap-y-2 ">
                 <h3 className="text-2xl text-ellipsis text-nowrap font-semibold">
                   {driver?.data?.driver?.givenName}{" "}

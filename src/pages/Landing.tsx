@@ -21,7 +21,7 @@ const Landing = () => {
     <div className="min-h-screen bg-gradient-to-br f">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-cta/10 via-transparent to-blue-500/10"></div>
+        <div className="absolute inset-0 "></div>
         <div className="relative container mx-auto px-6 py-20 lg:py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left space-y-8">
@@ -39,7 +39,7 @@ const Landing = () => {
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-row flex-wrap gap-4 justify-center lg:justify-start">
                 {dbUser ? (
                   <PrimaryButton
                     text="Enter the Grid"
@@ -57,7 +57,7 @@ const Landing = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-center lg:justify-start gap-8 text-sm text-slate-500 dark:text-slate-400">
+              <div className="flex items-center flex-wrap justify-center lg:justify-start gap-8 text-sm text-slate-500 dark:text-slate-400">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4" />
                   <span>5 Leagues</span>
@@ -100,7 +100,7 @@ const Landing = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow">
+            <div className="text-center p-6 rounded-2xl bg-white dark:bg-white/5 shadow-lg hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Trophy className="w-8 h-8 text-red-600 dark:text-red-400" />
               </div>
@@ -113,7 +113,7 @@ const Landing = () => {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow">
+            <div className="text-center p-6 rounded-2xl bg-white dark:bg-white/5 shadow-lg hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Users className="w-8 h-8 text-blue-600 dark:text-blue-400" />
               </div>
@@ -126,7 +126,7 @@ const Landing = () => {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow">
+            <div className="text-center p-6 rounded-2xl bg-white dark:bg-white/5 shadow-lg hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Target className="w-8 h-8 text-green-600 dark:text-green-400" />
               </div>
@@ -155,21 +155,21 @@ const Landing = () => {
                 </p>
               </div>
 
-              <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-3xl shadow-2xl p-8 lg:p-12 border border-slate-200 dark:border-slate-700">
+              <div className="bg-gradient-to-br from-white to-slate-50 dark:from-white/5 dark:to-white/10 rounded-3xl shadow-2xl p-8 lg:p-12 border border-slate-200 dark:border-white/5">
                 <div className="text-center space-y-8">
                   <div className="space-y-4">
                     <h3 className="text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white">
                       {nextRace.raceName}
                     </h3>
 
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-lg">
-                      <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-700 px-6 py-3 rounded-xl">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-3 text-lg">
+                      <div className="flex items-center gap-2 bg-slate-100 dark:bg-white/15 px-6 py-3 rounded-xl">
                         <Calendar className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                         <span className="font-semibold">
                           Round {nextRace.round}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-700 px-6 py-3 rounded-xl">
+                      <div className="flex items-center gap-2 bg-slate-100 dark:bg-white/15 px-6 py-3 rounded-xl">
                         <MapPin className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                         <span className="font-semibold">
                           {nextRace.Circuit?.circuitName}
@@ -182,7 +182,7 @@ const Landing = () => {
                     <p className="text-xl font-semibold text-slate-700 dark:text-slate-300">
                       Team Lock-in Countdown
                     </p>
-                    <div className="bg-slate-900 text-darkmodetext dark:bg-slate-950 rounded-2xl p-6">
+                    <div className="bg-black/85 text-darkmodetext dark:bg-black/50 rounded-2xl p-6">
                       <Countdown
                         targetDate={`${nextRace.FirstPractice?.date}T${nextRace.FirstPractice?.time}`}
                       />
@@ -193,7 +193,7 @@ const Landing = () => {
                     href="https://gridbox.vercel.app/schedule"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-lg font-semibold text-cta  hover:text-hovercta  dark:hover:text-cta transition-all "
+                    className="inline-flex items-center gap-2 text-lg font-semibold text-cta  hover:text-hovercta  dark:text-darkmodeCTA dark:hover:text-cta transition-all "
                   >
                     <Calendar className="w-5 h-5 -translate-y-0.5" />
                     View Full Season Schedule
@@ -216,7 +216,7 @@ const Landing = () => {
               Join thousands of F1 fans competing in the most authentic fantasy
               racing experience.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-row gap-4 justify-center">
               {!dbUser && (
                 <PrimaryButton
                   text="Start Your Journey"

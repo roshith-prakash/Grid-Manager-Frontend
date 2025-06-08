@@ -1,191 +1,296 @@
-import { Checkbox, ErrorStatement, Input, PrimaryButton } from "@/components";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import {
+  Trophy,
+  Users,
+  Lock,
+  Globe,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 import { useDBUser } from "@/context/UserContext";
 import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 import { axiosInstance } from "@/utils/axiosInstance";
-import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { RiErrorWarningLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
-// import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 const CreateLeague = () => {
   const [leagueName, setLeagueName] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [errors, setErrors] = useState<{ leagueName?: string }>({});
   const navigate = useNavigate();
-
   const { dbUser } = useDBUser();
 
-  const [error, setError] = useState({
-    leagueName: 0,
-  });
-
-  // const queryClient = useQueryClient();
-
-  // Set window title.
   useEffect(() => {
-    document.title = `Create League | Grid Manager`;
-  }, [dbUser]);
-
-  // Scroll to top
-  useEffect(() => {
+    document.title = "Create League | Grid Manager";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const showPersistentToast = () => {
-    toast(
-      (t) => (
-        <div className="flex items-center gap-4">
-          <RiErrorWarningLine className="h-10 w-10" />
-          <span>You can create or join a maximum of 5 leagues.</span>
-          <button
-            className="ml-auto px-3 py-1 bg-white text-red-600 font-medium rounded-md cursor-pointer transition"
-            onClick={() => toast.dismiss(t.id)}
-          >
-            Dismiss
-          </button>
-        </div>
-      ),
-      { duration: Infinity } // Keeps the toast open indefinitely
-    );
+  const validateLeagueName = (name: string) => {
+    if (!name || name.length === 0) {
+      return "Please enter a name for your league";
+    }
+    if (name.length > 30) {
+      return "League name cannot exceed 30 characters";
+    }
+    if (!isValidTeamOrLeagueName(name)) {
+      return "League name must be at least 3 characters long and include at least one letter. It may also contain numbers and spaces.";
+    }
+    return null;
   };
 
-  // Submit the data to the server to edit the user object.
-  const handleSubmit = () => {
-    setError({
-      leagueName: 0,
-    });
+  const handleNameChange = (value: string) => {
+    setLeagueName(value);
+    const error = validateLeagueName(value);
+    setErrors((prev) => ({ ...prev, leagueName: error || undefined }));
+  };
 
-    if (
-      leagueName == null ||
-      leagueName == undefined ||
-      leagueName.length <= 0
-    ) {
-      setError((prev) => ({ ...prev, leagueName: 1 }));
-      return;
-    } else if (!isValidTeamOrLeagueName(leagueName)) {
-      setError((prev) => ({ ...prev, leagueName: 3 }));
-      return;
-    } else if (leagueName.length > 30) {
-      setError((prev) => ({ ...prev, leagueName: 2 }));
+  const handleSubmit = async () => {
+    const nameError = validateLeagueName(leagueName);
+    if (nameError) {
+      setErrors({ leagueName: nameError });
       return;
     }
-    setDisabled(true);
 
-    axiosInstance
-      .post("/team/create-league", {
+    setDisabled(true);
+    setErrors({});
+
+    try {
+      const response = await axiosInstance.post("/team/create-league", {
         leagueName: leagueName,
         userId: dbUser?.id,
         isPrivate: isPrivate,
-      })
-      .then((res) => {
-        setDisabled(false);
-        // queryClient.invalidateQueries({ queryKey: ["pubicLeagues"] }); // Force refetch
-        navigate(`/leagues/${res?.data?.data?.leagueId}`);
-      })
-      .catch((err: AxiosError) => {
-        if (err?.response?.status == 403) {
-          showPersistentToast();
-        } else {
-          toast("Could not create league!");
-        }
-        setDisabled(false);
       });
+
+      toast.success("League created successfully!");
+      navigate(`/leagues/${response?.data?.data?.leagueId}`);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 403) {
+          toast.error("You can create or join a maximum of 5 leagues.", {
+            duration: 5000,
+            icon: <AlertCircle className="w-5 h-5" />,
+          });
+        } else {
+          toast.error("Could not create league. Please try again.");
+        }
+      } else {
+        console.error("Unexpected error", err);
+        toast.error("An unexpected error occurred.");
+      }
+    } finally {
+      setDisabled(false);
+    }
   };
 
+  const isFormValid = leagueName.length > 0 && !errors.leagueName;
+
   return (
-    <div className="min-h-[70vh] md:min-h-[65vh] lg:min-h-[60vh] bg-bgwhite flex items-center justify-center pt-12 pb-32">
-      <div className="bg-white dark:bg-secondarydarkbg dark:border-white/10 dark:border-2 w-full dark:bg-darkgrey dark:text-darkmodetext border-1 max-w-[95%] md:max-w-3xl md:mt-5 lg:mt-5 p-5 md:px-20 shadow-xl rounded-xl pb-10">
-        {/* Title */}
-        <h1 className="text-hovercta dark:text-darkmodeCTA pt-5 font-bold text-2xl text-center">
-          Create a League!
-        </h1>
-
-        {/* Name */}
-        <div className="mt-14 flex flex-col gap-y-8 ">
-          {/* Name Input field */}
-          <div className="lg:flex-1 flex flex-col items-center px-2">
-            <p className="font-medium">League Name</p>
-            <Input
-              value={leagueName}
-              onChange={(e) => {
-                setLeagueName(e.target.value);
-                if (
-                  e.target.value != null &&
-                  e.target.value != undefined &&
-                  e.target.value.length > 0 &&
-                  isValidTeamOrLeagueName(e.target.value) &&
-                  e.target.value.length < 30
-                ) {
-                  setError((prev) => ({ ...prev, leagueName: 0 }));
-                  return;
-                }
-              }}
-              onBlur={() => {
-                if (
-                  leagueName == null ||
-                  leagueName == undefined ||
-                  leagueName.length == 0
-                ) {
-                  setError((prev) => ({ ...prev, leagueName: 1 }));
-                  return;
-                } else if (!isValidTeamOrLeagueName(leagueName)) {
-                  setError((prev) => ({ ...prev, leagueName: 3 }));
-                  return;
-                } else if (leagueName?.length > 30) {
-                  setError((prev) => ({ ...prev, leagueName: 2 }));
-                  return;
-                } else {
-                  setError((prev) => ({ ...prev, leagueName: 0 }));
-                }
-              }}
-              className="max-w-xl"
-              placeholder="Team Name"
-            />
-
-            <ErrorStatement
-              isOpen={error.leagueName == 1}
-              text={"Please enter the name for your league."}
-            />
-
-            <ErrorStatement
-              isOpen={error.leagueName == 2}
-              text={"League name cannot exceed 30 characters."}
-            />
-
-            <ErrorStatement
-              isOpen={error.leagueName == 3}
-              text={
-                "League name must be at least 3 characters long and include at least one letter. It may also contain numbers and spaces."
-              }
-            />
+    <div className="min-h-screen">
+      <div className="container mx-auto px-6 py-16">
+        <div className="max-w-2xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <div className="w-16 h-16 bg-cta/10 dark:bg-cta/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <Trophy className="w-8 h-8 text-cta dark:text-darkmodeCTA" />
+            </div>
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">
+              Create Your League
+            </h1>
+            <p className="text-lg text-slate-600 dark:text-slate-400">
+              Start your own fantasy F1 competition and invite friends to join
+              the action
+            </p>
           </div>
 
-          {/* Private League field */}
-          <div className="lg:flex-1 flex justify-center items-center px-2">
-            <p className="font-medium">Make League Private?</p>
-            <Checkbox
-              className="translate-y-0.5"
-              checked={isPrivate}
-              onChange={(e) => setIsPrivate(e.target.checked)}
-            />
+          {/* Form Card */}
+          <div className="bg-white dark:bg-white/5 rounded-2xl shadow-xl border border-slate-200 dark:border-white/10 p-8">
+            <div className="space-y-8">
+              {/* League Name */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white">
+                  League Name
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={leagueName}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    placeholder="Enter your league name"
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-colors bg-transparent ${
+                      errors.leagueName
+                        ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400"
+                        : leagueName && !errors.leagueName
+                        ? "border-green-300 dark:border-green-700 focus:border-green-500 dark:focus:border-green-400"
+                        : "border-slate-300 dark:border-slate-600 focus:border-red-500 dark:focus:border-red-400"
+                    } focus:outline-none focus:ring-0`}
+                    maxLength={30}
+                  />
+                  {leagueName && !errors.leagueName && (
+                    <CheckCircle2 className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                  )}
+                  {errors.leagueName && (
+                    <AlertCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" />
+                  )}
+                </div>
+
+                {/* Character Count */}
+                <div className="flex justify-between items-center text-sm">
+                  <div>
+                    {errors.leagueName && (
+                      <p className="text-red-600 dark:text-red-400 flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.leagueName}
+                      </p>
+                    )}
+                  </div>
+                  <span
+                    className={`${
+                      leagueName.length > 25
+                        ? "text-red-500"
+                        : "text-slate-500 dark:text-slate-400"
+                    }`}
+                  >
+                    {leagueName.length}/30
+                  </span>
+                </div>
+              </div>
+
+              {/* Privacy Setting */}
+              <div className="space-y-4">
+                <label className="block text-sm font-semibold text-slate-900 dark:text-white">
+                  League Privacy
+                </label>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Public Option */}
+                  <div
+                    onClick={() => setIsPrivate(false)}
+                    className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${
+                      !isPrivate
+                        ? "border-cta dark:border-darkmodeCTA bg-cta/10 dark:bg-cta/30"
+                        : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          !isPrivate
+                            ? "bg-cta/10 dark:bg-cta/30"
+                            : "bg-slate-100 dark:bg-slate-700"
+                        }`}
+                      >
+                        <Globe
+                          className={`w-4 h-4 ${
+                            !isPrivate
+                              ? "text-cta dark:text-darkmodeCTA"
+                              : "text-slate-500"
+                          }`}
+                        />
+                      </div>
+                      <h3
+                        className={`font-semibold ${
+                          !isPrivate
+                            ? "text-cta dark:text-white"
+                            : "text-slate-900 dark:text-white"
+                        }`}
+                      >
+                        Public League
+                      </h3>
+                    </div>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                      Visible to everyone and appears in the leagues directory
+                    </p>
+                  </div>
+
+                  {/* Private Option */}
+                  <div
+                    onClick={() => setIsPrivate(true)}
+                    className={`cursor-pointer p-4 rounded-xl border-2 transition-all ${
+                      isPrivate
+                        ? "border-cta dark:border-darkmodeCTA bg-cta/10 dark:bg-cta/30"
+                        : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          isPrivate
+                            ? "bg-cta/10 dark:bg-cta/30"
+                            : "bg-slate-100 dark:bg-slate-700"
+                        }`}
+                      >
+                        <Lock
+                          className={`w-4 h-4 ${
+                            isPrivate
+                              ? "text-cta dark:text-darkmodeCTA"
+                              : "text-slate-500"
+                          }`}
+                        />
+                      </div>
+                      <h3
+                        className={`font-semibold ${
+                          isPrivate
+                            ? "text-cta dark:text-white"
+                            : "text-slate-900 dark:text-white"
+                        }`}
+                      >
+                        Private League
+                      </h3>
+                    </div>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                      Only accessible via direct link, hidden from public
+                      listings
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Info Box */}
+              <div className="bg-cta/5 dark:bg-cta/30 border border-cta/5 dark:border-cta/20 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <Users className="w-5 h-5 text-cta dark:text-white/95 mt-0.5 flex-shrink-0" />
+                  <div className="space-y-1">
+                    <h4 className="font-semibold text-hovercta dark:text-white/95">
+                      League Limits
+                    </h4>
+                    <p className="text-sm text-hovercta dark:text-white/95">
+                      You can create or join a maximum of 5 leagues. Each league
+                      can have unlimited teams and participants.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                onClick={handleSubmit}
+                disabled={disabled || !isFormValid}
+                className="w-full py-4 px-6 cursor-pointer bg-hovercta disabled:bg-slate-300 dark:disabled:bg-slate-500 text-white disabled:text-white/50 font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed"
+              >
+                {disabled ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Creating League...
+                  </>
+                ) : (
+                  <>
+                    <Trophy className="w-5 h-5" />
+                    Create League
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
-          <p className="text-center">
-            ( Note : Private Leagues are not displayed in the Leagues page. )
-          </p>
-        </div>
-
-        {/* Submit Button */}
-        <div className="mt-10 flex justify-center items-center">
-          <PrimaryButton
-            onClick={handleSubmit}
-            disabled={disabled}
-            disabledText={"Please Wait..."}
-            text={"Create League!"}
-            className="w-full max-w-xs"
-          />
+          {/* Additional Info */}
+          <div className="mt-8 text-center">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              After creating your league, you'll be redirected to the league
+              page where you can start inviting participants and creating teams.
+            </p>
+          </div>
         </div>
       </div>
     </div>
