@@ -8,13 +8,13 @@ import {
   Plus,
   Trophy,
   Users,
-  User,
   AlertCircle,
   Loader2,
 } from "lucide-react";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { useDBUser } from "@/context/UserContext";
 import useDebounce from "@/utils/useDebounce";
+import Avatar from "@/components/reuseit/Avatar";
 
 const PublicLeagues = () => {
   const [search, setSearch] = useState("");
@@ -207,18 +207,11 @@ const PublicLeagues = () => {
                             onClick={(e) => e.stopPropagation()}
                             className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 rounded-lg p-2 -m-2 transition-colors"
                           >
-                            <div className="w-10 h-10 bg-slate-200 dark:bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
-                              {league.User?.photoURL ? (
-                                <img
-                                  src={
-                                    league.User.photoURL || "/placeholder.svg"
-                                  }
-                                  alt={league.User.name}
-                                  className="w-10 h-10 rounded-full object-cover"
-                                />
-                              ) : (
-                                <User className="w-5 h-5 text-slate-500" />
-                              )}
+                            <div>
+                              <Avatar
+                                imageSrc={league?.User?.photoURL}
+                                fallBackText={league?.User?.name}
+                              />
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="font-medium text-slate-900 dark:text-white truncate">

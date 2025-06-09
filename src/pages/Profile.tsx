@@ -21,15 +21,8 @@ import { useInView } from "react-intersection-observer";
 import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 import Tooltip from "@/components/reuseit/Tooltip";
 import { LuCirclePlus } from "react-icons/lu";
-import {
-  Calendar,
-  Edit3,
-  Hash,
-  Trash2,
-  Trophy,
-  User,
-  Users,
-} from "lucide-react";
+import { Calendar, Edit3, Hash, Trash2, Trophy, Users } from "lucide-react";
+import Avatar from "@/components/reuseit/Avatar";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -304,19 +297,13 @@ const Profile = () => {
         <div className="bg-white dark:bg-secondarydarkbg dark:border-white/25 shadow-xl -translate-y-14 border-2 min-h-52 pt-20 pb-10 rounded-lg mx-5 md:mx-10 lg:mx-20">
           {/* Floating Image */}
           <div className="absolute w-full -top-16 flex justify-center">
-            {dbUser?.photoURL ? (
-              <img
-                src={dbUser?.photoURL}
-                className="bg-white  rounded-full h-32 w-32 border-8 border-secondarydarkbg dark:border-darkgrey pointer-events-none"
+            <div>
+              <Avatar
+                className="h-34 w-34 !text-5xl border-secondarydarkbg border-10"
+                imageSrc={dbUser?.photoURL}
+                fallBackText={dbUser?.name}
               />
-            ) : (
-              <img
-                src={
-                  "https://res.cloudinary.com/do8rpl9l4/image/upload/v1740987081/accountcircle_axsjlm.png"
-                }
-                className="bg-secondarydarkbg rounded-full h-32 w-32 border-8 border-secondarydarkbg dark:border-darkgrey pointer-events-none"
-              />
-            )}
+            </div>
           </div>
 
           {/* Edit & delete icon on small screen */}
@@ -358,11 +345,14 @@ const Profile = () => {
           </div>
 
           {/* Name, Username and Bio + Stat Count */}
-          <div className="px-2">
+          <div className="px-2 pt-3">
+            {/* Name of the user */}
             <p className="text-center text-3xl font-bold">{dbUser?.name}</p>
+            {/* Username of the user */}
             <p className="mt-2 text-center text-xl font-medium">
               @{dbUser?.username}
             </p>
+            {/* User's bio */}
             {dbUser?.bio && (
               <p className="px-4 my-10 text-md text-center">{dbUser?.bio}</p>
             )}
@@ -647,19 +637,11 @@ const Profile = () => {
                                   onClick={(e) => e.stopPropagation()}
                                   className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 rounded-lg p-2 -m-2 transition-colors"
                                 >
-                                  <div className="w-10 h-10 bg-slate-200 dark:bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                    {league.User?.photoURL ? (
-                                      <img
-                                        src={
-                                          league.User.photoURL ||
-                                          "/placeholder.svg"
-                                        }
-                                        alt={league.User.name}
-                                        className="w-10 h-10 rounded-full object-cover"
-                                      />
-                                    ) : (
-                                      <User className="w-5 h-5 text-slate-500" />
-                                    )}
+                                  <div>
+                                    <Avatar
+                                      imageSrc={league?.User?.photoURL}
+                                      fallBackText={league?.User?.name}
+                                    />
                                   </div>
                                   <div className="min-w-0 flex-1">
                                     <p className="font-medium text-slate-900 dark:text-white truncate">

@@ -10,7 +10,8 @@ import Profile from "./Profile";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import Card from "@/components/reuseit/Card";
-import { Calendar, Hash, Trophy, Users, User as UserPhoto } from "lucide-react";
+import { Calendar, Hash, Trophy, Users } from "lucide-react";
+import Avatar from "@/components/reuseit/Avatar";
 
 const User = () => {
   const { username } = useParams();
@@ -237,35 +238,16 @@ const User = () => {
           <div className="bg-white dark:bg-secondarydarkbg dark:border-white/25 shadow-xl -translate-y-14 border-2 min-h-52 pt-20 pb-10 rounded-lg mx-5 md:mx-10 lg:mx-20">
             {/* Floating Image */}
             <div className="absolute w-full -top-16 flex justify-center">
-              {user?.data?.user?.photoURL ? (
-                <img
-                  src={
-                    user?.data?.user?.photoURL
-                      ? user?.data?.user?.photoURL
-                      : "https://res.cloudinary.com/do8rpl9l4/image/upload/v1736740649/account_glotqh.png"
-                  }
-                  className={`bg-white rounded-full h-32 w-32 border-8 border-secondarydarkbg dark:border-darkgrey `}
+              <div>
+                <Avatar
+                  className="h-34 w-34 !text-5xl border-secondarydarkbg border-10"
+                  imageSrc={user?.data?.user?.photoURL}
+                  fallBackText={user?.data?.user?.name}
                 />
-              ) : (
-                <img
-                  src={
-                    user?.data?.user?.photoURL
-                      ? user?.data?.user?.photoURL
-                      : "https://res.cloudinary.com/do8rpl9l4/image/upload/v1740987081/accountcircle_axsjlm.png"
-                  }
-                  onClick={() => {
-                    if (user?.data?.user?.photoURL) {
-                      window.open(user?.data?.user?.photoURL);
-                    }
-                  }}
-                  className={`bg-secondarydarkbg rounded-full h-32 w-32 border-8 border-secondarydarkbg ${
-                    user?.data?.user?.photoURL && "cursor-pointer"
-                  } `}
-                />
-              )}
+              </div>
             </div>
 
-            <div className="px-2">
+            <div className="px-2 pt-3">
               {/* Name of the user */}
               <p className="text-center text-3xl font-bold">
                 {user?.data?.user?.name}
@@ -488,19 +470,11 @@ const User = () => {
                                     onClick={(e) => e.stopPropagation()}
                                     className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 rounded-lg p-2 -m-2 transition-colors"
                                   >
-                                    <div className="w-10 h-10 bg-slate-200 dark:bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                      {league.User?.photoURL ? (
-                                        <img
-                                          src={
-                                            league.User.photoURL ||
-                                            "/placeholder.svg"
-                                          }
-                                          alt={league.User.name}
-                                          className="w-10 h-10 rounded-full object-cover"
-                                        />
-                                      ) : (
-                                        <UserPhoto className="w-5 h-5 text-slate-500" />
-                                      )}
+                                    <div>
+                                      <Avatar
+                                        imageSrc={league?.User?.photoURL}
+                                        fallBackText={league?.User?.name}
+                                      />
                                     </div>
                                     <div className="min-w-0 flex-1">
                                       <p className="font-medium text-slate-900 dark:text-white truncate">

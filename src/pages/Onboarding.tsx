@@ -310,7 +310,6 @@ const Onboarding = () => {
                 />
               ) : (
                 <MdOutlineAccountCircle className="text-[8rem]" />
-                // <img src={defaultAccount} className="h-24 w-24 rounded-full" />
               )}
             </div>
             <button

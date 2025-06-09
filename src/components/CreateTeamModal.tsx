@@ -24,6 +24,7 @@ import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 import { RxCross2 } from "react-icons/rx";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { AxiosError } from "axios";
+import { Trophy, X } from "lucide-react";
 
 const CreateTeamModal = ({
   leagueId,
@@ -336,19 +337,23 @@ const CreateTeamModal = ({
 
       <div ref={ref}></div>
 
-      {/* Close div button */}
-      <button
-        onClick={onClose}
-        className="absolute dark:bg-white bg-secondarydarkbg text-white hover:scale-110 dark:text-darkbg hover:text-red-500 transition-all rounded-full p-1 top-5 right-5 text-2xl cursor-pointer"
-      >
-        <RxCross2 />
-      </button>
-
-      {/* Title */}
-      <h1 className=" mb-10 pt-10 text-center font-medium text-4xl">
-        {" "}
-        Create a New Team!
-      </h1>
+      {/* Header */}
+      <div className="flex items-center justify-between  p-6 pt-0 border-b border-slate-200 dark:border-white/10">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-cta/10 dark:bg-cta/30 rounded-lg flex items-center justify-center">
+            <Trophy className="w-5 h-5 text-cta " />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Create your Team
+          </h2>
+        </div>
+        <button
+          onClick={onClose}
+          className="w-10 cursor-pointer h-10 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/15 flex items-center justify-center transition-colors"
+        >
+          <X className="w-5 h-5 text-slate-600 dark:text-white/50" />
+        </button>
+      </div>
 
       {/* Team Name */}
       <div className="px-4 py-5 flex flex-col items-center justify-center">

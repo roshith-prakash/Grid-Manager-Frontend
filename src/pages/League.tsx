@@ -24,7 +24,8 @@ import toast from "react-hot-toast";
 import { IoMdShare } from "react-icons/io";
 import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 import Tooltip from "@/components/reuseit/Tooltip";
-import { Edit3, Plus, Share2, Trash2, Trophy, User } from "lucide-react";
+import { Edit3, Plus, Share2, Trash2, Trophy } from "lucide-react";
+import Avatar from "@/components/reuseit/Avatar";
 
 const League = () => {
   const { leagueId } = useParams();
@@ -370,15 +371,11 @@ const League = () => {
                     to={`/user/${league?.data?.data.User.username}`}
                     className="flex items-center gap-3 w-fit hover:bg-slate-100 dark:hover:bg-white/15 rounded-lg p-2 -m-2 transition-colors"
                   >
-                    <div className="w-10 h-10 bg-slate-200 dark:bg-slate-600 rounded-full flex items-center justify-center">
-                      {league?.data?.data?.User?.photoURL ? (
-                        <img
-                          src={league?.data?.data?.User?.photoURL}
-                          className="rounded-full"
-                        />
-                      ) : (
-                        <User className="w-5 h-5 text-slate-500" />
-                      )}
+                    <div>
+                      <Avatar
+                        imageSrc={league?.data?.data.User?.photoURL}
+                        fallBackText={league?.data?.data.User?.name}
+                      />
                     </div>
                     <div>
                       <p className="font-medium text-slate-900 dark:text-white">
@@ -507,6 +504,40 @@ const League = () => {
                                     setIsTeamModalOpen(true);
                                   }}
                                 >
+                                  {/* Action Buttons */}
+                                  {team?.User?.id == dbUser?.id && (
+                                    <div className="absolute z-5 top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                      <button
+                                        disabled={hasWeekendStarted}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setTeamId(team?.id);
+                                          setIsEditTeamModalOpen(true);
+                                        }}
+                                        className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 cursor-pointer"
+                                        title={
+                                          hasWeekendStarted
+                                            ? "Race weekend has started. Teams cannot be edited."
+                                            : "Edit team"
+                                        }
+                                      >
+                                        <Edit3 className="w-4 h-4 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400" />
+                                      </button>
+
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setTeamId(team?.id);
+                                          setIsDeleteTeamModalOpen(true);
+                                        }}
+                                        className="w-8 h-8 cursor-pointer rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all hover:bg-red-50 dark:hover:bg-red-900/30"
+                                        title="Delete team"
+                                      >
+                                        <Trash2 className="w-4 h-4 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400" />
+                                      </button>
+                                    </div>
+                                  )}
+
                                   {/* Team Header */}
                                   <div className="relative mb-4">
                                     <div className="flex items-center gap-3 mb-2">
@@ -541,19 +572,11 @@ const League = () => {
                                       onClick={(e) => e.stopPropagation()}
                                       className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 rounded-lg p-2 -m-2 transition-colors"
                                     >
-                                      <div className="w-10 h-10 bg-slate-200 dark:bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                        {team.User?.photoURL ? (
-                                          <img
-                                            src={
-                                              team.User.photoURL ||
-                                              "/placeholder.svg"
-                                            }
-                                            alt={team.User.name}
-                                            className="w-10 h-10 rounded-full object-cover"
-                                          />
-                                        ) : (
-                                          <User className="w-5 h-5 text-slate-500" />
-                                        )}
+                                      <div>
+                                        <Avatar
+                                          imageSrc={team?.User?.photoURL}
+                                          fallBackText={team?.User?.name}
+                                        />
                                       </div>
                                       <div className="min-w-0 flex-1">
                                         <p className="font-medium text-slate-900 dark:text-white truncate">
@@ -737,19 +760,11 @@ const League = () => {
                                   onClick={(e) => e.stopPropagation()}
                                   className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 rounded-lg p-2 -m-2 transition-colors"
                                 >
-                                  <div className="w-10 h-10 bg-slate-200 dark:bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                    {team.User?.photoURL ? (
-                                      <img
-                                        src={
-                                          team.User.photoURL ||
-                                          "/placeholder.svg"
-                                        }
-                                        alt={team.User.name}
-                                        className="w-10 h-10 rounded-full object-cover"
-                                      />
-                                    ) : (
-                                      <User className="w-5 h-5 text-slate-500" />
-                                    )}
+                                  <div>
+                                    <Avatar
+                                      imageSrc={team?.User?.photoURL}
+                                      fallBackText={team?.User?.name}
+                                    />
                                   </div>
                                   <div className="min-w-0 flex-1">
                                     <p className="font-medium text-slate-900 dark:text-white truncate">
