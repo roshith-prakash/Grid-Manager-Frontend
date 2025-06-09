@@ -24,7 +24,7 @@ import { isValidTeamOrLeagueName } from "@/functions/regexFunctions";
 import { RxCross2 } from "react-icons/rx";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { AxiosError } from "axios";
-import { Trophy, X } from "lucide-react";
+import { AlertCircle, CheckCircle2, DollarSign, Trophy, X } from "lucide-react";
 
 const CreateTeamModal = ({
   leagueId,
@@ -355,79 +355,145 @@ const CreateTeamModal = ({
         </button>
       </div>
 
-      {/* Team Name */}
-      <div className="px-4 py-5 flex flex-col items-center justify-center">
-        <p className="font-medium">Team Name</p>
-        <Input
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            if (
-              e.target.value != null &&
-              e.target.value != undefined &&
-              e.target.value.length > 0 &&
-              isValidTeamOrLeagueName(e.target.value) &&
-              e.target.value.length < 30
-            ) {
-              setError((prev) => ({ ...prev, name: 0 }));
-              return;
-            }
-          }}
-          onBlur={() => {
-            if (name == null || name == undefined || name.length == 0) {
-              setError((prev) => ({ ...prev, name: 1 }));
-              return;
-            } else if (!isValidTeamOrLeagueName(name)) {
-              setError((prev) => ({ ...prev, name: 3 }));
-              return;
-            } else if (name?.length > 30) {
-              setError((prev) => ({ ...prev, name: 2 }));
-              return;
-            } else {
-              setError((prev) => ({ ...prev, name: 0 }));
-            }
-          }}
-          className="max-w-xl"
-          placeholder="Team Name"
-        />
-        <ErrorStatement
-          isOpen={error.name == 1}
-          text={"Please enter a name for the team."}
-        />
-        <ErrorStatement
-          isOpen={error.name == 2}
-          text={"Team name cannot exceed 30 characters."}
-        />
-        <ErrorStatement
-          isOpen={error.name == 3}
-          text={
-            "Team name must be at least 3 characters long and include at least one letter. It may also contain numbers and spaces."
-          }
-        />
+      {/* Team Name Section */}
+      <div className="rounded-xl p-6 mb-8">
+        <div className="max-w-md mx-auto">
+          <label className="block text-sm font-semibold text-slate-900 dark:text-white mb-3">
+            Team Name
+          </label>
+          <div className="relative">
+            <Input
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (
+                  e.target.value != null &&
+                  e.target.value != undefined &&
+                  e.target.value.length > 0 &&
+                  isValidTeamOrLeagueName(e.target.value) &&
+                  e.target.value.length < 30
+                ) {
+                  setError((prev) => ({ ...prev, name: 0 }));
+                  return;
+                }
+              }}
+              onBlur={() => {
+                if (name == null || name == undefined || name.length == 0) {
+                  setError((prev) => ({ ...prev, name: 1 }));
+                  return;
+                } else if (!isValidTeamOrLeagueName(name)) {
+                  setError((prev) => ({ ...prev, name: 3 }));
+                  return;
+                } else if (name?.length > 30) {
+                  setError((prev) => ({ ...prev, name: 2 }));
+                  return;
+                } else {
+                  setError((prev) => ({ ...prev, name: 0 }));
+                }
+              }}
+              className={`w-full px-4 py-3 rounded-xl border-2 transition-colors  text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 ${
+                error.name > 0
+                  ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400"
+                  : name && error.name === 0
+                  ? "border-green-300 dark:border-green-700 focus:border-green-500 dark:focus:border-green-400"
+                  : "border-slate-300 dark:border-slate-600 focus:border-red-500 dark:focus:border-red-400"
+              } focus:outline-none focus:ring-0`}
+              placeholder="Enter your team name"
+            />
+            {name && error.name === 0 && (
+              <CheckCircle2 className="absolute right-3 top-1/2 transform mt-1.5 -translate-y-1/2 w-5 h-5 text-green-500" />
+            )}
+            {error.name > 0 && (
+              <AlertCircle className="absolute right-3 top-1/2 transform mt-1.5 -translate-y-1/2 w-5 h-5 text-red-500" />
+            )}
+          </div>
+
+          {/* Character Count and Errors */}
+          <div className="flex justify-between items-start text-sm mt-2 pr-2">
+            <div className="flex-1">
+              <ErrorStatement
+                isOpen={error.name === 1}
+                text={
+                  <span className=" text-red-600 dark:text-red-400 mt-1 text-sm flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4" />
+                    Please enter a name for the team.
+                  </span>
+                }
+              />
+              <ErrorStatement
+                isOpen={error.name === 2}
+                text={
+                  <span className="text-red-600 dark:text-red-400 mt-1 text-sm flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4" />
+                    Team name cannot exceed 30 characters
+                  </span>
+                }
+              />
+              <ErrorStatement
+                isOpen={error.name === 3}
+                text={
+                  <span className="text-red-600 dark:text-red-400 flex text-sm items-center gap-2">
+                    <AlertCircle className="w-4 h-4 flex-1" />
+                    Team name must be at least 3 characters long and include at
+                    least one letter. It may also contain numbers and spaces.
+                  </span>
+                }
+              />
+            </div>
+            <span
+              className={`ml-2 ${
+                name.length > 25
+                  ? "text-red-500"
+                  : "text-slate-500 dark:text-slate-400"
+              }`}
+            >
+              {name.length}/30
+            </span>
+          </div>
+        </div>
       </div>
 
-      {/* Submit Button */}
-      <div className="mb-20 py-5 flex items-center justify-center gap-x-10">
-        <PrimaryButton
-          disabled={disabled}
-          disabledText="Please Wait..."
-          onClick={handleSubmit}
-          text="Create Team"
-        />
+      {/* Budget Display & submit*/}
+      <div className="flex justify-center flex-wrap gap-10">
+        <div
+          className={`flex items-center gap-3 px-6   rounded-xl font-semibold text-lg w-fit transition-all shadow-lg ${
+            availablePurse < 0
+              ? "bg-red-600 text-white"
+              : "bg-green-600 text-white"
+          }`}
+        >
+          <DollarSign className="w-6 h-6" />
+          <span>Available Budget: {availablePurse} Cr.</span>
+        </div>
+
+        {/* Submit Button */}
+        <div className="text-center">
+          <PrimaryButton
+            disabled={disabled || error.name > 0 || !name || availablePurse < 0}
+            onClick={handleSubmit}
+            text={
+              <div className="flex items-center gap-2">
+                <Trophy className="w-5 h-5" />
+                Create Team
+              </div>
+            }
+            className="px-8 py-4 text-lg font-semibold rounded-xl transition-all disabled:cursor-not-allowed"
+          />
+        </div>
       </div>
 
-      {/* Available purse */}
-      <h2
-        className={` ${
-          availablePurse < 0 ? "bg-red-500" : "bg-cta"
-        }  text-white mb-10 mt-10 py-2 px-6 w-fit rounded-3xl font-semibold mx-auto text-center transition-all text-2xl`}
-      >
-        {" "}
-        Available Purse : <span>{availablePurse} Cr.</span>
-      </h2>
+      <ErrorStatement
+        isOpen={availablePurse < 0}
+        text={
+          <p className="text-center pt-10 text-red-600 dark:text-red-400 text-sm mt-3 flex items-center justify-center gap-2">
+            <AlertCircle className="w-4 h-4" />
+            Budget exceeded! Please adjust your team selection.
+          </p>
+        }
+      />
 
       {/* Add Drivers & Constructors*/}
-      <div className="flex flex-col md:flex-row h-fit gap-y-16">
+      <div className="flex flex-col mt-14 md:flex-row h-fit gap-y-16">
         <div className="flex md:w-[38%] flex-col justify-start items-center gap-y-10">
           <h1 className="border-b-4 w-full text-lg font-semibold text-center py-4">
             Your Team
