@@ -21,7 +21,6 @@ import Card from "@/components/reuseit/Card";
 import { useDBUser } from "@/context/UserContext";
 import { useInView } from "react-intersection-observer";
 import toast from "react-hot-toast";
-import { IoMdShare } from "react-icons/io";
 import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 import Tooltip from "@/components/reuseit/Tooltip";
 import { Edit3, Plus, Share2, Trash2, Trophy } from "lucide-react";
@@ -492,6 +491,7 @@ const League = () => {
                   {/* All Teams */}
                   <div className="grid pt-10 lg:px-20 md:grid-cols-2 lg:grid-cols-4 px-2 gap-x-14 gap-y-10">
                     {teams &&
+                      teams?.pages?.[0]?.data?.teams.length != 0 &&
                       teams?.pages?.map((page, pageIndex) => {
                         return page?.data.teams?.map(
                           (team: any, index: number) => {
@@ -598,22 +598,24 @@ const League = () => {
                         );
                       })}
 
-                    {(teams?.pages?.[0]?.data?.teams.length == 0 ||
-                      teams?.pages?.[0]?.data?.teams[0] == null) && (
-                      <p className="text-center text-xl font-semibold py-8">
-                        No teams present in the league.
-                      </p>
-                    )}
-
-                    <div ref={ref}></div>
+                    {teams &&
+                      (teams?.pages?.[0]?.data?.teams.length == 0 ||
+                        teams?.pages?.[0]?.data?.teams[0] == null) && (
+                        <p className="text-center text-xl font-semibold py-8">
+                          No teams present in the league.
+                        </p>
+                      )}
 
                     {/* Loader */}
                     {loadingTeams &&
                       Array(4)
                         ?.fill(null)
-                        ?.map(() => {
+                        ?.map((_, index) => {
                           return (
-                            <Card className="relative rounded-md border-2 cursor-pointer transition-all">
+                            <Card
+                              key={`loader-${index}`}
+                              className="relative rounded-md border-2 cursor-pointer transition-all"
+                            >
                               <div className="p-5 space-y-4">
                                 <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
                                   <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse font-bold "></h3>
@@ -623,7 +625,7 @@ const League = () => {
 
                                 <div className="py-3 flex items-center space-x-3 w-fit hover:underline">
                                   <div className="h-12 w-12 bg-gray-500 animate-pulse rounded-full" />
-                                  <div>
+                                  <div className="space-y-2">
                                     <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse "></h3>
                                     <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
                                   </div>
@@ -632,6 +634,8 @@ const League = () => {
                             </Card>
                           );
                         })}
+
+                    <div ref={ref}></div>
                   </div>
                 </>
               ) : (
@@ -790,8 +794,6 @@ const League = () => {
                       </p>
                     )}
 
-                    <div ref={ref}></div>
-
                     {loadingUserTeams &&
                       Array(2)
                         ?.fill(null)
@@ -807,7 +809,7 @@ const League = () => {
 
                                 <div className="py-3 flex items-center space-x-3 w-fit hover:underline">
                                   <div className="h-12 w-12 bg-gray-500 animate-pulse rounded-full" />
-                                  <div>
+                                  <div className="space-y-2">
                                     <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse "></h3>
                                     <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
                                   </div>
@@ -816,6 +818,8 @@ const League = () => {
                             </Card>
                           );
                         })}
+
+                    <div ref={ref}></div>
                   </div>
                 </>
               )}
@@ -825,188 +829,92 @@ const League = () => {
       )}
 
       {isLoading && (
-        <div className="p-6 space-y-6">
-          {/* League Info */}
-          <Card className="py-5 px-6">
-            <div className="flex flex-wrap gap-8 justify-center md:justify-between items-center">
-              {/* Title */}
-              <h2 className="h-7 w-60 animate-pulse rounded bg-gray-500"></h2>
+        <div className="p-6 space-y-8">
+          {/* League Header Skeleton */}
+          <div className="bg-white dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10 p-8 animate-pulse">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div className="space-y-4">
+                {/* League Title Skeleton */}
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-12 h-12 bg-slate-200 dark:bg-white/10 rounded-xl"></div>
+                  <div className="h-8 bg-slate-200 dark:bg-white/10 rounded w-64"></div>
+                </div>
 
-              {/* Buttons */}
-              <div className="hidden md:flex flex-wrap flex-1 gap-y-5 justify-around md:justify-end items-center gap-x-4">
-                <SecondaryButton
-                  disabled={true}
-                  className="border-transparent dark:hover:!text-cta shadow-md"
-                  text={
-                    <div className="flex gap-x-2 items-center">
-                      <IoMdShare className="text-xl" />
-                      <span className="">Share</span>
-                    </div>
-                  }
-                ></SecondaryButton>
+                {/* League Details Skeleton */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-3">
+                  <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-48"></div>
+                  <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-32"></div>
+                  <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-40"></div>
+                </div>
 
-                <Tooltip displayed={true} text={"League has not loaded."}>
-                  <SecondaryButton
-                    disabled={true}
-                    className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
-                    text={
-                      <div className="flex  gap-x-2 items-center">
-                        <LuCirclePlus className="text-xl" />
-                        <span className="">Add</span>
-                      </div>
-                    }
-                  ></SecondaryButton>
-                </Tooltip>
-              </div>
-            </div>
-
-            {/* League Info */}
-            <div className="py-8 text-md font-medium flex flex-col items-center md:items-start gap-y-2">
-              <p className="h-4 w-40 animate-pulse rounded bg-gray-500"></p>
-              <p className="h-4 w-40 animate-pulse rounded bg-gray-500"></p>
-              <p className="h-4 w-40 animate-pulse rounded bg-gray-500"></p>
-            </div>
-
-            {/* Smaller screen buttons */}
-            <div className="flex md:hidden flex-wrap flex-1 gap-y-5 justify-around md:justify-end items-center gap-x-4">
-              <SecondaryButton
-                disabled={true}
-                className="border-transparent dark:hover:!text-cta shadow-md"
-                text={
-                  <div className="flex gap-x-2 items-center">
-                    <IoMdShare className="text-xl" />
-                    <span className="">Share</span>
+                {/* League Owner Skeleton */}
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="w-10 h-10 bg-slate-200 dark:bg-white/10 rounded-full"></div>
+                  <div>
+                    <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-32 mb-1"></div>
+                    <div className="h-3 bg-slate-200 dark:bg-white/10 rounded w-24"></div>
                   </div>
-                }
-              ></SecondaryButton>
-
-              <Tooltip
-                position="top"
-                displayed={true}
-                text={"League has not loaded."}
-              >
-                <SecondaryButton
-                  disabled={true}
-                  className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
-                  text={
-                    <div className="flex  gap-x-2 items-center">
-                      <LuCirclePlus className="text-xl" />
-                      <span className="">Add</span>
-                    </div>
-                  }
-                ></SecondaryButton>
-              </Tooltip>
-            </div>
-          </Card>
-
-          {/* User Info */}
-          <Card>
-            <div className="p-4 flex items-center space-x-4 w-fit">
-              <div className="h-12 w-12 rounded-full animate-pulse bg-gray-500"></div>
-              <div className="flex flex-col gap-y-2">
-                <h3 className="h-4 w-40 animate-pulse rounded bg-gray-500"></h3>
-                <p className="h-4 w-40 animate-pulse rounded bg-gray-500"></p>
+                </div>
               </div>
-            </div>
-          </Card>
 
-          {/* Tab Buttons */}
-          <div className="flex pt-8">
-            {/* Teams Tab Button */}
-            <div
-              className={`flex-1 text-center py-3  transition-all duration-300 border-b-4`}
-            >
-              All Teams
-            </div>
-            {/* Leagues Tab Button */}
-            <div
-              className={`flex-1 text-center py-3  transition-all duration-300 border-b-4 `}
-            >
-              Your Teams
+              {/* Action Buttons Skeleton */}
+              <div className="flex flex-wrap gap-3">
+                <div className="h-10 bg-slate-200 dark:bg-white/10 rounded-lg w-24"></div>
+                <div className="h-10 bg-slate-200 dark:bg-white/10 rounded-lg w-24"></div>
+                <div className="h-10 bg-slate-200 dark:bg-white/10 rounded-lg w-28"></div>
+              </div>
             </div>
           </div>
 
-          {/* Tab Content */}
-          <div>
-            {tabValue == "allTeams" ? (
-              <>
-                {/* All Teams */}
-                <div className="flex py-10 flex-col gap-5">
-                  {Array(4)
-                    ?.fill(null)
-                    ?.map(() => {
-                      return (
-                        <Card className="relative rounded-md border-2 cursor-pointer transition-all">
-                          <div className="p-5 space-y-4">
-                            <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
-                              <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse font-bold "></h3>
-                            </div>
+          {/* Tab Buttons Skeleton */}
+          <div className="border-b border-slate-200 dark:border-white/10">
+            <div className="flex">
+              <div className="px-6 py-3 font-medium border-b-2 border-slate-200 dark:border-slate-600 w-1/2 text-center">
+                <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-24 mx-auto"></div>
+              </div>
+              <div className="px-6 py-3 font-medium border-b-2 border-transparent w-1/2 text-center">
+                <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-24 mx-auto"></div>
+              </div>
+            </div>
+          </div>
 
-                            <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
+          {/* Teams Grid Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Array(4)
+              .fill(null)
+              .map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 p-6 animate-pulse"
+                >
+                  {/* Team Header Skeleton */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-slate-200 dark:bg-white/10 rounded-lg"></div>
+                    <div className="h-6 bg-slate-200 dark:bg-white/10 rounded w-3/4"></div>
+                  </div>
 
-                            <div className="py-3 flex items-center space-x-3 w-fit hover:underline">
-                              <div className="h-12 w-12 bg-gray-500 animate-pulse rounded-full" />
-                              <div className="flex flex-col gap-y-2">
-                                <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse "></h3>
-                                <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
-                              </div>
-                            </div>
-                          </div>
-                        </Card>
-                      );
-                    })}
+                  {/* Points Display Skeleton */}
+                  <div className="mb-4">
+                    <div className="bg-slate-100 dark:bg-white/5 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-20"></div>
+                        <div className="h-6 bg-slate-200 dark:bg-white/10 rounded w-16"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Team Owner Skeleton */}
+                  <div className="pt-4 border-t border-slate-200 dark:border-slate-600">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-slate-200 dark:bg-white/10 rounded-full"></div>
+                      <div>
+                        <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-24 mb-1"></div>
+                        <div className="h-3 bg-slate-200 dark:bg-white/10 rounded w-20"></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </>
-            ) : (
-              <>
-                <div className="py-10 md:px-20 flex gap-x-4 justify-between px-8">
-                  {/* Gradient Title */}
-                  <h1 className="text-hovercta dark:text-darkmodeCTA text-4xl font-semibold">
-                    Your Teams
-                  </h1>
-
-                  <Tooltip displayed={true} text={"League has not loaded"}>
-                    <SecondaryButton
-                      disabled={true}
-                      className="border-transparent dark:hover:!text-cta  dark:disabled:hover:!text-gray-400 shadow-md"
-                      text={
-                        <div className="flex  gap-x-2 items-center">
-                          <LuCirclePlus className="text-xl" />
-                          <span className="">Add</span>
-                        </div>
-                      }
-                    ></SecondaryButton>
-                  </Tooltip>
-                </div>
-
-                {/* User Teams */}
-                <div className="flex py-10  flex-col gap-5">
-                  {Array(2)
-                    ?.fill(null)
-                    ?.map(() => {
-                      return (
-                        <Card className="relative rounded-md border-2 cursor-pointer transition-all">
-                          <div className="p-5 space-y-4">
-                            <div className="flex flex-wrap gap-y-4 gap-x-4 justify-between items-center">
-                              <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse font-bold "></h3>
-                            </div>
-
-                            <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
-
-                            <div className="py-3 flex items-center space-x-3 w-fit hover:underline">
-                              <div className="h-12 w-12 bg-gray-500 animate-pulse rounded-full" />
-                              <div className="flex flex-col gap-y-2">
-                                <h3 className="h-4 w-40 rounded bg-gray-500 animate-pulse "></h3>
-                                <p className="h-4 w-40 rounded bg-gray-500 animate-pulse"></p>
-                              </div>
-                            </div>
-                          </div>
-                        </Card>
-                      );
-                    })}
-                </div>
-              </>
-            )}
+              ))}
           </div>
         </div>
       )}

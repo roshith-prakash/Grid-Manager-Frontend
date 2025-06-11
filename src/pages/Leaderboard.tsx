@@ -101,15 +101,26 @@ const Leaderboard = () => {
   }: {
     type: "team" | "driver" | "constructor";
   }) => (
-    <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg border border-slate-200 dark:border-white/10 overflow-hidden animate-pulse">
+    <div className="bg-white w-66 dark:bg-white/5 rounded-2xl shadow-lg border border-slate-200 dark:border-white/10 overflow-hidden animate-pulse">
       {type !== "team" && (
         <div className="h-48 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600"></div>
       )}
-      <div className="p-6 space-y-3">
-        <div className="h-6 bg-slate-200 dark:bg-slate-600 rounded-lg w-3/4"></div>
-        <div className="h-4 bg-slate-200 dark:bg-slate-600 rounded w-1/2"></div>
-        <div className="h-4 bg-slate-200 dark:bg-slate-600 rounded w-2/3"></div>
-      </div>
+
+      {type !== "team" ? (
+        <div className="p-6 space-y-3">
+          <div className="h-6 bg-slate-200 dark:bg-slate-600 rounded-lg w-3/4"></div>
+          <div className="h-4 bg-slate-200 dark:bg-slate-600 rounded w-1/2"></div>
+          <div className="h-4 bg-slate-200 dark:bg-slate-600 rounded w-2/3"></div>
+        </div>
+      ) : (
+        <div className="space-y-3 p-5">
+          <div className="h-6 bg-slate-200 dark:bg-slate-600 rounded-lg w-3/4"></div>
+          <div className="flex justify-between">
+            <div className="h-4 w-20 bg-slate-200 dark:bg-slate-600 rounded"></div>
+            <div className="h-4 w-10 bg-slate-200 dark:bg-slate-600 rounded"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -216,7 +227,7 @@ const Leaderboard = () => {
 
           <div className="flex justify-center flex-wrap gap-6">
             {isLoadingMostSelectedDrivers
-              ? Array(4)
+              ? Array(3)
                   .fill(null)
                   .map((_, i) => <LoadingSkeleton key={i} type="driver" />)
               : mostSelectedDrivers?.data?.drivers?.map(
@@ -365,7 +376,7 @@ const Leaderboard = () => {
 
           <div className="flex justify-center flex-wrap gap-6">
             {isLoadingHighestPointScoringDrivers
-              ? Array(4)
+              ? Array(3)
                   .fill(null)
                   .map((_, i) => <LoadingSkeleton key={i} type="driver" />)
               : highestScoringDrivers?.data?.drivers?.map(

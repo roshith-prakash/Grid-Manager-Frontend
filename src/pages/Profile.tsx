@@ -16,7 +16,6 @@ import { toast } from "react-hot-toast";
 import dayjs from "dayjs";
 import AlertModal from "@/components/reuseit/AlertModal";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import Card from "@/components/reuseit/Card";
 import { useInView } from "react-intersection-observer";
 import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 import Tooltip from "@/components/reuseit/Tooltip";
@@ -541,17 +540,37 @@ const Profile = () => {
                 {loadingTeams &&
                   Array(4)
                     ?.fill(null)
-                    ?.map(() => {
+                    ?.map((_, i) => {
                       return (
-                        <div className="flex justify-center items-center py-10">
-                          <div className=" bg-[#e1e1e1]/25 rounded-xl flex flex-col dark:bg-white/5  p-3 transition-all hover:shadow-md hover:bg-white/10">
-                            <Card className="!bg-transparent flex flex-col gap-y-3 p-4 border-none shadow-none w-fit text-center">
-                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                            </Card>
+                        <div
+                          key={i}
+                          className="bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 p-6 animate-pulse"
+                        >
+                          {/* Team Header Skeleton */}
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-slate-200 dark:bg-white/10 rounded-lg"></div>
+                            <div className="h-6 bg-slate-200 dark:bg-white/10 rounded w-3/4"></div>
+                          </div>
+
+                          {/* Points Display Skeleton */}
+                          <div className="mb-4">
+                            <div className="bg-slate-100 dark:bg-white/5 rounded-lg p-3">
+                              <div className="flex items-center justify-between">
+                                <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-20"></div>
+                                <div className="h-6 bg-slate-200 dark:bg-white/10 rounded w-16"></div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Team Owner Skeleton */}
+                          <div className="pt-4 border-t border-slate-200 dark:border-slate-600">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-slate-200 dark:bg-white/10 rounded-full"></div>
+                              <div>
+                                <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-24 mb-1"></div>
+                                <div className="h-3 bg-slate-200 dark:bg-white/10 rounded w-20"></div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       );
@@ -668,22 +687,19 @@ const Profile = () => {
                     ?.fill(null)
                     ?.map(() => {
                       return (
-                        <div className="mx-auto bg-[#e1e1e1]/25 max-w-3xs w-full rounded-xl flex flex-col dark:bg-white/5  px-5 py-5 transition-all hover:shadow-md hover:bg-white/10">
-                          <div className="flex-1  flex flex-col gap-y-2">
-                            <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
-                            <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
-                            <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
-                            <p className="bg-gray-500 animate-pulse h-4 w-48 rounded"></p>
-                          </div>
-
-                          {/* Author section - link to user's page. */}
-                          <div className="mt-5 flex gap-x-3 items-center w-fit hover:underline">
-                            {/* User's profile picture or avatar on left */}
-                            <div className="px-0.5 h-10 w-10 rounded-full bg-gray-500  animate-pulse mb-4 " />
-                            {/* User's name & username on the right */}
-                            <div className="flex flex-col gap-y-2">
-                              <p className="bg-gray-500 animate-pulse h-4 w-36 rounded"></p>
-                              <p className="bg-gray-500 animate-pulse h-4 w-36 rounded"></p>
+                        <div className="bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5 p-6 animate-pulse">
+                          <div className="space-y-4">
+                            <div className="h-6 bg-slate-200 dark:bg-white/10 rounded w-3/4"></div>
+                            <div className="space-y-2">
+                              <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-full"></div>
+                              <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-2/3"></div>
+                            </div>
+                            <div className="flex items-center gap-3 pt-2">
+                              <div className="h-10 w-10 bg-slate-200 dark:bg-white/10 rounded-full"></div>
+                              <div className="space-y-1">
+                                <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-24"></div>
+                                <div className="h-3 bg-slate-200 dark:bg-white/10 rounded w-20"></div>
+                              </div>
                             </div>
                           </div>
                         </div>
