@@ -426,6 +426,7 @@ const Profile = () => {
                 {teams &&
                   teams?.pages?.map((page) => {
                     return page?.data.teams?.map((team: any) => {
+                      console.log(team?.User);
                       return (
                         <div className="max-w-sm min-w-xs mx-auto">
                           <div
@@ -435,8 +436,9 @@ const Profile = () => {
                               setIsTeamModalOpen(true);
                             }}
                           >
-                            {/* Action Buttons */}
-                            <div className="absolute z-5 top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {/* Action Buttons - Desktop (hover) */}
+
+                            <div className="absolute z-5 top-4 right-4 hidden lg:flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                               <button
                                 disabled={hasWeekendStarted}
                                 onClick={(e) => {
@@ -444,7 +446,7 @@ const Profile = () => {
                                   setTeamId(team?.id);
                                   setIsEditModalOpen(true);
                                 }}
-                                className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 cursor-pointer"
+                                className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 shadow-lg hover:shadow-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 cursor-pointer"
                                 title={
                                   hasWeekendStarted
                                     ? "Race weekend has started. Teams cannot be edited."
@@ -527,6 +529,38 @@ const Profile = () => {
                                   )}
                                 </span>
                               </div>
+                            </div>
+
+                            {/* Action Buttons - Mobile (always visible) */}
+                            <div className="flex lg:hidden gap-2 mt-4 pt-4 border-t border-slate-200 dark:border-white/15">
+                              <button
+                                disabled={hasWeekendStarted}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setTeamId(team?.id);
+                                  setIsEditModalOpen(true);
+                                }}
+                                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <Edit3 className="w-4 h-4" />
+                                <span className="text-sm font-medium">
+                                  Edit
+                                </span>
+                              </button>
+
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setTeamId(team?.id);
+                                  setIsDeleteTeamModalOpen(true);
+                                }}
+                                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 rounded-lg transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                <span className="text-sm font-medium">
+                                  Delete
+                                </span>
+                              </button>
                             </div>
 
                             {/* Hover Indicator */}

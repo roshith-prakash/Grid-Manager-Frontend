@@ -496,7 +496,7 @@ const League = () => {
                         return page?.data.teams?.map(
                           (team: any, index: number) => {
                             return (
-                              <div className="max-w-sm min-w-xs mx-auto">
+                              <div className="max-w-sm w-full min-w-xs mx-auto">
                                 <div
                                   className="group bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 p-6 transition-all hover:shadow-lg hover:border-black/25 shadow dark:hover:border-white/25 cursor-pointer relative overflow-hidden"
                                   onClick={() => {
@@ -504,9 +504,9 @@ const League = () => {
                                     setIsTeamModalOpen(true);
                                   }}
                                 >
-                                  {/* Action Buttons */}
+                                  {/* Action Buttons - Desktop (hover) */}
                                   {team?.User?.id == dbUser?.id && (
-                                    <div className="absolute z-5 top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="absolute z-5 top-4 right-4 hidden md:flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                       <button
                                         disabled={hasWeekendStarted}
                                         onClick={(e) => {
@@ -544,8 +544,8 @@ const League = () => {
                                       <div className="w-10 h-10 bg-cta/20 dark:bg-cta/30 rounded-lg flex items-center justify-center">
                                         <Trophy className="w-5 h-5 text-cta dark:text-darkmodeCTA" />
                                       </div>
-                                      <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
-                                        #{pageIndex * 4 + index + 1}.{" "}
+                                      <h3 className="text-xl line-clamp-1 font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
+                                        #{pageIndex * 4 + (index + 1)}.{" "}
                                         {team?.name}
                                       </h3>
                                     </div>
@@ -588,6 +588,40 @@ const League = () => {
                                       </div>
                                     </Link>
                                   </div>
+
+                                  {/* Action Buttons - Mobile (always visible) */}
+                                  {team?.User?.id == dbUser?.id && (
+                                    <div className="flex md:hidden gap-2 mt-4 pt-4 border-t border-slate-200 dark:border-white/15">
+                                      <button
+                                        disabled={hasWeekendStarted}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setTeamId(team?.id);
+                                          setIsEditTeamModalOpen(true);
+                                        }}
+                                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                      >
+                                        <Edit3 className="w-4 h-4" />
+                                        <span className="text-sm font-medium">
+                                          Edit
+                                        </span>
+                                      </button>
+
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setTeamId(team?.id);
+                                          setIsDeleteTeamModalOpen(true);
+                                        }}
+                                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 rounded-lg transition-colors"
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                        <span className="text-sm font-medium">
+                                          Delete
+                                        </span>
+                                      </button>
+                                    </div>
+                                  )}
 
                                   {/* Hover Indicator */}
                                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cta to-hovercta transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
@@ -691,7 +725,7 @@ const League = () => {
                       userTeams?.data?.teams?.length > 0 &&
                       userTeams?.data?.teams?.map((team: any) => {
                         return (
-                          <div className="max-w-sm min-w-xs mx-auto">
+                          <div className="max-w-sm w-full min-w-xs mx-auto">
                             <div
                               className="group bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 p-6 transition-all hover:shadow-lg hover:border-black/25 shadow dark:hover:border-white/25 cursor-pointer relative overflow-hidden"
                               onClick={() => {
@@ -699,37 +733,39 @@ const League = () => {
                                 setIsTeamModalOpen(true);
                               }}
                             >
-                              {/* Action Buttons */}
-                              <div className="absolute z-5 top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button
-                                  disabled={hasWeekendStarted}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setTeamId(team?.id);
-                                    setIsEditTeamModalOpen(true);
-                                  }}
-                                  className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 cursor-pointer"
-                                  title={
-                                    hasWeekendStarted
-                                      ? "Race weekend has started. Teams cannot be edited."
-                                      : "Edit team"
-                                  }
-                                >
-                                  <Edit3 className="w-4 h-4 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400" />
-                                </button>
+                              {/* Action Buttons - Desktop (hover) */}
+                              {team?.User?.id == dbUser?.id && (
+                                <div className="absolute z-5 top-4 right-4 hidden md:flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <button
+                                    disabled={hasWeekendStarted}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setTeamId(team?.id);
+                                      setIsEditTeamModalOpen(true);
+                                    }}
+                                    className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 cursor-pointer"
+                                    title={
+                                      hasWeekendStarted
+                                        ? "Race weekend has started. Teams cannot be edited."
+                                        : "Edit team"
+                                    }
+                                  >
+                                    <Edit3 className="w-4 h-4 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400" />
+                                  </button>
 
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setTeamId(team?.id);
-                                    setIsDeleteTeamModalOpen(true);
-                                  }}
-                                  className="w-8 h-8 cursor-pointer rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all hover:bg-red-50 dark:hover:bg-red-900/30"
-                                  title="Delete team"
-                                >
-                                  <Trash2 className="w-4 h-4 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400" />
-                                </button>
-                              </div>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setTeamId(team?.id);
+                                      setIsDeleteTeamModalOpen(true);
+                                    }}
+                                    className="w-8 h-8 cursor-pointer rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all hover:bg-red-50 dark:hover:bg-red-900/30"
+                                    title="Delete team"
+                                  >
+                                    <Trash2 className="w-4 h-4 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400" />
+                                  </button>
+                                </div>
+                              )}
 
                               {/* Team Header */}
                               <div className="relative mb-4">
@@ -737,7 +773,7 @@ const League = () => {
                                   <div className="w-10 h-10 bg-cta/20 dark:bg-cta/30 rounded-lg flex items-center justify-center">
                                     <Trophy className="w-5 h-5 text-cta dark:text-darkmodeCTA" />
                                   </div>
-                                  <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
+                                  <h3 className="text-xl line-clamp-1 font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
                                     #{team?.position}. {team?.name}
                                   </h3>
                                 </div>
@@ -780,6 +816,40 @@ const League = () => {
                                   </div>
                                 </Link>
                               </div>
+
+                              {/* Action Buttons - Mobile (always visible) */}
+                              {team?.User?.id == dbUser?.id && (
+                                <div className="flex md:hidden gap-2 mt-4 pt-4 border-t border-slate-200 dark:border-white/15">
+                                  <button
+                                    disabled={hasWeekendStarted}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setTeamId(team?.id);
+                                      setIsEditTeamModalOpen(true);
+                                    }}
+                                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                  >
+                                    <Edit3 className="w-4 h-4" />
+                                    <span className="text-sm font-medium">
+                                      Edit
+                                    </span>
+                                  </button>
+
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setTeamId(team?.id);
+                                      setIsDeleteTeamModalOpen(true);
+                                    }}
+                                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 rounded-lg transition-colors"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                    <span className="text-sm font-medium">
+                                      Delete
+                                    </span>
+                                  </button>
+                                </div>
+                              )}
 
                               {/* Hover Indicator */}
                               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cta to-hovercta transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
