@@ -76,6 +76,8 @@ const DriverModal = ({
     ? groupPointsByRace(driver.data.driver.teamPointsHistory)
     : [];
 
+  console.log(driver?.data?.driver);
+
   return (
     <Modal
       className="w-full !max-w-4xl px-0 py-0 noscroller"
@@ -237,7 +239,7 @@ const DriverModal = ({
                   </div>
 
                   {/* Team Points (if applicable) */}
-                  {driver?.data?.driver?.pointsForTeam && (
+                  {!!driver?.data?.driver?.pointsForTeam && (
                     <div className="bg-purple-50 dark:bg-white/10 rounded-lg p-3 sm:col-span-2">
                       <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
                         Points For Your Team
@@ -249,7 +251,7 @@ const DriverModal = ({
                   )}
 
                   {/* Selection Percentage (if applicable) */}
-                  {driver?.data?.driver?.chosenPercentage && (
+                  {!!driver?.data?.driver?.chosenPercentage && (
                     <div className="bg-orange-50 dark:bg-white/10 rounded-lg p-3 sm:col-span-2">
                       <p className="text-sm text-orange-600 dark:text-orange-400 font-medium">
                         Selected by Teams
@@ -306,7 +308,6 @@ const DriverModal = ({
               {tabValue == "points" &&
                 driver?.data?.driver?.pointsHistory?.length > 0 &&
                 groupedPointsHistory?.map((race) => {
-                  console.log(race);
                   return (
                     <Accordion
                       className="border-b-2"
@@ -356,7 +357,6 @@ const DriverModal = ({
               {tabValue == "pointsForTeam" &&
                 driver?.data?.driver?.teamPointsHistory?.length > 0 &&
                 groupedTeamPointsHistory?.map((race) => {
-                  console.log(race);
                   return (
                     <Accordion
                       className="border-b-2"

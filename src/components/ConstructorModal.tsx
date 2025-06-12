@@ -230,7 +230,7 @@ const ConstructorModal = ({
                   </div>
 
                   {/* Team Points (if applicable) */}
-                  {constructor?.data?.constructor?.pointsForTeam && (
+                  {!!constructor?.data?.constructor?.pointsForTeam && (
                     <div className="bg-purple-50 dark:bg-white/5 rounded-lg p-4 sm:col-span-2">
                       <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
                         Points For Your Team
@@ -297,7 +297,6 @@ const ConstructorModal = ({
               {tabValue == "points" &&
                 constructor?.data?.constructor?.pointsHistory?.length > 0 &&
                 groupedPointsHistory?.map((race) => {
-                  console.log(race);
                   return (
                     <Accordion
                       className="border-b-2"
@@ -347,7 +346,6 @@ const ConstructorModal = ({
               {tabValue == "pointsForTeam" &&
                 constructor?.data?.constructor?.teamPointsHistory?.length > 0 &&
                 groupedTeamPointsHistory?.map((race) => {
-                  console.log(race);
                   return (
                     <Accordion
                       className="border-b-2"
