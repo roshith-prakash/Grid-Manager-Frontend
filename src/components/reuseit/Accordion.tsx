@@ -15,7 +15,7 @@ const Accordion = ({
 
   return (
     <div
-      className={`border-secondarydarkbg/50 dark:border-grey/50 w-full ${className}`}
+      className={`border-secondarydarkbg/25 dark:border-grey/25 w-full ${className}`}
     >
       <button
         className="flex w-full py-3 cursor-pointer items-center justify-between"

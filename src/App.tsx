@@ -14,6 +14,7 @@ import {
   Leaderboard,
   FAQ,
   Notices,
+  NotFound,
 } from "@/pages";
 import { Footer, Navbar, Protector } from "./components";
 import { useHasWeekendStarted } from "./functions/hasWeekendStarted";
@@ -147,6 +148,8 @@ function App() {
                 </Protector>
               }
             />
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

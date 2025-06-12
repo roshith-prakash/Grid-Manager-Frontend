@@ -12,6 +12,7 @@ import PublicLeagues from "./PublicLeagues";
 import Leaderboard from "./Leaderboard";
 import FAQ from "./FAQ";
 import Notices from "./Notices";
+import NotFound from "./NotFound";
 
 export {
   Landing,
@@ -28,4 +29,5 @@ export {
   Leaderboard,
   FAQ,
   Notices,
+  NotFound,
 };

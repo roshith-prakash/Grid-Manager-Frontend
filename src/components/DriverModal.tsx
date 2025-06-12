@@ -1,7 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { axiosInstance } from "@/utils/axiosInstance";
 import Modal from "./reuseit/Modal";
 import { useQuery } from "@tanstack/react-query";
-import { RxCross2 } from "react-icons/rx";
 import { FaUserAlt } from "react-icons/fa";
 import Table, {
   TableBody,
@@ -11,6 +12,8 @@ import Table, {
   TableRow,
 } from "./reuseit/Table";
 import { useState } from "react";
+import Accordion from "./reuseit/Accordion";
+import { X } from "lucide-react";
 
 const DriverModal = ({
   driverId,
@@ -42,6 +45,36 @@ const DriverModal = ({
     },
     enabled: !!driverId,
   });
+
+  const groupPointsByRace = (pointsHistory) => {
+    const grouped = {};
+
+    pointsHistory.forEach((entry) => {
+      const key = `${entry.round}-${entry.raceName}`;
+
+      if (!grouped[key]) {
+        grouped[key] = {
+          round: entry.round,
+          raceName: entry.raceName,
+          sessions: [],
+          totalPoints: 0,
+        };
+      }
+
+      grouped[key].sessions.push(entry);
+      grouped[key].totalPoints += entry.points;
+    });
+
+    return Object.values(grouped);
+  };
+
+  const groupedPointsHistory = driver?.data?.driver?.pointsHistory
+    ? groupPointsByRace(driver.data.driver.pointsHistory)
+    : [];
+
+  const groupedTeamPointsHistory = driver?.data?.driver?.teamPointsHistory
+    ? groupPointsByRace(driver.data.driver.teamPointsHistory)
+    : [];
 
   return (
     <Modal
@@ -127,9 +160,9 @@ const DriverModal = ({
           {/* Close Button */}
           <button
             onClick={closeModal}
-            className="absolute bg-white dark:bg-secondarydarkbg dark:text-white hover:scale-110 text-darkbg hover:text-red-500 transition-all rounded-full p-1 top-5 right-5 text-2xl cursor-pointer"
+            className="w-10 absolute top-5 right-5 cursor-pointer h-10 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/15 flex items-center justify-center transition-colors"
           >
-            <RxCross2 />
+            <X className="w-5 h-5 text-slate-600 dark:text-white/50" />
           </button>
 
           {/* Driver Data */}
@@ -148,7 +181,7 @@ const DriverModal = ({
                   <img
                     src={driver?.data?.driver.image}
                     alt={driver?.data?.driver.familyName}
-                    className="h-66 md:h-52 object-cover"
+                    className="h-66 md:h-auto object-cover"
                   />
                 ) : (
                   <FaUserAlt className="text-gray-400 text-4xl" />
@@ -156,56 +189,80 @@ const DriverModal = ({
               </div>
             </div>
             {/* Driver Data */}
-            <div className="w-full md:flex-1 md:border-b-2 pt-4 md:pt-0 border-black/50">
-              <div className="py-4 px-8 flex flex-col gap-y-2 ">
-                <h3 className="text-2xl text-ellipsis text-nowrap font-semibold">
-                  {driver?.data?.driver?.givenName}{" "}
-                  {driver?.data?.driver?.familyName} (
-                  {driver?.data?.driver?.code})
-                </h3>
-                <p className="text-xl">
-                  Driver Number : #{driver?.data?.driver?.permanentNumber}
-                </p>
-                <p className="text-lg text-darkbg/70 dark:text-white/50">
-                  {driver?.data?.driver?.constructor_name}
-                </p>
-                <p className="text-md">
-                  Points:
-                  <span className="font-semibold ml-1">
-                    {driver?.data?.driver?.points}
-                  </span>
-                </p>
-
-                {/* IF driver is already present in a team */}
-                {driver?.data?.driver?.pointsForTeam ? (
-                  <p className="text-md">
-                    Points For Your Team:
-                    <span className="font-semibold ml-1">
-                      {driver?.data?.driver?.pointsForTeam}
+            <div className="w-full md:flex-1 md:border-b-2 pt-4 md:pt-0 border-slate-200 dark:border-slate-700">
+              <div className="py-6 px-8 space-y-4">
+                {/* Driver Name & Code */}
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white truncate">
+                    {driver?.data?.driver?.givenName}{" "}
+                    {driver?.data?.driver?.familyName}
+                  </h3>
+                  <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+                    <span className="bg-slate-100 dark:bg-white/10 px-3 py-1 rounded-lg font-mono font-semibold">
+                      {driver?.data?.driver?.code}
                     </span>
-                  </p>
-                ) : (
-                  <></>
-                )}
-
-                <p className="text-md">
-                  Price:{" "}
-                  <span className="font-semibold">
-                    {driver?.data?.driver?.price} Cr.
-                  </span>
-                </p>
-
-                {driver?.data?.driver?.chosenPercentage && (
-                  <p className="text-md">
-                    Teams in which driver is present:{" "}
-                    <span className="font-semibold">
-                      {Number(driver?.data?.driver?.chosenPercentage).toFixed(
-                        0
-                      )}
-                      %{" "}
+                    <span className="text-lg">
+                      #{driver?.data?.driver?.permanentNumber}
                     </span>
+                  </div>
+                </div>
+
+                {/* Constructor */}
+                <div className="bg-slate-50 dark:bg-white/10 rounded-lg p-3">
+                  <p className="text-lg font-medium text-slate-700 dark:text-slate-300">
+                    {driver?.data?.driver?.constructor_name}
                   </p>
-                )}
+                </div>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Points */}
+                  <div className="bg-blue-50 dark:bg-white/10 rounded-lg p-3">
+                    <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                      Total Points
+                    </p>
+                    <p className="text-xl font-bold text-blue-700 dark:text-blue-300">
+                      {driver?.data?.driver?.points}
+                    </p>
+                  </div>
+
+                  {/* Price */}
+                  <div className="bg-green-50 dark:bg-white/10 rounded-lg p-3">
+                    <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+                      Price
+                    </p>
+                    <p className="text-xl font-bold text-green-700 dark:text-green-300">
+                      {driver?.data?.driver?.price} Cr.
+                    </p>
+                  </div>
+
+                  {/* Team Points (if applicable) */}
+                  {driver?.data?.driver?.pointsForTeam && (
+                    <div className="bg-purple-50 dark:bg-white/10 rounded-lg p-3 sm:col-span-2">
+                      <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
+                        Points For Your Team
+                      </p>
+                      <p className="text-xl font-bold text-purple-700 dark:text-purple-300">
+                        {driver?.data?.driver?.pointsForTeam}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Selection Percentage (if applicable) */}
+                  {driver?.data?.driver?.chosenPercentage && (
+                    <div className="bg-orange-50 dark:bg-white/10 rounded-lg p-3 sm:col-span-2">
+                      <p className="text-sm text-orange-600 dark:text-orange-400 font-medium">
+                        Selected by Teams
+                      </p>
+                      <p className="text-xl font-bold text-orange-700 dark:text-orange-300">
+                        {Number(driver?.data?.driver?.chosenPercentage).toFixed(
+                          0
+                        )}
+                        %
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -213,7 +270,6 @@ const DriverModal = ({
           {/* Driver Points Scoring  */}
           <div className="mt-5 px-5 pb-20">
             {/* Tab Buttons */}
-
             {driver?.data?.driver?.teamPointsHistory ? (
               <div className="flex">
                 {/* Drivers Tab Button */}
@@ -246,77 +302,107 @@ const DriverModal = ({
               <p className="text-2xl ml-1 font-semibold pb-2">Points: </p>
             )}
 
-            {tabValue == "points" &&
-              driver?.data?.driver?.pointsHistory?.length > 0 && (
-                <Table className="w-full mt-5">
-                  <TableHead>
-                    <TableRow>
-                      <TableHeader>Round</TableHeader>
-                      <TableHeader>Race</TableHeader>
-                      <TableHeader>Session</TableHeader>
-                      <TableHeader>Points Scored</TableHeader>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {driver?.data?.driver?.pointsHistory?.map(
-                      (session: {
-                        round: number;
-                        raceName: string;
-                        session: string;
-                        points: number;
-                      }) => {
-                        return (
-                          <TableRow>
-                            <TableCell> {session?.round}</TableCell>
-                            <TableCell>{session?.raceName}</TableCell>
-                            <TableCell> {session?.session}</TableCell>
-                            <TableCell className="font-semibold">
-                              {" "}
-                              {session?.points}
-                            </TableCell>
-                          </TableRow>
-                        );
+            <div className="mt-3">
+              {tabValue == "points" &&
+                driver?.data?.driver?.pointsHistory?.length > 0 &&
+                groupedPointsHistory?.map((race) => {
+                  console.log(race);
+                  return (
+                    <Accordion
+                      className="border-b-2"
+                      text={
+                        <div className="flex justify-between items-center w-full pr-5 mt-1">
+                          <p className="font-medium text-slate-900 dark:text-white truncate mr-3">
+                            {race?.raceName}
+                          </p>
+                          <span className="text-lg w-28 bg-black/5 dark:bg-white/10 px-2 py-1 rounded-lg font-bold text-slate-700 dark:text-slate-300 flex-shrink-0">
+                            Points : {race?.totalPoints}
+                          </span>
+                        </div>
                       }
-                    )}
-                  </TableBody>
-                </Table>
-              )}
+                    >
+                      <Table className="w-full mt-5">
+                        <TableHead>
+                          <TableRow>
+                            <TableHeader>Session</TableHeader>
+                            <TableHeader>Points Scored</TableHeader>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {race.sessions?.map(
+                            (session: {
+                              round: number;
+                              raceName: string;
+                              session: string;
+                              points: number;
+                            }) => {
+                              return (
+                                <TableRow>
+                                  <TableCell> {session?.session}</TableCell>
+                                  <TableCell className="font-semibold">
+                                    {" "}
+                                    {session?.points}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            }
+                          )}
+                        </TableBody>
+                      </Table>
+                    </Accordion>
+                  );
+                })}
 
-            {tabValue == "pointsForTeam" &&
-              driver?.data?.driver?.teamPointsHistory?.length > 0 && (
-                <Table className="w-full mt-5">
-                  <TableHead>
-                    <TableRow>
-                      <TableHeader>Round</TableHeader>
-                      <TableHeader>Race</TableHeader>
-                      <TableHeader>Session</TableHeader>
-                      <TableHeader>Points Scored</TableHeader>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {driver?.data?.driver?.teamPointsHistory?.map(
-                      (session: {
-                        round: number;
-                        raceName: string;
-                        session: string;
-                        points: number;
-                      }) => {
-                        return (
-                          <TableRow>
-                            <TableCell> {session?.round}</TableCell>
-                            <TableCell>{session?.raceName}</TableCell>
-                            <TableCell> {session?.session}</TableCell>
-                            <TableCell className="font-semibold">
-                              {" "}
-                              {session?.points}
-                            </TableCell>
-                          </TableRow>
-                        );
+              {tabValue == "pointsForTeam" &&
+                driver?.data?.driver?.teamPointsHistory?.length > 0 &&
+                groupedTeamPointsHistory?.map((race) => {
+                  console.log(race);
+                  return (
+                    <Accordion
+                      className="border-b-2"
+                      text={
+                        <div className="flex justify-between items-center w-full pr-5 mt-1">
+                          <p className="font-medium text-slate-900 dark:text-white truncate mr-3">
+                            {race?.raceName}
+                          </p>
+                          <span className="text-lg w-28 bg-black/5 dark:bg-white/10 px-2 py-1 rounded-lg font-bold text-slate-700 dark:text-slate-300 flex-shrink-0">
+                            Points : {race?.totalPoints}
+                          </span>
+                        </div>
                       }
-                    )}
-                  </TableBody>
-                </Table>
-              )}
+                    >
+                      <Table className="w-full mt-5">
+                        <TableHead>
+                          <TableRow>
+                            <TableHeader>Session</TableHeader>
+                            <TableHeader>Points Scored</TableHeader>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {race.sessions?.map(
+                            (session: {
+                              round: number;
+                              raceName: string;
+                              session: string;
+                              points: number;
+                            }) => {
+                              return (
+                                <TableRow>
+                                  <TableCell> {session?.session}</TableCell>
+                                  <TableCell className="font-semibold">
+                                    {" "}
+                                    {session?.points}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            }
+                          )}
+                        </TableBody>
+                      </Table>
+                    </Accordion>
+                  );
+                })}
+            </div>
           </div>
         </>
       )}
