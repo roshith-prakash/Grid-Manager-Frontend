@@ -13,6 +13,7 @@ import Leaderboard from "./Leaderboard";
 import FAQ from "./FAQ";
 import Notices from "./Notices";
 import NotFound from "./NotFound";
+import Contact from "./ContactUs";
 
 export {
   Landing,
@@ -30,4 +31,5 @@ export {
   FAQ,
   Notices,
   NotFound,
+  Contact,
 };

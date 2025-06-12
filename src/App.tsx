@@ -15,6 +15,7 @@ import {
   FAQ,
   Notices,
   NotFound,
+  Contact,
 } from "@/pages";
 import { Footer, Navbar, Protector } from "./components";
 import { useHasWeekendStarted } from "./functions/hasWeekendStarted";
@@ -149,6 +150,7 @@ function App() {
               }
             />
 
+            <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
