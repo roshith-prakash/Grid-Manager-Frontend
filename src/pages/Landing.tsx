@@ -77,7 +77,7 @@ const Landing = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-cta/20 to-blue-500/20 rounded-3xl blur-3xl"></div>
               <div className="relative">
                 <img
-                  src={f1car || "/placeholder.svg"}
+                  src={f1car}
                   className="w-full max-w-2xl mx-auto transform hover:scale-105 transition-transform duration-500"
                   alt="F1 Car"
                 />

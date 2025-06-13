@@ -258,7 +258,7 @@ const Leaderboard = () => {
                           </div>
                           {driver?.image ? (
                             <img
-                              src={driver.image || "/placeholder.svg"}
+                              src={driver.image}
                               alt={driver.familyName}
                               className="h-40 object-cover rounded-lg"
                             />
@@ -407,7 +407,7 @@ const Leaderboard = () => {
                           </div>
                           {driver?.image ? (
                             <img
-                              src={driver.image || "/placeholder.svg"}
+                              src={driver.image}
                               alt={driver.familyName}
                               className="h-40 object-cover rounded-lg"
                             />

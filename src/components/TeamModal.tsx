@@ -215,7 +215,7 @@ const TeamModal = ({
                           >
                             {driver?.image ? (
                               <img
-                                src={driver.image || "/placeholder.svg"}
+                                src={driver.image}
                                 alt={driver.familyName}
                                 className="h-32 object-cover rounded-lg"
                               />

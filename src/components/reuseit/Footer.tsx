@@ -30,7 +30,7 @@ const Footer = () => {
             <div className="text-center lg:text-left">
               <div className="flex items-center justify-center lg:justify-start gap-4 mb-6">
                 <img
-                  src={newlogo || "/placeholder.svg"}
+                  src={newlogo}
                   alt="Grid Manager Logo"
                   className="h-16 w-16 object-contain"
                 />
