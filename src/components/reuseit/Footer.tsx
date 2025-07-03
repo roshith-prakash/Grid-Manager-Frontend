@@ -151,8 +151,9 @@ const Footer = () => {
           {/* Bottom Section */}
           <div className="border-t border-slate-700 pt-8">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-2 text-slate-400">
-                <span>© {currentYear} Grid Manager. Made with</span>
+              <div className="flex flex-col md:flex-row items-center gap-2 text-slate-400">
+                <span>© {currentYear} Grid Manager.</span>
+                <span>Made with</span>
                 <Heart className="w-4 h-4 text-darkmodeCTA fill-current" />
                 <span>for F1 fans worldwide.</span>
               </div>

@@ -475,7 +475,7 @@ const Profile = () => {
                                 <div className="w-10 h-10 bg-cta/20 dark:bg-cta/30 rounded-lg flex items-center justify-center">
                                   <Trophy className="w-5 h-5 text-cta dark:text-darkmodeCTA" />
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
+                                <h3 className="text-xl line-clamp-1 font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
                                   {team?.name}
                                 </h3>
                               </div>
