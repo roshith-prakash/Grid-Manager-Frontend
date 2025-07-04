@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { isValidUsername } from "@/functions/regexFunctions";
 import { ContextValue, useDarkMode } from "@/context/DarkModeContext";
 import { useNavigate } from "react-router-dom";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 const EditProfile = () => {
   const { isDarkMode } = useDarkMode() as ContextValue;
@@ -191,6 +192,20 @@ const EditProfile = () => {
     }
   };
 
+  const handlePasswordReset = async () => {
+    const auth = getAuth();
+    try {
+      await sendPasswordResetEmail(auth, dbUser?.email); // Replace with your Firebase auth instance & user’s email
+      toast("Password reset email sent!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong!");
+      // Maybe show error message too
+    }
+  };
+
+  console.log(dbUser);
+
   return (
     <>
       <div className="min-h-[70vh] md:min-h-[65vh] lg:min-h-[60vh] bg-bgwhite flex items-center justify-center pt-12 pb-32">
@@ -350,6 +365,16 @@ const EditProfile = () => {
                 text={"Username can contain alphabets, numbers and underscore."}
               />
             </div>
+          </div>
+
+          {/* Password Reset Button */}
+          <div className="mt-8 flex justify-center items-center">
+            <button
+              onClick={handlePasswordReset} // 👉 your handler to send the email
+              className="cursor-pointer hover:bg-hovercta dark:hover:bg-cta hover:border-hovercta hover:text-white dark:hover:border-cta border-darkbg/25 dark:border-white/25 border-1 flex gap-x-2 py-2 justify-center items-center px-8 shadow rounded-lg font-medium active:shadow transition-all"
+            >
+              Send Password Reset Email
+            </button>
           </div>
 
           {/* Submit Button */}
