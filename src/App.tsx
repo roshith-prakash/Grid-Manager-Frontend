@@ -16,6 +16,8 @@ import {
   Notices,
   NotFound,
   Contact,
+  ForgotPassword,
+  AuthAction,
 } from "@/pages";
 import { Footer, Navbar, Protector } from "./components";
 import { useHasWeekendStarted } from "./functions/hasWeekendStarted";
@@ -77,9 +79,13 @@ function App() {
             <Route path="/signin" element={<Login />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/signout" element={<Signout />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/auth-action" element={<AuthAction />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/notices" element={<Notices />} />
+            <Route path="/contact" element={<Contact />} />
 
+            {/* Protected routes - Logged In User required. */}
             <Route
               path="/leaderboard"
               element={
@@ -88,8 +94,6 @@ function App() {
                 </Protector>
               }
             />
-
-            {/* Protected routes - Logged In User required. */}
 
             <Route
               path="/edit-profile"
@@ -150,7 +154,6 @@ function App() {
               }
             />
 
-            <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

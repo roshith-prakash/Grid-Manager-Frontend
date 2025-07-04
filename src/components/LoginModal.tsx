@@ -290,6 +290,16 @@ const LoginModal = ({
           />
         </div>
 
+        <button
+          className="ml-4 text-sm text-blue-600 dark:text-blue-400 font-medium cursor-pointer"
+          onClick={() => {
+            setIsModalOpen();
+            navigate("/forgot-password");
+          }}
+        >
+          Forgot your password?
+        </button>
+
         {/* Submit Button */}
         <div className="text-sm mt-6">
           <PrimaryButton

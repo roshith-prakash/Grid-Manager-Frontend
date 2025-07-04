@@ -310,6 +310,13 @@ const Login = () => {
                 />
               </div>
 
+              <Link
+                className="ml-4 text-sm text-blue-600 dark:text-blue-400 font-medium"
+                to="/forgot-password"
+              >
+                Forgot your password?
+              </Link>
+
               {/* Submit Button */}
               <div className="mt-8">
                 <PrimaryButton

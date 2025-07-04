@@ -14,6 +14,8 @@ import FAQ from "./FAQ";
 import Notices from "./Notices";
 import NotFound from "./NotFound";
 import Contact from "./ContactUs";
+import ForgotPassword from "./ForgotPassword";
+import AuthAction from "./AuthAction";
 
 export {
   Landing,
@@ -32,4 +34,6 @@ export {
   Notices,
   NotFound,
   Contact,
+  ForgotPassword,
+  AuthAction,
 };

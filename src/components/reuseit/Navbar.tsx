@@ -278,7 +278,7 @@ const Navbar = () => {
                       <NavLink
                         to="/onboarding"
                         className={({ isActive }) =>
-                          `flex gap-x-5 items-center font-medium bg-purple-100 dark:bg-darkgrey text-lg py-2 px-5 rounded w-full transition-all ${
+                          `flex gap-x-5 items-center font-medium bg-purple-100 text-black dark:bg-darkgrey text-lg py-2 px-5 rounded w-full transition-all ${
                             isActive && "bg-slate-100 dark:bg-white/20"
                           }`
                         }
@@ -418,7 +418,7 @@ const Navbar = () => {
                     <NavLink
                       to="/onboarding"
                       className={({ isActive }) =>
-                        `flex gap-x-5 items-center font-medium bg-purple-100 dark:bg-darkgrey text-lg py-2 px-5 rounded w-full transition-all ${
+                        `flex gap-x-5 items-center font-medium bg-purple-100 text-black dark:bg-darkgrey text-lg py-2 px-5 rounded w-full transition-all ${
                           isActive && "bg-slate-100 dark:bg-white/20"
                         }`
                       }
