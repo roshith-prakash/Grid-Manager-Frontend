@@ -286,6 +286,33 @@ const EditTeamModal = ({
     }
   };
 
+  useEffect(() => {
+    if (team?.data?.team) {
+      let changes = 0;
+
+      const driverIds = teamDrivers.map((item: any) => item?.driverId);
+      const constructorIds = teamConstructors.map(
+        (item: any) => item?.constructorId
+      );
+
+      changes += countNumberOfChanges(team?.data?.team?.driverIds, driverIds);
+      changes += countNumberOfChanges(
+        team?.data?.team?.constructorIds,
+        constructorIds
+      );
+
+      setNumberOfChangesMade(changes);
+    }
+  }, [
+    teamDrivers.length,
+    teamConstructors.length,
+    team?.data?.team?.driverIds,
+    team?.data?.team?.constructorIds,
+    teamDrivers,
+    teamConstructors,
+    team?.data?.team,
+  ]);
+
   // Submit the team
   const handleSubmit = () => {
     setError({
@@ -342,33 +369,6 @@ const EditTeamModal = ({
     }
   };
 
-  useEffect(() => {
-    if (team?.data?.team) {
-      let changes = 0;
-
-      const driverIds = teamDrivers.map((item: any) => item?.driverId);
-      const constructorIds = teamConstructors.map(
-        (item: any) => item?.constructorId
-      );
-
-      changes += countNumberOfChanges(team?.data?.team?.driverIds, driverIds);
-      changes += countNumberOfChanges(
-        team?.data?.team?.constructorIds,
-        constructorIds
-      );
-
-      setNumberOfChangesMade(changes);
-    }
-  }, [
-    teamDrivers.length,
-    teamConstructors.length,
-    team?.data?.team?.driverIds,
-    team?.data?.team?.constructorIds,
-    teamDrivers,
-    teamConstructors,
-    team?.data?.team,
-  ]);
-
   return (
     <div>
       <DriverModal
@@ -382,6 +382,8 @@ const EditTeamModal = ({
       />
 
       <ConstructorModal
+        teamId={teamId}
+        userId={dbUser?.id}
         constructorId={selectedConstructorId}
         isModalOpen={isConstructorModalOpen}
         closeModal={() => {
@@ -638,7 +640,7 @@ const EditTeamModal = ({
                             </div>
                           </div>
 
-                          {/* Close Button */}
+                          {/* Remove Driver Button */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -714,7 +716,7 @@ const EditTeamModal = ({
                             </div>
                           </div>
 
-                          {/* Close Button */}
+                          {/* Remove Constructor Button */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();

@@ -162,9 +162,9 @@ const DriverModal = ({
           {/* Close Button */}
           <button
             onClick={closeModal}
-            className="w-10 absolute top-5 right-5 cursor-pointer h-10 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/15 flex items-center justify-center transition-colors"
+            className="w-10 absolute top-5 right-5 cursor-pointer h-10 rounded-lg bg-slate-400 dark:bg-white hover:bg-slate-600 dark:hover:bg-white/90 flex items-center justify-center transition-colors"
           >
-            <X className="w-5 h-5 text-slate-600 dark:text-white/50" />
+            <X className="w-5 h-5 text-white dark:text-black/75" />
           </button>
 
           {/* Driver Data */}

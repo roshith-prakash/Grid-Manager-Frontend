@@ -548,7 +548,7 @@ const CreateTeamModal = ({
                             </div>
                           </div>
 
-                          {/* Close Button */}
+                          {/* Remove Driver Button */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -626,7 +626,7 @@ const CreateTeamModal = ({
                             </div>
                           </div>
 
-                          {/* Close Button */}
+                          {/* Remove Constructor Button */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
