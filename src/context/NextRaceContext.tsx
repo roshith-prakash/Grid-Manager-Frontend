@@ -41,7 +41,7 @@ export function NextRaceProvider({ children }: { children: ReactNode }) {
   const { data } = useQuery({
     queryKey: ["nextRace"], // Use user ID for efficiency
     queryFn: async () => {
-      return axiosInstance.get("/next-race");
+      return axiosInstance.get("/next-race a");
     },
     staleTime: 60 * 1000 * 60 * 24,
   });
