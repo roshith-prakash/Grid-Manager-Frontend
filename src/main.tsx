@@ -8,6 +8,7 @@ import "./index.css";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import { UserProvider } from "./context/UserContext.tsx";
 import { NextRaceProvider } from "./context/NextRaceContext.tsx";
+import { ErrorBoundary } from "./components";
 
 const queryClient = new QueryClient();
 
@@ -23,8 +24,10 @@ createRoot(document.getElementById("root")!).render(
           <UserProvider>
             {/* Provides next race data to all components */}
             <NextRaceProvider>
-              <Toaster />
-              <App />
+              <ErrorBoundary>
+                <Toaster />
+                <App />
+              </ErrorBoundary>
             </NextRaceProvider>
           </UserProvider>
         </AuthProvider>

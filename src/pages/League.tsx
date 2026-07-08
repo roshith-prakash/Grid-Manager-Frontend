@@ -34,6 +34,7 @@ const League = () => {
   const [isDeleteTeamModalOpen, setIsDeleteTeamModalOpen] = useState(false);
   const [isEditLeagueModalOpen, setIsEditLeagueModalOpen] = useState(false);
   const [isDeleteLeagueModalOpen, setIsDeleteLeagueModalOpen] = useState(false);
+  const [isLeaveLeagueModalOpen, setIsLeaveLeagueModalOpen] = useState(false);
   const [tabValue, setTabValue] = useState("allTeams");
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -152,6 +153,28 @@ const League = () => {
         setIsDeleteLeagueModalOpen(false);
         setDisabled(false);
         toast.error("Something went wrong.");
+      });
+  };
+
+  const handleLeaveLeague = () => {
+    setDisabled(true);
+    axiosInstance
+      .post("/team/leave-league", { leagueId: leagueId, userId: dbUser?.id })
+      .then(async () => {
+        toast.success("Successfully left the league.");
+        await queryClient.refetchQueries({
+          queryKey: ["userLeagues", dbUser?.username],
+          refetchType: "active",
+        });
+        setIsLeaveLeagueModalOpen(false);
+        setDisabled(false);
+        navigate("/leagues");
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLeaveLeagueModalOpen(false);
+        setDisabled(false);
+        toast.error(err?.response?.data?.data || "Something went wrong.");
       });
   };
 
@@ -278,6 +301,38 @@ const League = () => {
                   }}
                   text="Cancel"
                 />
+              </div>
+            </div>
+          </AlertModal>
+
+          {/* Leave League Modal */}
+          <AlertModal
+            isOpen={isLeaveLeagueModalOpen}
+            className="max-w-xl"
+            onClose={() => setIsLeaveLeagueModalOpen(false)}
+          >
+            <div className="flex flex-col gap-y-2">
+              <h1 className="dark:text-darkmodetext font-bold text-2xl">
+                Leave League
+              </h1>
+              <p className="dark:text-darkmodetext/70 pt-2 text-sm">
+                Are you sure you want to leave this league? All your teams in this league will be permanently deleted. This action cannot be undone.
+              </p>
+              <div className="flex justify-between items-center pt-8">
+                <button
+                  disabled={disabled}
+                  onClick={() => setIsLeaveLeagueModalOpen(false)}
+                  className="bg-red-500 hover:bg-red-600 disabled:bg-gray-400 font-bold px-5 py-2.5 rounded-lg text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={disabled}
+                  onClick={() => handleLeaveLeague()}
+                  className="border-gray-500 disabled:bg-gray-400 border-2 font-bold px-5 py-2.5 rounded-lg dark:text-white"
+                >
+                  {disabled ? "Please wait..." : "Leave League"}
+                </button>
               </div>
             </div>
           </AlertModal>
@@ -456,6 +511,19 @@ const League = () => {
                       {disabled ? "Please wait..." : "Delete"}
                     </button>
                   )}
+                  {league?.data?.data?.User.id !== dbUser?.id && userTeams?.data?.teams?.length > 0 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsLeaveLeagueModalOpen(true);
+                      }}
+                      disabled={disabled}
+                      className="flex cursor-pointer items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-700/30 hover:bg-red-200 dark:hover:bg-red-500/50 text-red-600 dark:text-red-300 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      {disabled ? "Please wait..." : "Leave"}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -496,7 +564,7 @@ const League = () => {
                         return page?.data.teams?.map(
                           (team: any, index: number) => {
                             return (
-                              <div className="max-w-sm w-full min-w-xs mx-auto">
+                              <div key={team?.id} className="max-w-sm w-full min-w-xs mx-auto">
                                 <div
                                   className="group bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 p-6 transition-all hover:shadow-lg hover:border-black/25 shadow dark:hover:border-white/25 cursor-pointer relative overflow-hidden"
                                   onClick={() => {
@@ -725,7 +793,7 @@ const League = () => {
                       userTeams?.data?.teams?.length > 0 &&
                       userTeams?.data?.teams?.map((team: any) => {
                         return (
-                          <div className="max-w-sm w-full min-w-xs mx-auto">
+                          <div key={team?.id} className="max-w-sm w-full min-w-xs mx-auto">
                             <div
                               className="group bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 p-6 transition-all hover:shadow-lg hover:border-black/25 shadow dark:hover:border-white/25 cursor-pointer relative overflow-hidden"
                               onClick={() => {

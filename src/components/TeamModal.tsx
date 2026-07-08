@@ -4,6 +4,7 @@
 import { axiosInstance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import { User, X, Trophy, Users, Car } from "lucide-react";
+import PointsHistoryChart from "./PointsHistoryChart";
 import { useState } from "react";
 import { useDBUser } from "@/context/UserContext";
 import DriverModal from "./DriverModal";
@@ -27,6 +28,8 @@ const TeamModal = ({
   const [selectedConstructorId, setSelectedConstructorId] = useState("");
   const [isConstructorModalOpen, setIsConstructorModalOpen] = useState(false);
 
+  const [tabValue, setTabValue] = useState("lineup");
+
   const { dbUser } = useDBUser();
 
   const {
@@ -42,6 +45,20 @@ const TeamModal = ({
       });
     },
     enabled: !!teamId,
+  });
+
+  const {
+    data: transfers,
+    isLoading: isTransfersLoading,
+  } = useQuery({
+    queryKey: ["transfers", teamId],
+    queryFn: async () => {
+      return axiosInstance.post("/team/get-transfer-history", {
+        teamId,
+        userId: dbUser?.id,
+      });
+    },
+    enabled: !!teamId && tabValue === "transfers",
   });
 
   const LoadingSkeleton = () => (
@@ -104,6 +121,30 @@ const TeamModal = ({
             </button>
           </div>
 
+          {/* Tabs */}
+          <div className="flex border-b border-slate-200 dark:border-white/10">
+            <button
+              onClick={() => setTabValue("lineup")}
+              className={`flex-1 py-4 font-medium transition-colors ${
+                tabValue === "lineup"
+                  ? "text-cta border-b-2 border-cta dark:text-darkmodeCTA dark:border-darkmodeCTA"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              Current Lineup
+            </button>
+            <button
+              onClick={() => setTabValue("transfers")}
+              className={`flex-1 py-4 font-medium transition-colors ${
+                tabValue === "transfers"
+                  ? "text-cta border-b-2 border-cta dark:text-darkmodeCTA dark:border-darkmodeCTA"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              Transfer History
+            </button>
+          </div>
+
           {/* Content */}
           <div className="overflow-y-auto scroller max-h-[calc(90vh-80px)]">
             {isLoading && (
@@ -157,7 +198,7 @@ const TeamModal = ({
               </div>
             )}
 
-            {team?.data?.team && (
+            {tabValue === "lineup" && team?.data?.team && (
               <div className="p-6 space-y-8 pb-20">
                 {/* Team Info */}
                 <div className="text-center space-y-4">
@@ -184,6 +225,12 @@ const TeamModal = ({
                     </span>
                   </div>
                 </div>
+
+                {/* Points History Chart */}
+                <PointsHistoryChart
+                  teamDrivers={team.data.team.teamDrivers ?? []}
+                  teamConstructors={team.data.team.teamConstructors ?? []}
+                />
 
                 {/* Team Drivers */}
                 <div className="space-y-6">
@@ -307,6 +354,74 @@ const TeamModal = ({
                     )}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {tabValue === "transfers" && (
+              <div className="p-6">
+                {isTransfersLoading ? (
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="h-24 bg-slate-200 dark:bg-white/5 rounded-xl animate-pulse" />
+                    ))}
+                  </div>
+                ) : transfers?.data?.data?.length > 0 ? (
+                  <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 dark:before:via-white/20 before:to-transparent">
+                    {transfers?.data?.data.map((transfer: any) => (
+                      <div key={transfer.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white dark:border-darkbg bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow z-10">
+                          <Trophy className="w-4 h-4" />
+                        </div>
+                        
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 p-5 rounded-2xl shadow-sm hover:shadow-md transition-shadow relative">
+                          <div className="text-sm font-medium text-cta dark:text-darkmodeCTA mb-3">
+                            {new Date(transfer.createdAt).toLocaleString(undefined, {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </div>
+
+                          <div className="space-y-3">
+                            {(transfer.driversIn?.length > 0 || transfer.constructorsIn?.length > 0) && (
+                              <div className="bg-green-50 dark:bg-green-900/10 rounded-lg p-3">
+                                <div className="text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wider mb-2">Transferred In</div>
+                                <ul className="space-y-1 text-sm text-green-900 dark:text-green-300">
+                                  {transfer.driversIn?.map((d: string, i: number) => <li key={`di-${i}`}>• {d} (Driver)</li>)}
+                                  {transfer.constructorsIn?.map((c: string, i: number) => <li key={`ci-${i}`}>• {c} (Constructor)</li>)}
+                                </ul>
+                              </div>
+                            )}
+
+                            {(transfer.driversOut?.length > 0 || transfer.constructorsOut?.length > 0) && (
+                              <div className="bg-red-50 dark:bg-red-900/10 rounded-lg p-3">
+                                <div className="text-xs font-semibold text-red-700 dark:text-red-400 uppercase tracking-wider mb-2">Transferred Out</div>
+                                <ul className="space-y-1 text-sm text-red-900 dark:text-red-300">
+                                  {transfer.driversOut?.map((d: string, i: number) => <li key={`do-${i}`}>• {d} (Driver)</li>)}
+                                  {transfer.constructorsOut?.map((c: string, i: number) => <li key={`co-${i}`}>• {c} (Constructor)</li>)}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-slate-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Trophy className="w-8 h-8 text-slate-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                      No Transfer History
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400">
+                      You haven't made any changes to this team yet.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

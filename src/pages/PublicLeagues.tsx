@@ -15,9 +15,11 @@ import { axiosInstance } from "@/utils/axiosInstance";
 import { useDBUser } from "@/context/UserContext";
 import useDebounce from "@/utils/useDebounce";
 import Avatar from "@/components/reuseit/Avatar";
+import { JoinLeagueModal } from "@/components";
 
 const PublicLeagues = () => {
   const [search, setSearch] = useState("");
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const debouncedSearch = useDebounce(search);
   const navigate = useNavigate();
   const { dbUser } = useDBUser();
@@ -132,6 +134,15 @@ const PublicLeagues = () => {
                 <span>League limit reached (5/5)</span>
               </div>
             )}
+
+            <button
+              onClick={() => setIsJoinModalOpen(true)}
+              disabled={canUserJoinLeague?.data?.canUserJoinLeague === false}
+              className="flex cursor-pointer items-center gap-2 px-6 py-3 bg-white hover:bg-slate-50 dark:bg-white/5 dark:hover:bg-white/10 disabled:opacity-50 text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 rounded-lg transition-colors font-medium"
+            >
+              <Search className="w-4 h-4" />
+              Join Private League
+            </button>
 
             <button
               onClick={() => navigate("/create-league")}
@@ -255,6 +266,11 @@ const PublicLeagues = () => {
           <EmptyState />
         )}
       </div>
+
+      <JoinLeagueModal 
+        isOpen={isJoinModalOpen}
+        onClose={() => setIsJoinModalOpen(false)}
+      />
     </div>
   );
 };

@@ -19,6 +19,8 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { useHasWeekendStarted } from "@/functions/hasWeekendStarted";
 import Tooltip from "@/components/reuseit/Tooltip";
+import TeamCard from "@/components/reuseit/TeamCard";
+import LeagueCard from "@/components/reuseit/LeagueCard";
 import { LuCirclePlus } from "react-icons/lu";
 import { Calendar, Edit3, Hash, Trash2, Trophy, Users } from "lucide-react";
 import Avatar from "@/components/reuseit/Avatar";
@@ -288,82 +290,78 @@ const Profile = () => {
       </AlertModal>
 
       {/* Main */}
-      <div className="lg:min-h-screen bg-bgwhite dark:bg-darkbg dark:text-darkmodetext w-full pb-20">
-        {/* Background color div */}
-        <div className="bg-secondarydarkbg dark:bg-darkgrey border-b-4 border-black h-48 dark:border-white/10"></div>
+      <div className="lg:min-h-screen bg-slate-50 dark:bg-[#0a0a0a] dark:text-darkmodetext w-full pb-20 font-sans">
+        
+        {/* Premium Hero Section */}
+        <div className="relative w-full overflow-hidden bg-white dark:bg-[#151515] border-b border-slate-200 dark:border-white/5 pb-16 pt-24 lg:pt-32">
+          
+          {/* Abstract Background Gradients */}
+          <div className="absolute top-0 inset-x-0 h-full overflow-hidden pointer-events-none">
+            <div className="absolute -top-[25%] -left-[10%] w-[50%] h-[100%] rounded-full bg-gradient-to-br from-cta/10 to-transparent dark:from-darkmodeCTA/10 blur-3xl opacity-70"></div>
+            <div className="absolute top-[20%] -right-[10%] w-[40%] h-[80%] rounded-full bg-gradient-to-bl from-blue-500/5 to-transparent dark:from-blue-500/10 blur-3xl opacity-70"></div>
+          </div>
 
-        {/* Profile Info Div */}
-        <div className="bg-white dark:bg-secondarydarkbg dark:border-white/25 shadow-xl -translate-y-14 border-2 min-h-52 pt-20 pb-10 rounded-lg mx-5 md:mx-10 lg:mx-20">
-          {/* Floating Image */}
-          <div className="absolute w-full -top-16 flex justify-center">
-            <div>
-              <Avatar
-                className="h-34 w-34 !text-5xl border-secondarydarkbg border-10"
-                imageSrc={dbUser?.photoURL}
-                fallBackText={dbUser?.name}
-              />
+          <div className="relative z-10 max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
+            
+            {/* Avatar Container with Glow */}
+            <div className="relative group">
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-cta to-blue-500 dark:from-darkmodeCTA opacity-30 group-hover:opacity-70 blur transition-opacity duration-500"></div>
+              <div className="relative bg-white dark:bg-[#151515] p-1.5 rounded-full">
+                <Avatar
+                  className="h-32 w-32 md:h-40 md:w-40 !text-5xl shadow-xl transition-transform duration-500 group-hover:scale-[1.02]"
+                  imageSrc={dbUser?.photoURL}
+                  fallBackText={dbUser?.name}
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Edit & delete icon on small screen */}
-          <div className="lg:hidden absolute flex gap-x-4 right-6 top-5">
-            <BsPen
-              className="text-xl hover:text-cta dark:hover:text-darkmodeCTA transition-all cursor-pointer"
-              onClick={() => navigate("/edit-profile")}
-            />
-            <button
-              onClick={() => setIsDeleteProfileModalOpen(true)}
-              className="text-xl  cursor-pointer"
-            >
-              <BsFillTrash3Fill className=" cursor-pointer text-red-500" />
-            </button>
-          </div>
-
-          {/* Edit & delete button on large screen */}
-          <div className="hidden absolute lg:flex gap-x-4 right-6 top-5">
-            <SecondaryButton
-              text={
-                <div className="flex items-center gap-x-2">
-                  <BsPen />
-                  <p>Edit</p>
+            {/* User Info */}
+            <div className="flex-1 text-center md:text-left flex flex-col justify-center min-h-[160px]">
+              <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between w-full">
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+                    {dbUser?.name}
+                  </h1>
+                  <p className="mt-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cta to-blue-600 dark:from-darkmodeCTA dark:to-blue-400 inline-block">
+                    @{dbUser?.username}
+                  </p>
                 </div>
-              }
-              className="border-transparent dark:hover:!text-cta shadow-md"
-              onClick={() => navigate("/edit-profile")}
-            />
-            <SecondaryButton
-              text={
-                <div className="flex justify-center items-center  gap-x-2">
-                  <BsFillTrash3Fill className=" cursor-pointer " />
-                  Delete
+                
+                {/* Actions */}
+                <div className="flex items-center justify-center gap-3 mt-4 md:mt-0">
+                  <SecondaryButton
+                    text={
+                      <div className="flex items-center gap-2 font-semibold">
+                        <BsPen className="w-4 h-4" />
+                        <span>Edit Profile</span>
+                      </div>
+                    }
+                    className="!py-2.5 !px-5 shadow-sm hover:shadow-md transition-all border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-sm"
+                    onClick={() => navigate("/edit-profile")}
+                  />
+                  <button
+                    onClick={() => setIsDeleteProfileModalOpen(true)}
+                    className="p-3 rounded-2xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors shadow-sm"
+                    title="Delete Account"
+                  >
+                    <BsFillTrash3Fill className="w-5 h-5" />
+                  </button>
                 </div>
-              }
-              onClick={() => setIsDeleteProfileModalOpen(true)}
-              className="border-transparent dark:!border-2 shadow-md hover:bg-red-600 text-red-600 dark:text-white hover:!text-white dark:hover:!text-red-600"
-            />
-          </div>
+              </div>
 
-          {/* Name, Username and Bio + Stat Count */}
-          <div className="px-2 pt-3">
-            {/* Name of the user */}
-            <p className="text-center text-3xl font-bold">{dbUser?.name}</p>
-            {/* Username of the user */}
-            <p className="mt-2 text-center text-xl font-medium">
-              @{dbUser?.username}
-            </p>
-            {/* User's bio */}
-            {dbUser?.bio && (
-              <p className="px-4 my-10 text-md text-center">{dbUser?.bio}</p>
-            )}
-          </div>
+              {dbUser?.bio && (
+                <p className="mt-6 text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed mx-auto md:mx-0">
+                  {dbUser?.bio}
+                </p>
+              )}
 
-          {/* Separator */}
-          <hr className="my-5 mx-2 dark:border-white/25" />
-
-          {/* Day of joining */}
-          <div className="mt-5 text-greyText flex justify-center items-center gap-x-2">
-            <TfiWrite /> Became a Grid Manager on{" "}
-            {dayjs(new Date(dbUser?.createdAt)).format("MMM DD, YYYY")}.
+              <div className="mt-6 flex items-center justify-center md:justify-start gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-white/5 w-fit px-4 py-2 rounded-xl mx-auto md:mx-0">
+                <TfiWrite className="w-4 h-4" />
+                <span>
+                  Joined {dayjs(new Date(dbUser?.createdAt)).format("MMM DD, YYYY")}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -430,7 +428,7 @@ const Profile = () => {
                       return (
                         <div className="max-w-sm min-w-xs mx-auto">
                           <div
-                            className="group bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 p-6 transition-all hover:shadow-lg hover:border-black/25 shadow dark:hover:border-white/25 cursor-pointer relative overflow-hidden"
+                            className="group bg-white dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10 p-6 transition-all hover:shadow-lg hover:border-black/25 shadow dark:hover:border-white/25 cursor-pointer relative overflow-hidden"
                             onClick={() => {
                               setTeamId(team?.id);
                               setIsTeamModalOpen(true);
@@ -446,7 +444,7 @@ const Profile = () => {
                                   setTeamId(team?.id);
                                   setIsEditModalOpen(true);
                                 }}
-                                className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 shadow-lg hover:shadow-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 cursor-pointer"
+                                className="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 shadow-lg hover:shadow-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-50 cursor-pointer"
                                 title={
                                   hasWeekendStarted
                                     ? "Race weekend has started. Teams cannot be edited."
@@ -462,7 +460,7 @@ const Profile = () => {
                                   setTeamId(team?.id);
                                   setIsDeleteTeamModalOpen(true);
                                 }}
-                                className="w-8 h-8 cursor-pointer rounded-lg bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all hover:bg-red-50 dark:hover:bg-red-900/30"
+                                className="w-8 h-8 cursor-pointer rounded-xl bg-white dark:bg-slate-700 shadow-md hover:shadow-lg flex items-center justify-center transition-all hover:bg-red-50 dark:hover:bg-red-900/30"
                                 title="Delete team"
                               >
                                 <Trash2 className="w-4 h-4 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400" />
@@ -472,7 +470,7 @@ const Profile = () => {
                             {/* Team Header */}
                             <div className="relative mb-4">
                               <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-cta/20 dark:bg-cta/30 rounded-lg flex items-center justify-center">
+                                <div className="w-10 h-10 bg-cta/20 dark:bg-cta/30 rounded-xl flex items-center justify-center">
                                   <Trophy className="w-5 h-5 text-cta dark:text-darkmodeCTA" />
                                 </div>
                                 <h3 className="text-xl line-clamp-1 font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
@@ -483,7 +481,7 @@ const Profile = () => {
 
                             {/* Points Display */}
                             <div className="relative z-10 mb-4">
-                              <div className="bg-slate-50 dark:bg-white/10 rounded-lg p-3">
+                              <div className="bg-slate-50 dark:bg-white/10 rounded-xl p-3">
                                 <div className="flex items-center justify-between">
                                   <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
                                     Total Points
@@ -540,7 +538,7 @@ const Profile = () => {
                                   setTeamId(team?.id);
                                   setIsEditModalOpen(true);
                                 }}
-                                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 <Edit3 className="w-4 h-4" />
                                 <span className="text-sm font-medium">
@@ -554,7 +552,7 @@ const Profile = () => {
                                   setTeamId(team?.id);
                                   setIsDeleteTeamModalOpen(true);
                                 }}
-                                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 rounded-lg transition-colors"
+                                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 rounded-xl transition-colors"
                               >
                                 <Trash2 className="w-4 h-4" />
                                 <span className="text-sm font-medium">
@@ -578,17 +576,17 @@ const Profile = () => {
                       return (
                         <div
                           key={i}
-                          className="bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 p-6 animate-pulse"
+                          className="bg-white dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10 p-6 animate-pulse"
                         >
                           {/* Team Header Skeleton */}
                           <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-slate-200 dark:bg-white/10 rounded-lg"></div>
+                            <div className="w-10 h-10 bg-slate-200 dark:bg-white/10 rounded-xl"></div>
                             <div className="h-6 bg-slate-200 dark:bg-white/10 rounded w-3/4"></div>
                           </div>
 
                           {/* Points Display Skeleton */}
                           <div className="mb-4">
-                            <div className="bg-slate-100 dark:bg-white/5 rounded-lg p-3">
+                            <div className="bg-slate-100 dark:bg-white/5 rounded-xl p-3">
                               <div className="flex items-center justify-between">
                                 <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-20"></div>
                                 <div className="h-6 bg-slate-200 dark:bg-white/10 rounded w-16"></div>
@@ -660,7 +658,7 @@ const Profile = () => {
                           <Link
                             key={league.leagueId}
                             to={`/leagues/${league.leagueId}`}
-                            className="group bg-grey/5 dark:bg-white/5 shadow rounded-xl border border-slate-200 dark:border-white/10 p-6 hover:shadow-lg hover:border-black/25 dark:hover:border-white/25 transition-all"
+                            className="group bg-grey/5 dark:bg-white/5 shadow rounded-2xl border border-slate-200 dark:border-white/10 p-6 hover:shadow-lg hover:border-black/25 dark:hover:border-white/25 transition-all"
                           >
                             <div className="space-y-4">
                               {/* League Info */}
@@ -688,7 +686,7 @@ const Profile = () => {
                                 <Link
                                   to={`/user/${league.User?.username}`}
                                   onClick={(e) => e.stopPropagation()}
-                                  className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 rounded-lg p-2 -m-2 transition-colors"
+                                  className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 rounded-xl p-2 -m-2 transition-colors"
                                 >
                                   <div>
                                     <Avatar
@@ -721,7 +719,7 @@ const Profile = () => {
                     ?.fill(null)
                     ?.map(() => {
                       return (
-                        <div className="bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5 p-6 animate-pulse">
+                        <div className="bg-white dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/5 p-6 animate-pulse">
                           <div className="space-y-4">
                             <div className="h-6 bg-slate-200 dark:bg-white/10 rounded w-3/4"></div>
                             <div className="space-y-2">

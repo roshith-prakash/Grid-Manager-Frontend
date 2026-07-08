@@ -7,6 +7,7 @@ import {
 } from "react";
 import { auth } from "../firebase/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
+import { LoadingScreen } from "../components";
 
 // Defining the shape of the AuthContext
 type AuthContextType = {
@@ -61,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     // Context Provider
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? <LoadingScreen /> : children}
     </AuthContext.Provider>
   );
 }

@@ -60,6 +60,7 @@ const EditTeamModal = ({
   const [name, setName] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [tabValue, setTabValue] = useState("drivers");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedDriverId, setSelectedDriverId] = useState("");
   const [isDriverModalOpen, setIsDriverModalOpen] = useState(false);
@@ -807,11 +808,21 @@ const EditTeamModal = ({
           {/* Tab Content */}
           <div className="border-l-3 dark:border-white/15">
             <div className="flex md:flex-1 flex-col gap-y-5">
+              <div className="mx-5 px-2 pb-2">
+                <input
+                  type="text"
+                  placeholder={`Search ${tabValue}...`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-2 border-2 border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white focus:outline-none focus:border-cta dark:focus:border-cta transition-colors"
+                />
+              </div>
               <div className="flex flex-wrap gap-5 justify-center gap-y-5 mx-5 px-2 py-5">
                 {/* Available Drivers */}
                 {tabValue == "drivers" && (
                   <>
                     {availableDrivers
+                      ?.filter(d => (d.givenName + " " + d.familyName + " " + d.code).toLowerCase().includes(searchQuery.toLowerCase()))
                       ?.sort((a, b) => b?.price - a?.price)
                       .map((driver: any) => {
                         return (
@@ -900,6 +911,7 @@ const EditTeamModal = ({
                   <>
                     {availableConstructors?.length > 0 ? (
                       availableConstructors
+                        ?.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
                         ?.sort((a, b) => b?.price - a?.price)
                         .map((constructor: any) => {
                           return (

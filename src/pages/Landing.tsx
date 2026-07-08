@@ -142,7 +142,7 @@ const Landing = () => {
       </section>
 
       {/* Next Race Section */}
-      {nextRace && (
+      {nextRace ? (
         <section className="py-20">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
@@ -197,6 +197,45 @@ const Landing = () => {
                   >
                     <Calendar className="w-5 h-5 -translate-y-0.5" />
                     View Full Season Schedule
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className="py-20">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+                  Next Race Weekend
+                </h2>
+                <p className="text-lg text-slate-600 dark:text-slate-300">
+                  Waiting for the next session
+                </p>
+              </div>
+
+              <div className="bg-gradient-to-br from-white to-slate-50 dark:from-white/5 dark:to-white/10 rounded-3xl shadow-2xl p-8 lg:p-12 border border-slate-200 dark:border-white/5">
+                <div className="text-center space-y-8 flex flex-col items-center justify-center">
+                  <div className="w-20 h-20 bg-slate-100 dark:bg-white/10 rounded-full flex items-center justify-center mb-2">
+                    <Calendar className="w-10 h-10 text-slate-400 dark:text-slate-500" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-slate-700 dark:text-slate-300">
+                    Off-Season / Next Race TBA
+                  </h3>
+                  <p className="text-lg text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
+                    The official schedule hasn't been announced yet or the data is currently unavailable. Check back soon as the championship approaches!
+                  </p>
+
+                  <a
+                    href="https://gridbox.vercel.app/schedule"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 text-lg font-semibold text-cta hover:text-hovercta dark:text-darkmodeCTA dark:hover:text-cta transition-all mt-4"
+                  >
+                    <Calendar className="w-5 h-5 -translate-y-0.5" />
+                    View GridBox Schedule
                   </a>
                 </div>
               </div>

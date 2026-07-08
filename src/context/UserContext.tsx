@@ -42,7 +42,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   // Fetch current user information from database - UseQuery Method
   const { data, refetch: fetchUser } = useQuery({
-    queryKey: ["dbUser", currentUser], // Use user ID for efficiency
+    queryKey: ["dbUser", currentUser?.email], // Use user email for efficiency
     queryFn: async () => {
       return axiosInstance.post("/user/get-current-user", {
         user: currentUser,

@@ -41,8 +41,6 @@ const Notices = () => {
     }
   }, [inView, fetchNextPage, notices?.pages?.length]);
 
-  console.log(notices);
-
   return (
     <div className="p-8 max-w-4xl mx-auto text-left space-y-8">
       <h1 className="text-4xl py-4 font-bold text-primary text-center">

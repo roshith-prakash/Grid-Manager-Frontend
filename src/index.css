@@ -56,13 +56,25 @@ input::placeholder {
   background: #f1f1f1;
 }
 
+.dark .scroller::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .scroller::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 5px;
 }
 
+.dark .scroller::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .scroller::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.dark .scroller::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .noscroller::-webkit-scrollbar {

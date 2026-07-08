@@ -96,6 +96,15 @@ const Leaderboard = () => {
     }
   };
 
+  // Podium: 2nd left, 1st centre (elevated), 3rd right on desktop.
+  // On mobile (flex-col) DOM order is 1st→2nd→3rd so no extra reordering needed.
+  const getPodiumClasses = (index: number) => {
+    if (index === 0) return "md:order-2 w-full md:w-auto"; // 1st: centre, no top offset
+    if (index === 1) return "md:order-1 md:mt-10 w-full md:w-auto"; // 2nd: left, slightly lower
+    if (index === 2) return "md:order-3 md:mt-16 w-full md:w-auto"; // 3rd: right, lowest
+    return "";
+  };
+
   const LoadingSkeleton = ({
     type,
   }: {
@@ -173,20 +182,27 @@ const Leaderboard = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-center items-start gap-6">
             {isLoadingTopTeams
               ? Array(3)
                   .fill(null)
-                  .map((_, i) => <LoadingSkeleton key={i} type="team" />)
+                  .map((_, i) => (
+                    <div key={i} className={getPodiumClasses(i)}>
+                      <LoadingSkeleton type="team" />
+                    </div>
+                  ))
               : top3Teams?.data?.teams?.map((team: any, index: number) => (
                   <div
                     key={team.id}
-                    onClick={() => {
-                      setTeamId(team?.id);
-                      setIsTeamModalOpen(true);
-                    }}
-                    className="group cursor-pointer transform hover:scale-105 transition-all duration-300"
+                    className={getPodiumClasses(index)}
                   >
+                    <div
+                      onClick={() => {
+                        setTeamId(team?.id);
+                        setIsTeamModalOpen(true);
+                      }}
+                      className="group min-w-2xs cursor-pointer transform hover:scale-105 transition-all duration-300"
+                    >
                     <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg hover:shadow-2xl border border-slate-200 dark:border-white/5 overflow-hidden">
                       <div className="relative p-6">
                         <div className="flex items-center gap-3 mb-4">
@@ -211,6 +227,7 @@ const Leaderboard = () => {
                         </div>
                       </div>
                     </div>
+                    </div>
                   </div>
                 ))}
           </div>
@@ -225,15 +242,22 @@ const Leaderboard = () => {
             </h2>
           </div>
 
-          <div className="flex justify-center flex-wrap gap-6">
+          <div className="flex flex-col md:flex-row justify-center items-start gap-6">
             {isLoadingMostSelectedDrivers
               ? Array(3)
                   .fill(null)
-                  .map((_, i) => <LoadingSkeleton key={i} type="driver" />)
+                  .map((_, i) => (
+                    <div key={i} className={getPodiumClasses(i)}>
+                      <LoadingSkeleton type="driver" />
+                    </div>
+                  ))
               : mostSelectedDrivers?.data?.drivers?.map(
                   (driver: any, index: number) => (
                     <div
                       key={driver.code}
+                      className={getPodiumClasses(index)}
+                    >
+                    <div
                       onClick={() => {
                         setSelectedDriverId(driver?.driverId);
                         setIsDriverModalOpen(true);
@@ -289,6 +313,7 @@ const Leaderboard = () => {
                         </div>
                       </div>
                     </div>
+                    </div>
                   )
                 )}
           </div>
@@ -303,15 +328,22 @@ const Leaderboard = () => {
             </h2>
           </div>
 
-          <div className="flex justify-center flex-wrap gap-6">
+          <div className="flex flex-col md:flex-row justify-center items-start gap-6">
             {isLoadingMostSelectedConstructors
               ? Array(3)
                   .fill(null)
-                  .map((_, i) => <LoadingSkeleton key={i} type="constructor" />)
+                  .map((_, i) => (
+                    <div key={i} className={getPodiumClasses(i)}>
+                      <LoadingSkeleton type="constructor" />
+                    </div>
+                  ))
               : mostSelectedConstructors?.data?.constructors?.map(
                   (constructor: any, index: number) => (
                     <div
                       key={constructor.name}
+                      className={getPodiumClasses(index)}
+                    >
+                    <div
                       onClick={() => {
                         setSelectedConstructorId(constructor?.constructorId);
                         setIsConstructorModalOpen(true);
@@ -360,6 +392,7 @@ const Leaderboard = () => {
                         </div>
                       </div>
                     </div>
+                    </div>
                   )
                 )}
           </div>
@@ -374,15 +407,22 @@ const Leaderboard = () => {
             </h2>
           </div>
 
-          <div className="flex justify-center flex-wrap gap-6">
+          <div className="flex flex-col md:flex-row justify-center items-start gap-6">
             {isLoadingHighestPointScoringDrivers
               ? Array(3)
                   .fill(null)
-                  .map((_, i) => <LoadingSkeleton key={i} type="driver" />)
+                  .map((_, i) => (
+                    <div key={i} className={getPodiumClasses(i)}>
+                      <LoadingSkeleton type="driver" />
+                    </div>
+                  ))
               : highestScoringDrivers?.data?.drivers?.map(
                   (driver: any, index: number) => (
                     <div
                       key={driver.code}
+                      className={getPodiumClasses(index)}
+                    >
+                    <div
                       onClick={() => {
                         setSelectedDriverId(driver?.driverId);
                         setIsDriverModalOpen(true);
@@ -438,6 +478,7 @@ const Leaderboard = () => {
                         </div>
                       </div>
                     </div>
+                    </div>
                   )
                 )}
           </div>
@@ -452,15 +493,22 @@ const Leaderboard = () => {
             </h2>
           </div>
 
-          <div className="flex justify-center flex-wrap gap-6">
+          <div className="flex flex-col md:flex-row justify-center items-start gap-6">
             {isLoadingHighestPointScoringConstructors
               ? Array(3)
                   .fill(null)
-                  .map((_, i) => <LoadingSkeleton key={i} type="constructor" />)
+                  .map((_, i) => (
+                    <div key={i} className={getPodiumClasses(i)}>
+                      <LoadingSkeleton type="constructor" />
+                    </div>
+                  ))
               : highestScoringConstructors?.data?.constructors?.map(
                   (constructor: any, index: number) => (
                     <div
                       key={constructor.name}
+                      className={getPodiumClasses(index)}
+                    >
+                    <div
                       onClick={() => {
                         setSelectedConstructorId(constructor?.constructorId);
                         setIsConstructorModalOpen(true);
@@ -507,6 +555,7 @@ const Leaderboard = () => {
                           </div>
                         </div>
                       </div>
+                    </div>
                     </div>
                   )
                 )}
