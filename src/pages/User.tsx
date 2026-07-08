@@ -319,88 +319,27 @@ const User = () => {
                     {user?.data?.user?.name}'s Teams
                   </h1>
                 </div>
-                <div className="grid lg:px-20 md:grid-cols-2 lg:grid-cols-4 px-2 gap-x-6 gap-y-10">
+                <div className="grid lg:px-20 md:grid-cols-2 lg:grid-cols-4 px-4 gap-6 mb-10">
                   {teams &&
                     teams?.pages?.map((page) => {
                       return page?.data.teams?.map((team: any) => {
                         return (
-                          <div className="max-w-sm min-w-xs mx-auto">
-                            <div
-                              className="group bg-white dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10 p-6 transition-all hover:shadow-lg hover:border-black/25 shadow dark:hover:border-white/25 cursor-pointer relative overflow-hidden"
-                              onClick={() => {
-                                setTeamId(team?.id);
-                                setIsTeamModalOpen(true);
-                              }}
-                            >
-                              {/* Team Header */}
-                              <div className="relative mb-4">
-                                <div className="flex items-center gap-3 mb-2">
-                                  <div className="w-10 h-10 bg-cta/20 dark:bg-cta/30 rounded-2xl flex items-center justify-center">
-                                    <Trophy className="w-5 h-5 text-cta dark:text-darkmodeCTA" />
-                                  </div>
-                                  <h3 className="text-xl line-clamp-1 font-bold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors">
-                                    {team?.name}
-                                  </h3>
-                                </div>
-                              </div>
-
-                              {/* Points Display */}
-                              <div className="relative z-10 mb-4">
-                                <div className="bg-slate-50 dark:bg-white/10 rounded-2xl p-3">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                                      Total Points
-                                    </span>
-                                    <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                                      {team?.score}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* League Information */}
-                              <div className="relative z-10 space-y-3 mb-4">
-                                <div className="flex items-center gap-2">
-                                  <Users className="w-4 h-4 text-slate-500" />
-                                  <span className="text-sm text-slate-600 dark:text-slate-400">
-                                    League:
-                                  </span>
-                                  <span className="text-sm font-medium text-slate-900 dark:text-white">
-                                    {team?.League?.name}
-                                  </span>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                  <Hash className="w-4 h-4 text-slate-500" />
-                                  <span className="text-sm text-slate-600 dark:text-slate-400">
-                                    ID:
-                                  </span>
-                                  <span className="text-sm font-mono font-medium text-slate-900 dark:text-white">
-                                    {team?.League?.leagueId}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Last Updated */}
-                              <div className="relative z-10 pt-3 border-t border-slate-200 dark:border-slate-600">
-                                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                                  <Calendar className="w-3 h-3" />
-                                  <span>
-                                    Updated{" "}
-                                    {dayjs(new Date(team?.updatedAt)).format(
-                                      "MMM DD, YYYY"
-                                    )}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Hover Indicator */}
-                              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cta to-hovercta transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                            </div>
-                          </div>
+                          <TeamCard
+                            key={team?.id}
+                            team={team}
+                            isOwner={false}
+                            onClick={() => {
+                              setTeamId(team?.id);
+                              setIsTeamModalOpen(true);
+                            }}
+                          />
                         );
                       });
                     })}
+                  <div ref={ref}></div>
+                </div>
+
+                
 
                   {loadingTeams &&
                     Array(4)
@@ -442,69 +381,17 @@ const User = () => {
                     {user?.data?.user?.name}'s Leagues
                   </h1>
                 </div>
-                <div className="grid lg:px-20 md:grid-cols-2 lg:grid-cols-4 px-2 gap-x-6 gap-y-10">
-                  {leagues &&
-                    leagues?.pages?.map((page) => {
-                      return page?.data.leagues?.map((league: any) => {
-                        return (
-                          <>
-                            <Link
-                              key={league.leagueId}
-                              to={`/leagues/${league.leagueId}`}
-                              className="group bg-grey/5 dark:bg-white/5 shadow rounded-2xl border border-slate-200 dark:border-white/10 p-6 hover:shadow-lg hover:border-black/25 dark:hover:border-white/25 transition-all"
-                            >
-                              <div className="space-y-4">
-                                {/* League Info */}
-                                <div>
-                                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white group-hover:text-cta dark:group-hover:text-darkmodeCTA transition-colors mb-3">
-                                    {league.name}
-                                  </h3>
+                <div className="grid lg:px-20 md:grid-cols-2 lg:grid-cols-4 px-4 gap-6 mb-10">
+                {leagues &&
+                  leagues?.pages?.map((page) => {
+                    return page?.data.leagues?.map((league: any) => {
+                      return <LeagueCard key={league.leagueId} league={league} />;
+                    });
+                  })}
+                <div ref={ref}></div>
+              </div>
 
-                                  <div className="space-y-2 text-sm">
-                                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                                      <span className="font-medium">ID:</span>
-                                      <span className="font-mono">
-                                        {league.leagueId}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                                      <Users className="w-4 h-4" />
-                                      <span>{league.numberOfTeams} teams</span>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* League Creator */}
-                                <div className="pt-4 border-t border-slate-200 dark:border-white/15">
-                                  <Link
-                                    to={`/user/${league.User?.username}`}
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/10 rounded-2xl p-2 -m-2 transition-colors"
-                                  >
-                                    <div>
-                                      <Avatar
-                                        imageSrc={league?.User?.photoURL}
-                                        fallBackText={league?.User?.name}
-                                      />
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                      <p className="font-medium text-slate-900 dark:text-white truncate">
-                                        {league.User?.name}
-                                      </p>
-                                      <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
-                                        @{league.User?.username}
-                                      </p>
-                                    </div>
-                                  </Link>
-                                </div>
-                              </div>
-                            </Link>
-                          </>
-                        );
-                      });
-                    })}
-                  <div ref={ref}></div>
-                </div>
+              
 
                 {loadingLeagues && (
                   <div className="grid md:grid-cols-2 lg:grid-cols-4 py-10 px-2 gap-x-2 gap-y-10">
