@@ -7,7 +7,7 @@ import {
 } from "../components";
 import { useDBUser } from "../context/UserContext";
 import { BsFillTrash3Fill, BsPen } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { TfiWrite } from "react-icons/tfi";
 import { axiosInstance } from "../utils/axiosInstance";
@@ -22,7 +22,7 @@ import Tooltip from "@/components/reuseit/Tooltip";
 import TeamCard from "@/components/reuseit/TeamCard";
 import LeagueCard from "@/components/reuseit/LeagueCard";
 import { LuCirclePlus } from "react-icons/lu";
-import { Calendar, Edit3, Hash, Trash2, Trophy, Users } from "lucide-react";
+
 import Avatar from "@/components/reuseit/Avatar";
 
 const Profile = () => {
@@ -36,6 +36,7 @@ const Profile = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteTeamModalOpen, setIsDeleteTeamModalOpen] = useState(false);
   const [teamId, setTeamId] = useState("");
+  const [expandedChartTeamId, setExpandedChartTeamId] = useState<string | null>(null);
 
   const hasWeekendStarted = useHasWeekendStarted();
 
@@ -451,10 +452,9 @@ const Profile = () => {
                 <div ref={ref}></div>
               </div>
 
-              
-
-                {loadingTeams &&
-                  Array(4)
+              {loadingTeams && (
+                <div className="grid lg:px-20 md:grid-cols-2 lg:grid-cols-4 px-4 gap-6">
+                  {Array(4)
                     ?.fill(null)
                     ?.map((_, i) => {
                       return (
@@ -462,13 +462,10 @@ const Profile = () => {
                           key={i}
                           className="bg-white dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10 p-6 animate-pulse"
                         >
-                          {/* Team Header Skeleton */}
                           <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 bg-slate-200 dark:bg-white/10 rounded-2xl"></div>
                             <div className="h-6 bg-slate-200 dark:bg-white/10 rounded w-3/4"></div>
                           </div>
-
-                          {/* Points Display Skeleton */}
                           <div className="mb-4">
                             <div className="bg-slate-100 dark:bg-white/5 rounded-2xl p-3">
                               <div className="flex items-center justify-between">
@@ -477,8 +474,6 @@ const Profile = () => {
                               </div>
                             </div>
                           </div>
-
-                          {/* Team Owner Skeleton */}
                           <div className="pt-4 border-t border-slate-200 dark:border-slate-600">
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 bg-slate-200 dark:bg-white/10 rounded-full"></div>
@@ -491,9 +486,8 @@ const Profile = () => {
                         </div>
                       );
                     })}
-
-                <div ref={ref}></div>
-              </div>
+                </div>
+              )}
 
               {/* If no teams are found */}
               {teams && teams?.pages?.[0]?.data?.teams.length == 0 && (

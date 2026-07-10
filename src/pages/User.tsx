@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { SecondaryButton, TeamModal } from "../components";
 import { useDBUser } from "../context/UserContext";
 import dayjs from "dayjs";
@@ -10,7 +10,7 @@ import Profile from "./Profile";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import Card from "@/components/reuseit/Card";
-import { Calendar, Hash, Trophy, Users } from "lucide-react";
+
 import Avatar from "@/components/reuseit/Avatar";
 import TeamCard from "@/components/reuseit/TeamCard";
 import LeagueCard from "@/components/reuseit/LeagueCard";
@@ -340,41 +340,40 @@ const User = () => {
                 </div>
 
                 
-
-                  {loadingTeams &&
-                    Array(4)
-                      ?.fill(null)
-                      ?.map(() => {
-                        return (
-                          <div className="flex justify-center items-center py-10">
-                            <div className=" bg-[#e1e1e1]/25 rounded-2xl flex flex-col dark:bg-white/5  p-3 transition-all hover:shadow-md hover:bg-white/10">
-                              <Card className="!bg-transparent flex flex-col gap-y-3 p-4 border-none shadow-none w-fit text-center">
-                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                                <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
-                              </Card>
-                            </div>
+                {loadingTeams && (
+                <div className="grid lg:px-20 md:grid-cols-2 lg:grid-cols-4 px-4 gap-6">
+                  {Array(4)
+                    ?.fill(null)
+                    ?.map((_, i) => {
+                      return (
+                        <div key={i} className="flex justify-center items-center py-10">
+                          <div className="bg-[#e1e1e1]/25 rounded-2xl flex flex-col dark:bg-white/5 p-3 transition-all hover:shadow-md hover:bg-white/10">
+                            <Card className="!bg-transparent flex flex-col gap-y-3 p-4 border-none shadow-none w-fit text-center">
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                              <p className="h-5 w-44 bg-gray-500 animate-pulse rounded"></p>
+                            </Card>
                           </div>
-                        );
-                      })}
-
-                  <div ref={ref}></div>
+                        </div>
+                      );
+                    })}
                 </div>
+              )}
 
-                {/* If no teams are found */}
-                {teams && teams?.pages?.[0]?.data?.teams.length == 0 && (
-                  <div className="flex flex-col justify-center pt-10">
-                    <p className="text-center text-xl py-8 font-semibold">
-                      You have not created any teams.
-                    </p>
-                  </div>
-                )}
-              </>
-            ) : (
-              // Leagues
-              <>
+              {/* If no teams are found */}
+              {teams && teams?.pages?.[0]?.data?.teams.length == 0 && (
+                <div className="flex flex-col justify-center pt-10">
+                  <p className="text-center text-xl py-8 font-semibold">
+                    You have not created any teams.
+                  </p>
+                </div>
+              )}
+            </>
+          ) : (
+            // Leagues
+            <>
                 <div className="py-14 md:px-20 flex justify-between px-8">
                   {/* Gradient Title */}
                   <h1 className="text-hovercta dark:text-darkmodeCTA text-4xl font-semibold">
